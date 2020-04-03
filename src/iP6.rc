@@ -1,0 +1,332 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+#include <windows.h>
+/////////////////////////////////////////////////////////////////////////////
+// 日本語 (日本) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
+#pragma code_page(932)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+PCMENU MENU
+BEGIN
+    POPUP "&Ｃontrol"
+    BEGIN
+        MENUITEM "Configure",                   IDM_CONFIG
+        MENUITEM "&Reset",                      IDM_RESET
+        MENUITEM "&No WAIT MODE",               IDM_NOWAIT
+        MENUITEM SEPARATOR
+        MENUITEM "Save RAM ",                   IDM_WRITE_RAM
+        MENUITEM "Save &Screenshot",            IDM_SNAPSHOT
+        MENUITEM SEPARATOR
+        MENUITEM "Monitor mode",                IDM_MONITOR
+        MENUITEM SEPARATOR
+        MENUITEM "Save どこでも",                   IDM_DOKOSAVE
+        MENUITEM "Load どこでも",                   IDM_DOKOLOAD
+        MENUITEM SEPARATOR
+        MENUITEM "Pause",                       IDM_PAUSE
+        MENUITEM SEPARATOR
+        MENUITEM "e&Xit",                       IDM_EXIT
+    END
+    POPUP "&Ｔape"
+    BEGIN
+        MENUITEM "&Open load tape...",          IDM_OPEN_LOAD_TAPE
+        MENUITEM "&Rewind load tape",           IDM_REWIND_LOAD_TAPE
+        MENUITEM "&Eject load tape",            IDM_EJECT_LOAD_TAPE
+        MENUITEM SEPARATOR
+        MENUITEM "Open save tape...",           IDM_OPEN_SAVE_TAPE
+        MENUITEM "Rewind save tape",            IDM_REWIND_SAVE_TAPE
+        MENUITEM "Eject save tape",             IDM_EJECT_SAVE_TAPE
+    END
+    POPUP "&Ｄisk"
+    BEGIN
+        MENUITEM "&Open 1",                     IDM_OPEN_DISK1
+        MENUITEM "&Eject 1",                    IDM_EJECT_DISK1
+        MENUITEM "&Open 2",                     IDM_OPEN_DISK2
+        MENUITEM "&Eject 2",                    IDM_EJECT_DISK2
+    END
+    POPUP "&ＥxtRom"
+    BEGIN
+        MENUITEM "&Open",                       IDM_OPEN_EXTROM
+        MENUITEM "&Eject",                      IDM_EJECT_EXTROM
+    END
+    POPUP "&Ｗindow"
+    BEGIN
+        MENUITEM "&Window 1X",                  IDM_WINDOW12
+        MENUITEM "&Full screen",                IDM_FULLSCR, INACTIVE
+    END
+    POPUP "&Ｈelp"
+    BEGIN
+        MENUITEM "&about",                      IDM_VER
+        MENUITEM "&usage",                      IDM_USAGE
+    END
+END
+
+SUBMENU MENU
+BEGIN
+    POPUP "dummy"
+    BEGIN
+        POPUP "&Control"
+        BEGIN
+            MENUITEM "&Configure",                  IDM_CONFIG
+            MENUITEM "&Reset",                      IDM_RESET
+            MENUITEM "&No WAIT MODE",               IDM_NOWAIT
+            MENUITEM SEPARATOR
+            MENUITEM "Save RAM ",                   IDM_WRITE_RAM
+            MENUITEM "Save &Screenshot",            IDM_SNAPSHOT
+            MENUITEM SEPARATOR
+            MENUITEM "Monitor mode",                IDM_MONITOR
+            MENUITEM SEPARATOR
+            MENUITEM "Save どこでも",                   IDM_DOKOSAVE
+            MENUITEM "Load どこでも",                   IDM_DOKOLOAD
+            MENUITEM SEPARATOR
+            MENUITEM "e&Xit",                       IDM_EXIT
+        END
+        POPUP "&Tape"
+        BEGIN
+            MENUITEM "&Open load tape...",          IDM_OPEN_LOAD_TAPE
+            MENUITEM "&Rewind load tape",           IDM_REWIND_LOAD_TAPE
+            MENUITEM "&Eject load tape",            IDM_EJECT_LOAD_TAPE
+            MENUITEM SEPARATOR
+            MENUITEM "Open save tape...",           IDM_OPEN_SAVE_TAPE
+            MENUITEM "Rewind save tape",            IDM_REWIND_SAVE_TAPE
+            MENUITEM "Eject save tape",             IDM_EJECT_SAVE_TAPE
+        END
+        POPUP "&Disk"
+        BEGIN
+            MENUITEM "&Open 1",                     IDM_OPEN_DISK1
+            MENUITEM "&Eject 1",                    IDM_EJECT_DISK1
+            MENUITEM "&Open 2",                     IDM_OPEN_DISK2
+            MENUITEM "&Eject 2",                    IDM_EJECT_DISK2
+        END
+        POPUP "&ExtRom"
+        BEGIN
+            MENUITEM "&Open",                       IDM_OPEN_EXTROM
+            MENUITEM "&Eject",                      IDM_EJECT_EXTROM
+        END
+        POPUP "&Window"
+        BEGIN
+            MENUITEM "&Window 1X",                  IDM_WINDOW12
+            MENUITEM "&Full screen",                IDM_FULLSCR
+        END
+        POPUP "&Help"
+        BEGIN
+            MENUITEM "&about",                      IDM_VER
+        END
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+ABOUT DIALOGEX 18, 18, 180, 100
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "about"
+BEGIN
+    CTEXT           "iP6 Plus ",ID_TEXT1,30,5,53,10
+    CTEXT           "ver x.x",ID_VER,75,5,50,10
+    CTEXT           "(Build yyyy/mm/dd",ID_DATE,37,15,100,10
+    CTEXT           "Modified by Windy",ID_AUTHOR,40,26,98,10
+    CTEXT           "http://...",IDM_URL,20,45,140,30
+    CTEXT           "",IDM_COMMENT,20,55,140,30
+    DEFPUSHBUTTON   "Ok",IDOK,60,65,30,14
+END
+
+USAGE DIALOG 18, 18, 200, 200
+STYLE WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "usage"
+BEGIN
+    CTEXT           "キーアサイン",-1,20,5,60,30
+    CTEXT           "かなキー　scroll lock",-1,20,5,60,30
+    CTEXT           "MODEキー  F8",-1,20,5,60,30
+    CTEXT           "",-1,20,5,60,30
+    CTEXT           "",-1,20,5,60,30
+    DEFPUSHBUTTON   "Ok",IDOK,60,60,30,14
+END
+
+CONFIGURE DIALOGEX 18, 18, 290, 225
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Cofigure"
+FONT 10, "MS Gothic", 0, 0, 0x0
+BEGIN
+    GROUPBOX        "機種 (*)",ID_MACHINE_TYPE,5,5,70,65,WS_GROUP
+    CONTROL         "PC-6001     ",ID_RDPC60,"Button",BS_AUTORADIOBUTTON,10,15,45,10
+    CONTROL         "PC-6001mk2  ",ID_RDPC62,"Button",BS_AUTORADIOBUTTON,10,25,55,10
+    CONTROL         "PC-6001mk2SR",ID_RDPC64,"Button",BS_AUTORADIOBUTTON,10,35,60,10
+    CONTROL         "PC-6601     ",ID_RDPC66,"Button",BS_AUTORADIOBUTTON,10,45,45,10
+    CONTROL         "PC-6601SR   ",ID_RDPC68,"Button",BS_AUTORADIOBUTTON,10,55,60,10
+    GROUPBOX        "ドライブ数 (*)",ID_FDD_NUM,5,70,70,25,WS_GROUP
+    CONTROL         "0",ID_RDFD0,"Button",BS_AUTORADIOBUTTON,10,80,20,10
+    CONTROL         "1",ID_RDFD1,"Button",BS_AUTORADIOBUTTON,30,80,20,10
+    CONTROL         "2",ID_RDFD2,"Button",BS_AUTORADIOBUTTON,50,80,20,10
+    GROUPBOX        "TAPE",-1,5,95,70,30,WS_GROUP
+    CONTROL         "高速モード",ID_FASTTAPE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,105,50,10
+    GROUPBOX        "SCRN 4 ｶﾗｰ (N60)",ID_SCREEN4_COLOR,80,5,80,25,WS_GROUP
+    CONTROL         "Mono",ID_SCR4MONO,"Button",BS_AUTORADIOBUTTON,85,15,30,10
+    CONTROL         "Color",ID_SCR4COL,"Button",BS_AUTORADIOBUTTON,115,15,30,10
+    GROUPBOX        "画面サイズ",ID_SCREEN_SIZE,80,30,80,25,WS_GROUP
+    CONTROL         "1倍  ",ID_SCALE1,"Button",BS_AUTORADIOBUTTON,85,40,30,10
+    CONTROL         "2倍  ",ID_SCALE2,"Button",BS_AUTORADIOBUTTON,115,40,30,10
+    GROUPBOX        "画面　更新数",ID_SCREEN_UPDATE,80,55,80,25,WS_GROUP
+    CONTROL         "30FPS",ID_30FPS,"Button",BS_AUTORADIOBUTTON,85,65,40,10
+    CONTROL         "60FPS",ID_60FPS,"Button",BS_AUTORADIOBUTTON,120,65,35,10
+    GROUPBOX        "表示",ID_VIEW,80,80,80,45,WS_GROUP
+    CONTROL         "スキャンライン",ID_SCANLINE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,85,90,70,10
+    CONTROL         "ステータスバー",ID_STATUSBAR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,85,100,70,10
+    CONTROL         "ディスクランプ",ID_DISKLAMP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,85,110,70,10
+    CONTROL         "サウンドを使う (*)",ID_SOUNDON,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,165,5,90,10
+    CONTROL         "Stop 2ms timer",ID_STOP_2MSTIMER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,165,15,80,10
+    CTEXT           "PSG 音量",ID_PSG_VOL,160,30,50,10
+    CTEXT           "FM  音量",ID_FM_VOL,160,45,50,10
+    CTEXT           "CPU Clock",-1,162,115,45,10
+    EDITTEXT        ID_CPUCLOCK,210,115,25,10
+    CTEXT           "MHz",-1,230,115,25,10
+    GROUPBOX        "カートリッジ ",ID_CARTRIDGE,5,130,250,83,WS_GROUP
+    CTEXT           "ROM パス名  (*)",ID_ROM_PATH,6,140,120,10
+    EDITTEXT        ID_ROMPATH,10,150,195,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "参照",ID_BROWSEROMPATH,205,150,25,12
+    CONTROL         "PC-6001 のRAMを 32KB に増設する  (*)",ID_EXTRAM32,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,165,190,10
+    CONTROL         "拡張 RAM を使う     (64KB)  (*)",ID_EXTRAM64,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,175,200,10
+    CONTROL         "拡張 漢字 ROMを使う (128KB) (*)",ID_EXTKANJION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,186,160,10
+    DEFPUSHBUTTON   "Ok",IDOK,218,206,30,16
+    PUSHBUTTON      "CANCEL",IDCANCEL,255,207,30,16
+    CONTROL         "かなローマ字入力モード",ID_ROMAJI_MODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,167,61,104,10
+    CONTROL         "互換ROMをつかう",ID_USE_COMPATIBLEROM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,198,107,11
+END
+
+DEBUG DIALOG 18, 18, 400, 300
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Debug"
+FONT 10, "MS Gothic"
+BEGIN
+    PUSHBUTTON      "Step",ID_DEBUG_STEP,0,0,40,15
+    PUSHBUTTON      "Animate",ID_DEBUG_ANIMATE,120,0,40,15
+    EDITTEXT        ID_DEBUG_REGISTERBOX,0,20,280,25,ES_MULTILINE | ES_AUTOHSCROLL
+    CTEXT           "ADDR:",-1,100,55,54,15
+    EDITTEXT        ID_DEBUG_MEMORYADDRBOX,140,50,20,15,ES_MULTILINE
+    EDITTEXT        ID_DEBUG_MEMORYBOX,100,70,330,160,ES_MULTILINE | ES_AUTOHSCROLL
+    EDITTEXT        ID_DEBUG_CPUBOX,0,70,90,160,ES_MULTILINE | ES_AUTOHSCROLL
+    EDITTEXT        ID_DEBUG_EDITBOX,0,250,250,50,ES_MULTILINE | ES_AUTOHSCROLL
+END
+
+SELECTMACHINE DIALOGEX 0, 0, 133, 47
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "SelectMachine"
+FONT 14, "MS UI Gothic", 400, 0, 0x80
+BEGIN
+    DEFPUSHBUTTON   "PC-6001",ID_PC60,7,26,50,14
+    PUSHBUTTON      "PC-6601",ID_PC66,68,26,50,14
+    LTEXT           "SELECT MACHINE",IDC_STATIC,7,7,76,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IC_PC66SR               ICON                    "pc66sr.ico"
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    "ABOUT", DIALOG
+    BEGIN
+    END
+
+    "USAGE", DIALOG
+    BEGIN
+    END
+
+    "CONFIGURE", DIALOG
+    BEGIN
+    END
+
+    SELECTMACHINE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 126
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 40
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+CONFIGURE AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+ABOUT AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+SELECTMACHINE AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // 日本語 (日本) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

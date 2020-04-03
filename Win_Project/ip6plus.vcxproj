@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{CB92A5B4-7D7D-4D83-90D9-F849225530E9}</ProjectGuid>
+    <RootNamespace>ip6plus</RootNamespace>
+    <Keyword>ManagedCProj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>OldSyntax</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>15.0.27625.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>-DDEBUG  -DSOUND -DHAVE_DIRECT_H  -DHAVE_LIBPNG_=1  -Ic:\library\include -D_WIN32_WINNT=0x0400 -DWINVER=0x0400  %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/SUBSYSTEM:WINDOWS  winmm.lib    comctl32.lib    dsound.lib dxguid.lib  dinput8.lib dxguid.lib 
+ c:\library\lib\libpngd.lib c:\library\lib\zlibd.lib %(AdditionalOptions)</AdditionalOptions>
+      <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AssemblyDebug>true</AssemblyDebug>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\buffer.c" />
+    <ClCompile Include="..\src\chkcrc32.c" />
+    <ClCompile Include="..\src\d88.c" />
+    <ClCompile Include="..\src\Debug.c" />
+    <ClCompile Include="..\src\device.c" />
+    <ClCompile Include="..\src\disk.c" />
+    <ClCompile Include="..\src\dokodemo.c" />
+    <ClCompile Include="..\src\error.c" />
+    <ClCompile Include="..\src\fdc.c" />
+    <ClCompile Include="..\src\fm.cpp" />
+    <ClCompile Include="..\src\fmgen\file.cpp" />
+    <ClCompile Include="..\src\fmgen\fmgen.cpp" />
+    <ClCompile Include="..\src\fmgen\fmtimer.cpp" />
+    <ClCompile Include="..\src\fmgen\opm.cpp" />
+    <ClCompile Include="..\src\fmgen\opna.cpp" />
+    <ClCompile Include="..\src\fmgen\psg.cpp" />
+    <ClCompile Include="..\src\font6x10.c" />
+    <ClCompile Include="..\src\iP6.c" />
+    <ClCompile Include="..\src\mem.c" />
+    <ClCompile Include="..\src\message.c" />
+    <ClCompile Include="..\src\Option.c" />
+    <ClCompile Include="..\src\P6.c" />
+    <ClCompile Include="..\src\Pd7752.c" />
+    <ClCompile Include="..\src\pngrw.c" />
+    <ClCompile Include="..\src\Refresh.c" />
+    <ClCompile Include="..\src\romaji.c" />
+    <ClCompile Include="..\src\schedule.c" />
+    <ClCompile Include="..\src\Sound.c" />
+    <ClCompile Include="..\src\voice.c" />
+    <ClCompile Include="..\src\wav.c" />
+    <ClCompile Include="..\src\win\directsound.c" />
+    <ClCompile Include="..\src\win\waveout.c" />
+    <ClCompile Include="..\src\win\Win32.c" />
+    <ClCompile Include="..\src\win\Win32fscr.c" />
+    <ClCompile Include="..\src\win\Win32gui.c" />
+    <ClCompile Include="..\src\win\Win32stick.c" />
+    <ClCompile Include="..\src\win\Win32Timer.c" />
+    <ClCompile Include="..\src\win\WinKanji.c" />
+    <ClCompile Include="..\src\win\WinThread.c" />
+    <ClCompile Include="..\src\Z80.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\buffer.h" />
+    <ClInclude Include="..\src\Build.h" />
+    <ClInclude Include="..\src\cgrom.h" />
+    <ClInclude Include="..\src\chkcrc32.h" />
+    <ClInclude Include="..\src\Codes.h" />
+    <ClInclude Include="..\src\CodesCB.h" />
+    <ClInclude Include="..\src\CodesED.h" />
+    <ClInclude Include="..\src\CodesXCB.h" />
+    <ClInclude Include="..\src\CodesXX.h" />
+    <ClInclude Include="..\src\config.h" />
+    <ClInclude Include="..\src\cycles.h" />
+    <ClInclude Include="..\src\d88.h" />
+    <ClInclude Include="..\src\Debug.h" />
+    <ClInclude Include="..\src\device.h" />
+    <ClInclude Include="..\src\disk.h" />
+    <ClInclude Include="..\src\dokodemo.h" />
+    <ClInclude Include="..\src\error.h" />
+    <ClInclude Include="..\src\extkanji.h" />
+    <ClInclude Include="..\src\fdc.h" />
+    <ClInclude Include="..\src\fm.h" />
+    <ClInclude Include="..\src\fmgen\diag.h" />
+    <ClInclude Include="..\src\fmgen\file.h" />
+    <ClInclude Include="..\src\fmgen\fmgen.h" />
+    <ClInclude Include="..\src\fmgen\fmgeninl.h" />
+    <ClInclude Include="..\src\fmgen\fmtimer.h" />
+    <ClInclude Include="..\src\fmgen\headers.h" />
+    <ClInclude Include="..\src\fmgen\misc.h" />
+    <ClInclude Include="..\src\fmgen\opm.h" />
+    <ClInclude Include="..\src\fmgen\opna.h" />
+    <ClInclude Include="..\src\fmgen\psg.h" />
+    <ClInclude Include="..\src\fmgen\types.h" />
+    <ClInclude Include="..\src\font6x10.h" />
+    <ClInclude Include="..\src\Help.h" />
+    <ClInclude Include="..\src\keys.h" />
+    <ClInclude Include="..\src\mem.h" />
+    <ClInclude Include="..\src\message.h" />
+    <ClInclude Include="..\src\Option.h" />
+    <ClInclude Include="..\src\os.h" />
+    <ClInclude Include="..\src\P6.h" />
+    <ClInclude Include="..\src\Pd7752.h" />
+    <ClInclude Include="..\src\pngrw.h" />
+    <ClInclude Include="..\src\Refresh.h" />
+    <ClInclude Include="..\src\resource.h" />
+    <ClInclude Include="..\src\romaji.h" />
+    <ClInclude Include="..\src\schedule.h" />
+    <ClInclude Include="..\src\Sound.h" />
+    <ClInclude Include="..\src\SThread.h" />
+    <ClInclude Include="..\src\Tables.h" />
+    <ClInclude Include="..\src\Timer.h" />
+    <ClInclude Include="..\src\types.h" />
+    <ClInclude Include="..\src\voice.h" />
+    <ClInclude Include="..\src\wav.h" />
+    <ClInclude Include="..\src\win\waveout.h" />
+    <ClInclude Include="..\src\win\Win32.h" />
+    <ClInclude Include="..\src\win\Win32fscr.h" />
+    <ClInclude Include="..\src\win\Win32gui.h" />
+    <ClInclude Include="..\src\win\Win32stick.h" />
+    <ClInclude Include="..\src\win\WinMenu.h" />
+    <ClInclude Include="..\src\Z80.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\src\iP6.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\src\pc66sr.ico" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

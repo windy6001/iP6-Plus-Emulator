@@ -1,0 +1,107 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB9-8B4A-11D0-8D11-00A0C91BC942}") = "iP6.exe", "iP6.exe", "{700449C1-EB81-4A0A-B6D6-3C03377F6FD0}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{700449C1-EB81-4A0A-B6D6-3C03377F6FD0}.Debug.ActiveCfg = Debug
+	EndGlobalSection
+	GlobalSection(SolutionItems) = postSolution
+		src\buffer.c = src\buffer.c
+		src\buffer.h = src\buffer.h
+		src\Build.h = src\Build.h
+		src\cgrom.h = src\cgrom.h
+		src\Codes.h = src\Codes.h
+		src\CodesCB.h = src\CodesCB.h
+		src\CodesED.h = src\CodesED.h
+		src\CodesXCB.h = src\CodesXCB.h
+		src\CodesXX.h = src\CodesXX.h
+		src\config.h = src\config.h
+		src\config.h.in = src\config.h.in
+		src\cycles.h = src\cycles.h
+		src\d88.c = src\d88.c
+		src\d88.h = src\d88.h
+		src\Debug.c = src\Debug.c
+		src\Debug.h = src\Debug.h
+		src\Debug_old.c = src\Debug_old.c
+		src\device.c = src\device.c
+		src\device.h = src\device.h
+		src\fmgen\diag.h = src\fmgen\diag.h
+		src\disk.c = src\disk.c
+		src\disk.h = src\disk.h
+		src\error.c = src\error.c
+		src\error.h = src\error.h
+		src\extkanji.h = src\extkanji.h
+		src\fdc.c = src\fdc.c
+		src\fdc.h = src\fdc.h
+		src\fmgen\file.cpp = src\fmgen\file.cpp
+		src\fmgen\file.h = src\fmgen\file.h
+		src\fm.h = src\fm.h
+		src\fmgen\fmgen.cpp = src\fmgen\fmgen.cpp
+		src\fmgen\fmgen.h = src\fmgen\fmgen.h
+		src\fmgen\fmgeninl.h = src\fmgen\fmgeninl.h
+		src\fmgen\fmtimer.cpp = src\fmgen\fmtimer.cpp
+		src\fmgen\fmtimer.h = src\fmgen\fmtimer.h
+		src\fmgen\headers.h = src\fmgen\headers.h
+		src\Help.h = src\Help.h
+		src\iP6.c = src\iP6.c
+		src\mem.c = src\mem.c
+		src\mem.h = src\mem.h
+		src\message.c = src\message.c
+		src\message.h = src\message.h
+		src\fmgen\misc.h = src\fmgen\misc.h
+		src\new.c = src\new.c
+		src\fmgen\opm.cpp = src\fmgen\opm.cpp
+		src\fmgen\opm.h = src\fmgen\opm.h
+		src\fmgen\opna.cpp = src\fmgen\opna.cpp
+		src\fmgen\opna.h = src\fmgen\opna.h
+		src\Option.c = src\Option.c
+		src\Option.h = src\Option.h
+		src\os.h = src\os.h
+		src\P6.c = src\P6.c
+		src\P6.h = src\P6.h
+		src\Pd7752.c = src\Pd7752.c
+		src\Pd7752.h = src\Pd7752.h
+		src\pngrw.c = src\pngrw.c
+		src\pngrw.h = src\pngrw.h
+		src\fmgen\psg.cpp = src\fmgen\psg.cpp
+		src\fmgen\psg.h = src\fmgen\psg.h
+		src\Refresh.c = src\Refresh.c
+		src\Refresh.h = src\Refresh.h
+		src\resource.h = src\resource.h
+		src\Sound.c = src\Sound.c
+		src\Sound.h = src\Sound.h
+		src\SThread.h = src\SThread.h
+		src\Tables.h = src\Tables.h
+		src\Timer.h = src\Timer.h
+		src\types.h = src\types.h
+		src\fmgen\types.h = src\fmgen\types.h
+		src\voice.c = src\voice.c
+		src\voice.h = src\voice.h
+		src\win\Win32.c = src\win\Win32.c
+		src\win\Win32.h = src\win\Win32.h
+		src\win\Win32fscr.c = src\win\Win32fscr.c
+		src\win\Win32fscr.h = src\win\Win32fscr.h
+		src\win\Win32gui.c = src\win\Win32gui.c
+		src\win\Win32gui.h = src\win\Win32gui.h
+		src\win\Win32stick.c = src\win\Win32stick.c
+		src\win\Win32stick.h = src\win\Win32stick.h
+		src\win\Win32Timer.c = src\win\Win32Timer.c
+		src\win\WinKanji.c = src\win\WinKanji.c
+		src\win\WinKeydef.h = src\win\WinKeydef.h
+		src\win\WinMenu.h = src\win\WinMenu.h
+		src\win\WinSound.c = src\win\WinSound.c
+		src\win\WinSound.h = src\win\WinSound.h
+		src\win\WinThread.c = src\win\WinThread.c
+		src\Z80.c = src\Z80.c
+		src\Z80.h = src\Z80.h
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

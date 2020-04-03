@@ -1,0 +1,20 @@
+License
+
+This software is based on fmsx. (https://fms.komkon.org/fMSX/)
+The code written by Mr.Marat Fayzullin is under the license of fmsx.
+Commercial use is prohibited. For non-commercial use, you may leave it free, but be sure to include a reference
+
+The Roma character conversion function (romaji.c) is MIT license.
+
+The Extended kanji rom making function (Winkanji.c/extkanji.h) is MIT license.
+
+
+fmgen (PSG/FM tone emulator) and pd7752 (speech synthesis emulator) comply with the license of Mr.cisc.
+
+Of the source list, sound.c / schedule.c / schedule.h / Voice.c / Voice.h refered to Mr. Yumitaro's PC6001V and Mr. Nishida's Cocoa iP6.
+
+The Mr.Akikawa's Compatible BASIC ROM (http://000.la.coocan.jp/p6/basic.html) is LGPL license.
+
+The font of Compatible BASIC ROM is shinonome font (http://openlab.ring.gr.jp/efont/shinonome/) and misaki font http://littlelimit.net/misaki.htm
+
+The icon is used Mr.Tenmaru's PC-6601SR icon (http://www3.plala.or.jp/tenpulako/index.html).
