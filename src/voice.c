@@ -92,6 +92,385 @@ void FreeVoice( void );
 	}*/
 	//coreaudio_dsp_write(dsp, voicebuf, samples) ;
 
+int VoiceMainLoop(void* arg);
+static void AbortVoice(void);
+static void UpConvert(void);
+
+
+// **************************************************
+//	　次の波形データを用意して、ストリームに書き込む
+// **************************************************
+int SCALL VoiceCallback(int id, void *arg)
+{
+	int cnt =0;
+	PRINTDEBUG( VOI_LOG,"[VOICE][VoiceCallback]\n");
+
+	//if( id != EVENT_VOICE) { PRINTDEBUG(VOI_LOG,"EVENT_VOICE \n"); return(0);}
+	if( !PReady ) {PRINTDEBUG2(VOI_LOG,"failed Pnum=%d PC=%04X \n" , Pnum ,R.PC.W); return 0;}
+
+	if(VStat & D7752E_EXT)
+		{	// 外部句発声処理
+		if(PReady)
+			{	// パラメータセット完了してる?
+			PRINTDEBUG( VOI_LOG ,"[voice][VoiceCallback] 外部句発声処理,パラメータセット完了。\n");
+			// フレーム数=0ならば終了処理
+			if(!(ParaBuf[0]>>3))
+				{
+				PRINTDEBUG( VOI_LOG, "[voice][VoiceCallback] フレーム数０、終了処理\n");
+
+				AbortVoice();
+				VoiceFlag = 0;
+				}
+			else {
+				PRINTDEBUG(VOI_LOG, "[voice][VoiceCallback] 1フレーム分のサンプル生成  7752 REQ=ON \n");
+				// 1フレーム分のサンプル生成
+				Synth(ParaBuf, Fbuf);
+				// サンプリングレートを変換してバッファに書込む
+				UpConvert();
+				// 次フレームのパラメータを受け付ける
+				PReady = FALSE;
+				ThreadLoopStop = 1;
+				VStat |= D7752E_REQ;
+				}
+			} else
+			{
+			PRINTDEBUG(VOI_LOG , "[voice][VoiceCallback] 発声停止\n");
+			AbortVoice();		// 発声停止
+			VStat = D7752E_ERR;
+			}
+	}else{						// 内部句発声処理
+		// 1フレーム分のサンプルをバッファに書込む
+		int num = min( IVLen - IVPos, GetFrameSize() * sound_rate / 10000 );
+		PRINTDEBUG( VOI_LOG, "[voice][VoiceCallback] 内部句発声処理 " );
+		//PRINTD2( VOI_LOG, "%d/%d\n", num, IVPos );
+		while( num-- )
+			{
+			//SndDev::Buf->Put( ( IVBuf[IVPos++] * SndDev::Volume ) / 100 );
+			ringbuffer_Put( streambuffer[VOICEBUFFER] , ( IVBuf[IVPos++] * 100 ) / 100);
+			}
+
+		if( IVPos >= IVLen ){	// 最後まで発生したら発声終了
+					AbortVoice();
+			}
+		}
+
+
+	return 0;
+}
+#if 0 // VOI_LOG
+	PRINTDEBUG(VOI_LOG, "[voice][VGetStatus]        Status=　 " );
+	if( ret & 0x80) PRINTDEBUG(VOI_LOG ,"BSY ") else PRINTDEBUG(VOI_LOG ,"--- ");
+	if( ret & 0x40) PRINTDEBUG(VOI_LOG ,"REQ ") else PRINTDEBUG(VOI_LOG ,"--- ");
+	if( ret & 0x20) PRINTDEBUG(VOI_LOG ,"EXT ") else PRINTDEBUG(VOI_LOG ,"INT ");
+	if( ret & 0x10) PRINTDEBUG(VOI_LOG ,"ERR \n") else PRINTDEBUG(VOI_LOG ,"--- \n");
+#endif
+
+
+
+// ****************************************************************************
+//		モードセット
+// ****************************************************************************
+static void VSetMode(byte mode)
+{
+	PRINTDEBUG1(VOI_LOG, "[VOICE][VSetMode]      VOICE START , CLEAR STATUS  mode=%X\n", mode);
+	//pthread_mutex_lock(&voiceMutex);
+	OSD_MutexLock(voiceMutex);
+
+	// 音声合成開始
+	PD7752_Start(mode);
+	// ステータスクリア
+	VStat = D7752E_IDL;
+
+	//pthread_mutex_unlock(&voiceMutex);
+	OSD_MutexUnlock(voiceMutex);
+}
+
+
+// ****************************************************************************
+//		コマンドセット
+// ****************************************************************************
+static void VSetCommand(byte comm)
+{
+	char filename[PATH_MAX];
+
+	//pthread_mutex_lock(&voiceMutex);
+	OSD_MutexLock(voiceMutex);
+	// 発声中なら止める
+	AbortVoice();
+	switch (comm) {
+	case 0x00:		// 内部句選択コマンド ----------
+	case 0x01:
+	case 0x02:
+	case 0x03:
+	case 0x04:
+		// 内部句再生モード
+		PRINTDEBUG1(VOI_LOG, "[voice][VSetCommand] %02X ", comm);
+		PRINTDEBUG(VOI_LOG, "INT VOICE CMD \n");
+		// スレッド生成 （高速化のため、いちいちスレッドを生成する）
+		//pthread_create(&voiceThread, NULL, VoiceMainLoop, NULL);
+
+		PRINTDEBUG(VOI_LOG, "[voice][VSetCommand] Create Thread \n");
+
+		voiceThread = (SThread*)OSD_CreateThread(VoiceMainLoop, NULL);
+		if (!voiceThread) { printf("voice thread  create ....FAILED \n"); break; }
+
+		OSD_Delay(3);
+
+
+		VoiceFlag = 1;
+		// フレームバッファ確保
+		Fbuf = malloc(sizeof(D7752_SAMPLE) * GetFrameSize());
+		if (!Fbuf) break;
+
+		//内部句　WAVEデータ読み込み
+
+		sprintf(filename, "f4%d.wav", comm);
+		LoadVoice(filename);
+
+		// ステータスを内部句再生モードにセット
+		VStat = D7752E_BSY;
+		PRINTDEBUG(VOI_LOG, "[voice][VSetCommand] start to recive parameter  \n");
+
+		Event_Add( EVENT_VOICE , (double)10000.0/(double)GetFrameSize() ,EV_LOOP|EV_HZ , VoiceCallback );
+
+		// スレッド再開
+		ThreadLoopStop = 0;
+		break;
+	case 0xfe:		// 外部句選択コマンド ----------
+		if (sr_mode) VoiceIntFlag = INTFLAG_REQ;
+		PRINTDEBUG1(VOI_LOG, "[voice][VSetCommand] %02X ", comm);
+		PRINTDEBUG(VOI_LOG, "EXT VOICE CMD \n");
+		// スレッド生成 （高速化のため、いちいちスレッドを生成する）
+		//pthread_create(&voiceThread, NULL, VoiceMainLoop, NULL);
+
+		PRINTDEBUG(VOI_LOG, "[voice][VSetCommand] Create Thread \n");
+
+		//voiceThread = (SThread*)OSD_CreateThread(VoiceMainLoop, NULL);
+		//if (!voiceThread) { printf("voice thread  create ....FAILED \n"); break; }
+
+		OSD_Delay(3);
+
+
+		VoiceFlag = 1;
+		// フレームバッファ確保
+		Fbuf = malloc(sizeof(D7752_SAMPLE) * GetFrameSize());
+		if (!Fbuf) break;
+		// ステータスを外部句再生モードにセット，パラメータ受付開始
+		VStat = D7752E_BSY | D7752E_EXT | D7752E_REQ;
+		PRINTDEBUG(VOI_LOG, "[voice][VSetCommand] start to recive parameter  \n");
+
+		Event_Add( EVENT_VOICE , (double)10000.0/(double)GetFrameSize() ,EV_LOOP|EV_HZ , VoiceCallback );
+
+		break;
+	case 0xff:		// ストップコマンド ----------
+		break;
+	default:		// 無効コマンド  ----------
+		VStat = D7752E_ERR;	// ホント?
+		break;
+	}
+	//pthread_mutex_unlock(&voiceMutex);	
+	OSD_MutexUnlock(voiceMutex);
+}
+
+
+// ****************************************************************************
+//		音声パラメータの転送
+// ****************************************************************************
+static void VSetData(byte data)
+{
+	//pthread_mutex_lock(&voiceMutex);
+	OSD_MutexLock(voiceMutex);
+
+
+	PRINTDEBUG1(VOI_LOG, "[voice][VSetData Data]     [%02X] \n", data);
+
+	// 再生時のみデータを受け付ける
+	if ((VStat & D7752E_BSY) && (VStat & D7752E_REQ)) {
+		if (Fnum == 0 || Pnum) {	// 最初のフレーム?
+			// 最初のパラメータだったら繰り返し数を設定
+			if (Pnum == 0) {
+				Fnum = data >> 3;
+				if (Fnum == 0) { PReady = TRUE; ThreadLoopStop = 0; }
+				PRINTDEBUG(VOI_LOG, "[voice][VSetData] FIRST PARAMETER, SET REPEAT TIME\n");
+			}
+			// パラメータバッファに保存
+			ParaBuf[Pnum++] = data;
+			// もし1フレーム分のパラメータが溜まったら発声準備完了
+			if (Pnum == 7) {
+				VStat &= ~D7752E_REQ;
+				Pnum = 0;
+				if (Fnum > 0) Fnum--;
+				ThreadLoopStop = 0;
+				PReady = TRUE;
+				PRINTDEBUG(VOI_LOG, "[voice][VSetData] If the parameter for one frame collects, a vocal preparation is completed. *** \n");
+			}
+		}
+		else {						// 繰り返しフレーム?
+		 // パラメータバッファに保存
+		 // PD7752の仕様に合わせる
+			int i;
+			PRINTDEBUG(VOI_LOG, "[voice][VSetData Data]     繰り返しフレーム? \n");
+
+			for (i = 1; i < 6; i++) ParaBuf[i] = 0;
+			ParaBuf[6] = data;
+			VStat &= ~D7752E_REQ;
+			Pnum = 0;
+			Fnum--;
+			ThreadLoopStop = 0;
+			PReady = TRUE;
+		}
+	}
+	//pthread_mutex_unlock(&voiceMutex);
+	OSD_MutexUnlock(voiceMutex);
+
+
+	if (sr_mode) VoiceIntFlag = INTFLAG_REQ;
+}
+
+
+// ****************************************************************************
+//		ステータスレジスタを取得
+// ****************************************************************************
+static int VGetStatus(void)
+{
+	int ret;
+	//PRINTDEBUG( VOI_LOG,"[voice][VGetStatus]\n");
+	//pthread_mutex_lock(&voiceMutex);	
+	OSD_MutexLock(voiceMutex);
+
+	ret = VStat;
+
+
+	//pthread_mutex_unlock(&voiceMutex);	
+	OSD_MutexUnlock(voiceMutex);
+
+
+
+	return ret;
+}
+
+// ****************************************************************************
+//	　発声を停止する
+// ****************************************************************************
+static void AbortVoice(void)
+{
+	Event_Del(EVENT_VOICE);
+
+	// スレッドのループ停止
+	ThreadLoopStop = 1;
+	// 残りのパラメータはキャンセル
+	Pnum = Fnum = 0;
+	PReady = FALSE;
+	// フレームバッファ開放
+	if (Fbuf) {
+		free(Fbuf);
+		Fbuf = NULL;
+	}
+	VStat &= ~D7752E_BSY;
+}
+
+
+// ****************************************************************************
+//		内部句 wave ファイル読み込み
+// ****************************************************************************
+int  LoadVoice(char* filename)
+{
+	int i;
+	struct _spec ws;
+	int len;		// 元データサイズ
+	char* buf;	// 元データバッファ
+	char filepath[PATH_MAX];
+	char path[PATH_MAX];
+
+	buf = NULL;
+
+	path[0] = 0;
+#ifdef WIN32
+	if (!IsDebuggerPresent())
+		strcpy(path, "..\\..\\wav\\");	// on normal
+	else
+		strcpy(path, "..\\wav\\");		// on debugger
+#endif
+
+	PRINTDEBUG1(VOI_LOG, "[VOICE][LoadVoice]  [%s] -> ", filename);
+
+	// WAVファイルを読込む
+	sprintf(filepath, "%s%s", "wav\\", filename);
+	PRINTDEBUG1(VOI_LOG, "%s ->", filepath);
+
+	//if( !SDL_LoadWAV( filepath, &ws, &buf, &len ) ){
+	if (!loadWav(filepath, &ws, &buf, &len)) {			// まず、wavディレクトリから読む 
+		sprintf(filepath, "%s%s", path, filename);
+		PRINTDEBUG1(VOI_LOG, "%s ->", filepath);
+
+		if (!loadWav(filepath, &ws, &buf, &len)) {		// 指定ディレクトリから読む
+			PRINTDEBUG(VOI_LOG, "Error!\n");
+			return FALSE;
+		}
+	}
+
+	// 22050Hz以上,16bit,1ch でなかったらダメ
+	if (ws.freq < 22050 || ws.samplebit != 16 || ws.channels != 1) {
+		PRINTDEBUG3(VOI_LOG, "F:%d S:%d C:%d -> Error!\n", ws.freq, ws.samplebit, ws.channels);
+		//SDL_FreeWAV( buf );
+		freeWav(buf);
+		return FALSE;
+	}
+	PRINTDEBUG(VOI_LOG, "OK\n");
+
+	FreeVoice();
+
+	// 変換後のサイズを計算してバッファを確保
+	// 発声速度4の時,1フレームのサンプル数は160
+	IVLen = (int)((double)sound_rate * (double)(len / 2) / (double)ws.freq
+		* (double)GetFrameSize() / (double)160);
+
+	//PRINTD2( VOI_LOG, "Len:%d/%d ->", IVLen, len );
+
+
+	//IVBuf = new int[IVLen];
+	IVBuf = malloc(IVLen * sizeof(int));
+	if (!IVBuf) {
+		//SDL_FreeWAV( buf );
+		freeWav(buf);
+		IVLen = 0;
+		return FALSE;
+	}
+
+	// 変換
+	{
+		short* sbuf = (short*)buf;
+		for (i = 0; i < IVLen; i++) {
+			IVBuf[i] = sbuf[(int)(((double)i * (double)(len / 2)) / (double)IVLen)];
+		}
+
+		// WAV開放
+		//SDL_FreeWAV( buf );
+		freeWav(buf);
+
+		// 読込みポインタ初期化
+		IVPos = 0;
+	}
+
+	return TRUE;
+}
+
+
+
+
+// ****************************************************************************
+//		内部句 wave ファイル解放
+// ****************************************************************************
+void FreeVoice(void)
+{
+	if (IVBuf) {
+		//delete [] IVBuf;
+		free(IVBuf);
+		IVBuf = NULL;
+		IVLen = 0;
+	}
+}
+
 
 // ****************************************************************************
 //	サンプリングレートとビット幅を変換して ストリームに書き込む
@@ -129,25 +508,6 @@ static void UpConvert(void)
 	//free( voicebuf);
 }
 
-// ****************************************************************************
-//	　発声を停止する
-// ****************************************************************************
-static void AbortVoice(void)
-{
-	Event_Del( EVENT_VOICE);
-
-	// スレッドのループ停止
-	ThreadLoopStop = 1;
-	// 残りのパラメータはキャンセル
-	Pnum = Fnum = 0;
-	PReady = FALSE;
-	// フレームバッファ開放
-	if (Fbuf) {
-		free(Fbuf);
-		Fbuf = NULL;
-	}
-	VStat &= ~D7752E_BSY;
-}
 
 
 
@@ -275,104 +635,7 @@ void CancelVoiceThread(void)
 }
 
 
-// ****************************************************************************
-//		内部句 wave ファイル読み込み
-// ****************************************************************************
-int  LoadVoice( char *filename )
-{
-	int i;
-	struct _spec ws;
-	int len;		// 元データサイズ
-	char *buf;	// 元データバッファ
-	char filepath[PATH_MAX];
-	char path[PATH_MAX];
 
-	buf=NULL;
-
-	path[0]=0;
-#ifdef WIN32
-	if( !IsDebuggerPresent())
-		 strcpy( path, "..\\..\\wav\\");	// on normal
-	else
-		 strcpy( path ,"..\\wav\\");		// on debugger
-#endif
-
-	PRINTDEBUG1( VOI_LOG, "[VOICE][LoadVoice]  [%s] -> ", filename );
-
-	// WAVファイルを読込む
-	sprintf( filepath, "%s%s", "wav\\", filename );
-	PRINTDEBUG1( VOI_LOG, "%s ->", filepath );
-	
-	//if( !SDL_LoadWAV( filepath, &ws, &buf, &len ) ){
-	if( !loadWav( filepath , &ws, &buf , &len) ) {			// まず、wavディレクトリから読む 
-		sprintf( filepath, "%s%s", path, filename );
-		PRINTDEBUG1( VOI_LOG, "%s ->", filepath );
-	
-		if( !loadWav( filepath , &ws, &buf , &len) ) {		// 指定ディレクトリから読む
-			PRINTDEBUG( VOI_LOG, "Error!\n" );
-			return FALSE;
-		}
-	}
-	
-	// 22050Hz以上,16bit,1ch でなかったらダメ
-	if( ws.freq < 22050 || ws.samplebit != 16 || ws.channels != 1 ){
-		PRINTDEBUG3( VOI_LOG, "F:%d S:%d C:%d -> Error!\n", ws.freq, ws.samplebit, ws.channels );
-		//SDL_FreeWAV( buf );
-		freeWav( buf );
-		return FALSE;
-	}
-	PRINTDEBUG( VOI_LOG, "OK\n" );
-	
-	FreeVoice();
-
-	// 変換後のサイズを計算してバッファを確保
-	// 発声速度4の時,1フレームのサンプル数は160
-	IVLen = (int)( (double)sound_rate * (double)(len/2) / (double)ws.freq
-					* (double)GetFrameSize() / (double)160 );
-	
-	//PRINTD2( VOI_LOG, "Len:%d/%d ->", IVLen, len );
-	
-
-	//IVBuf = new int[IVLen];
-	IVBuf = malloc( IVLen *sizeof(int));
-	if( !IVBuf ){
-		//SDL_FreeWAV( buf );
-		freeWav( buf );
-		IVLen = 0;
-		return FALSE;
-	}
-	
-	// 変換
-	{
-	short *sbuf = (short *)buf;
-	for( i=0; i<IVLen; i++ ){
-		IVBuf[i] = sbuf[(int)(( (double)i * (double)(len/2) ) / (double)IVLen)];
-		}
-	
-	// WAV開放
-	//SDL_FreeWAV( buf );
-	freeWav( buf );
-
-	// 読込みポインタ初期化
-	IVPos = 0;
-	}
-
-	return TRUE;
-}
-
-
-// ****************************************************************************
-//		内部句 wave ファイル解放
-// ****************************************************************************
-void FreeVoice( void )
-{
-	if( IVBuf ){
-		//delete [] IVBuf;
-		free( IVBuf);
-		IVBuf = NULL;
-		IVLen = 0;
-	}
-}
 
 
 // ****************************************************************************
@@ -416,185 +679,8 @@ void TrashVoice(void)
 
 }
 
-// ****************************************************************************
-//		モードセット
-// ****************************************************************************
-static void VSetMode(byte mode)
-{
-	PRINTDEBUG1(VOI_LOG, "[VOICE][VSetMode]      VOICE START , CLEAR STATUS  mode=%X\n",mode);
-	//pthread_mutex_lock(&voiceMutex);
-	OSD_MutexLock( voiceMutex);
-
-	// 音声合成開始
-	PD7752_Start(mode);
-	// ステータスクリア
-	VStat = D7752E_IDL;
-
-    //pthread_mutex_unlock(&voiceMutex);
-	OSD_MutexUnlock( voiceMutex);
-}
 
 
-// ****************************************************************************
-//		コマンドセット
-// ****************************************************************************
-static void VSetCommand(byte comm)
-{
-	char filename[ PATH_MAX];
-
-	//pthread_mutex_lock(&voiceMutex);
-	OSD_MutexLock( voiceMutex);
-	// 発声中なら止める
-	AbortVoice();
-	switch (comm) {
-	case 0x00:		// 内部句選択コマンド ----------
-	case 0x01:
-	case 0x02:
-	case 0x03:
-	case 0x04:
-		// 内部句再生モード
-		PRINTDEBUG1(VOI_LOG,"[voice][VSetCommand] %02X ",comm);
-		PRINTDEBUG( VOI_LOG,"INT VOICE CMD \n");
-		// スレッド生成 （高速化のため、いちいちスレッドを生成する）
-		//pthread_create(&voiceThread, NULL, VoiceMainLoop, NULL);
-
-		PRINTDEBUG( VOI_LOG,"[voice][VSetCommand] Create Thread \n");
-
-		voiceThread = (SThread*) OSD_CreateThread( VoiceMainLoop ,NULL); 
-		if( !voiceThread ) {printf("voice thread  create ....FAILED \n"); break;}
-		
-		OSD_Delay(3);
-
-		
-		VoiceFlag = 1;
-		// フレームバッファ確保
-		Fbuf = malloc(sizeof(D7752_SAMPLE)*GetFrameSize());
-		if(!Fbuf) break;
-
-		//内部句　WAVEデータ読み込み
-
-		sprintf( filename ,"f4%d.wav", comm);
-		LoadVoice( filename );
-
-		// ステータスを内部句再生モードにセット
-		VStat = D7752E_BSY;
-		PRINTDEBUG(VOI_LOG, "[voice][VSetCommand] start to recive parameter  \n");
-		
-		//Event_Add( EVENT_VOICE , (double)10000.0/(double)GetFrameSize() ,EV_LOOP|EV_HZ , VoiceCallback );
-
-		// スレッド再開
-		ThreadLoopStop=0;
-		break;
-	case 0xfe:		// 外部句選択コマンド ----------
-		if( sr_mode) VoiceIntFlag = INTFLAG_REQ;
-		PRINTDEBUG1(VOI_LOG,"[voice][VSetCommand] %02X ",comm);
-		PRINTDEBUG( VOI_LOG,"EXT VOICE CMD \n");
-		// スレッド生成 （高速化のため、いちいちスレッドを生成する）
-		//pthread_create(&voiceThread, NULL, VoiceMainLoop, NULL);
-
-		PRINTDEBUG( VOI_LOG,"[voice][VSetCommand] Create Thread \n");
-
-		voiceThread = (SThread*) OSD_CreateThread( VoiceMainLoop ,NULL); 
-		if( !voiceThread ) {printf("voice thread  create ....FAILED \n"); break;}
-		
-		OSD_Delay(3);
-
-		
-		VoiceFlag = 1;
-		// フレームバッファ確保
-		Fbuf = malloc(sizeof(D7752_SAMPLE)*GetFrameSize());
-		if(!Fbuf) break;
-		// ステータスを外部句再生モードにセット，パラメータ受付開始
-		VStat = D7752E_BSY | D7752E_EXT | D7752E_REQ;
-		PRINTDEBUG(VOI_LOG, "[voice][VSetCommand] start to recive parameter  \n");
-
-		//Event_Add( EVENT_VOICE , (double)10000.0/(double)GetFrameSize() ,EV_LOOP|EV_HZ , VoiceCallback );
-
-		break;
-	case 0xff:		// ストップコマンド ----------
-		break;
-	default:		// 無効コマンド  ----------
-		VStat = D7752E_ERR;	// ホント?
-		break;
-	}
-	//pthread_mutex_unlock(&voiceMutex);	
-	OSD_MutexUnlock(voiceMutex);
-}
-
-
-// ****************************************************************************
-//		音声パラメータの転送
-// ****************************************************************************
-static void VSetData(byte data)
-{
-	//pthread_mutex_lock(&voiceMutex);
-	OSD_MutexLock(voiceMutex);
-
-
-	PRINTDEBUG1(VOI_LOG,"[voice][VSetData Data]     [%02X] \n",data);
-	
-	// 再生時のみデータを受け付ける
-	if ((VStat & D7752E_BSY)&&(VStat & D7752E_REQ)) {
-		if (Fnum == 0 || Pnum) {	// 最初のフレーム?
-			// 最初のパラメータだったら繰り返し数を設定
-			if(Pnum == 0) {
-				Fnum = data>>3;
-				if (Fnum == 0) { PReady = TRUE; ThreadLoopStop = 0; }
-				PRINTDEBUG(VOI_LOG, "[voice][VSetData] FIRST PARAMETER, SET REPEAT TIME\n");
-			}
-			// パラメータバッファに保存
-			ParaBuf[Pnum++] = data;
-			// もし1フレーム分のパラメータが溜まったら発声準備完了
-			if(Pnum == 7) {
-				VStat &= ~D7752E_REQ;
-				Pnum = 0;
-				if(Fnum > 0) Fnum--;
-				ThreadLoopStop = 0;
-				PReady = TRUE;
-				PRINTDEBUG(VOI_LOG , "[voice][VSetData] If the parameter for one frame collects, a vocal preparation is completed. *** \n");
-			}
-		} else {						// 繰り返しフレーム?
-			// パラメータバッファに保存
-			// PD7752の仕様に合わせる
-			int i;
-			PRINTDEBUG(VOI_LOG,"[voice][VSetData Data]     繰り返しフレーム? \n");
-
-			for(i=1; i<6; i++) ParaBuf[i] = 0;
-			ParaBuf[6] = data;
-			VStat &= ~D7752E_REQ;
-			Pnum = 0;
-			Fnum--;
-			ThreadLoopStop = 0;			
-			PReady = TRUE;
-		}
-	}
-	//pthread_mutex_unlock(&voiceMutex);
-	OSD_MutexUnlock( voiceMutex);
-
-
-	if( sr_mode) VoiceIntFlag = INTFLAG_REQ;
-}
-
-// ****************************************************************************
-//		ステータスレジスタを取得
-// ****************************************************************************
-static int VGetStatus(void)
-{
-	int ret;
-	//PRINTDEBUG( VOI_LOG,"[voice][VGetStatus]\n");
-	//pthread_mutex_lock(&voiceMutex);	
-	OSD_MutexLock( voiceMutex);
-	
-	ret = VStat;
-
-
-	//pthread_mutex_unlock(&voiceMutex);	
-	OSD_MutexUnlock( voiceMutex);
-
-
-
-	return ret;
-}
 
 
 // ****************************************************************************
@@ -732,71 +818,4 @@ int VoiceMainLoop(void* arg)
 	UPeriod_bak = UPeriod =2;
 	return 0;
 }
-*/
-// **************************************************
-//	　次の波形データを用意して、ストリームに書き込む
-// **************************************************
-/*
-int SCALL VoiceCallback(void *arg)
-{
-	int cnt =0;
-	PRINTDEBUG( VOI_LOG,"[VOICE][VoiceCallback]\n");
-
-	if( !PReady ) {PRINTDEBUG2(VOI_LOG,"failed Pnum=%d PC=%04X \n" , Pnum ,R.PC.W); return 0;}
-
-	if(VStat & D7752E_EXT) 
-		{	// 外部句発声処理
-		if(PReady) 
-			{	// パラメータセット完了してる?
-			PRINTDEBUG( VOI_LOG ,"[voice][VoiceCallback] 外部句発声処理,パラメータセット完了。\n");
-			// フレーム数=0ならば終了処理
-			if(!(ParaBuf[0]>>3)) 
-				{
-				PRINTDEBUG( VOI_LOG, "[voice][VoiceCallback] フレーム数０、終了処理\n");
-						
-				AbortVoice();
-				VoiceFlag = 0;
-				}
-			else {
-				// 1フレーム分のサンプル生成
-				Synth(ParaBuf, Fbuf);
-				// サンプリングレートを変換してバッファに書込む
-				UpConvert();
-				// 次フレームのパラメータを受け付ける
-				PReady = FALSE;
-				ThreadLoopStop = 1;
-				VStat |= D7752E_REQ;
-				}
-			} else 
-			{
-			PRINTDEBUG(VOI_LOG , "[voice][VoiceCallback] 発声停止\n");
-			AbortVoice();		// 発声停止
-			VStat = D7752E_ERR;
-			}
-	}else{						// 内部句発声処理
-		// 1フレーム分のサンプルをバッファに書込む
-		int num = min( IVLen - IVPos, GetFrameSize() * sound_rate / 10000 );
-		PRINTDEBUG( VOI_LOG, "[voice][VoiceCallback] 内部句発声処理 " );
-		//PRINTD2( VOI_LOG, "%d/%d\n", num, IVPos );
-		while( num-- )
-			{
-			//SndDev::Buf->Put( ( IVBuf[IVPos++] * SndDev::Volume ) / 100 );
-			ringbuffer_Put( streambuffer[VOICEBUFFER] , ( IVBuf[IVPos++] * 100 ) / 100);
-			}
-
-		if( IVPos >= IVLen ){	// 最後まで発生したら発声終了
-					AbortVoice();
-			}
-		}
-
-
-	return 0;
-}
-#if 0 // VOI_LOG
-	PRINTDEBUG(VOI_LOG, "[voice][VGetStatus]        Status=　 " );
-	if( ret & 0x80) PRINTDEBUG(VOI_LOG ,"BSY ") else PRINTDEBUG(VOI_LOG ,"--- ");
-	if( ret & 0x40) PRINTDEBUG(VOI_LOG ,"REQ ") else PRINTDEBUG(VOI_LOG ,"--- ");
-	if( ret & 0x20) PRINTDEBUG(VOI_LOG ,"EXT ") else PRINTDEBUG(VOI_LOG ,"INT ");
-	if( ret & 0x10) PRINTDEBUG(VOI_LOG ,"ERR \n") else PRINTDEBUG(VOI_LOG ,"--- \n");
-#endif
 */

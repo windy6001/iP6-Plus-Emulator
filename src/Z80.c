@@ -873,6 +873,7 @@ word Z80(void)
   static int	NowClock;
   static int hline;
 */
+  PRINTDEBUG(CPU_LOG, "[Z80] ------------------------ 1 screen start ---------------------------------------------- \n");
 
 #ifdef DEBUG
   if( inTrace ) goto AFTER_TRACE;	// return from debbuging mode
@@ -1047,6 +1048,7 @@ AFTER_TRACE:
     	} /* for (hline = 0; hline < Valid_Line; hline++) */
 
   	} /* for(;;) */
+	PRINTDEBUG(CPU_LOG, "[Z80] ------------------------ 1 screen end ---------------------------------------------- \n");
 
   return(R.PC.W);
 }

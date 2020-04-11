@@ -221,7 +221,7 @@ byte Keys3[256+64][2] =
     /* =      Å™        Å´        Å©         Å®        ins     home     end */ 
     /* pup  pdown      f1        f2       f3     f4        f5        f6 */
   {0,0x3d},{0,0x1e},{0,0x1f},{0,0x1c},{0,0x1d},{0,0x12},{0,0x00},{1,0xfa},
-  {1,0xfc},{1,0xfd},{1,0xf0},{1,0xf1},{1,0xf2},{1,0xf3},{1,0xf4},{1,0xfe},
+  {0,0xfe},{1,0xfd},{1,0xf0},{1,0xf1},{1,0xf2},{1,0xf3},{1,0xf4},{1,0xfe},
 /* 120 */
     /* f7     f8       f9       f10      f11      f12     f13       f14 */
     /* f15                            num lock caps lock scrolllock   r-shift */
@@ -363,7 +363,7 @@ byte Keys5[256+64][2] =
     /* =      Å™        Å´        Å©         Å®        ins     home     end */ 
     /* pup  pdown      f1        f2       f3     f4        f5        f6 */
   {0,0x3d},{0,0x1e},{0,0x1f},{0,0x1c},{0,0x1d},{0,0x12},{0,0x00},{1,0xfa},
-  {1,0xfc},{1,0xfd},{1,0xf0},{1,0xf1},{1,0xf2},{1,0xf3},{1,0xf4},{1,0xfe},
+  {0,0xfe},{1,0xfd},{1,0xf0},{1,0xf1},{1,0xf2},{1,0xf3},{1,0xf4},{1,0xfe},
 /* 120 */
     /* f7     f8       f9       f10      f11      f12     f13       f14 */
     /* f15                            num lock caps lock scrolllock   r-shift */

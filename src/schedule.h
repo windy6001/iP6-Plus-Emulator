@@ -40,6 +40,7 @@ typedef struct {
 		int ncount;			// イベント発生回数
 		int ratio;			// イベント発生率
 		int (SCALL *CallbackProc)( void*);	// コールバック関数
+		int id;
 	} evinfo;
 
 

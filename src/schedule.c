@@ -43,7 +43,7 @@ void Event_init(void)
 //				bit2,3,4: 周期指定単位 000:Hz 001:us 010:ms 100:CPUステート数
 // 返値:	BOOL	TRUE:成功 FALSE:失敗
 // ****************************************************************************
-int Event_Add( int id, double hz ,int flag, int (SCALL *CallbackProc)( void*) )
+int Event_Add( int id, double hz ,int flag, int (SCALL *CallbackProc)( int id, void*) )
 {
 	double master_clock= (( (double)(2000000.0*0.58) *86)/100);
 //	if(sr_mode)
@@ -151,7 +151,7 @@ int Event_Update(int clk)
 				if( ev[i].Clock <= 0 ){
 					// イベントコールバックを実行
 					if( ev[i].CallbackProc !=NULL)
-						ev[i].CallbackProc(0);
+						ev[i].CallbackProc(ev[i].id,0);
 					
 					if( ev[i].Period > 0 ){	// ループイベント
 						ev[i].Clock += ev[i].Period;

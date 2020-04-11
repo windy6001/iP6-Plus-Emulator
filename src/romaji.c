@@ -84,12 +84,6 @@ static struct _romaji_tbl romaji_tbl[] = {
 {2,{ OSDK_H ,OSDK_E  , 0    ,0}, {OSDK_UPPER , 0,0,0}},
 {2,{ OSDK_H ,OSDK_O  , 0    ,0}, {OSDK_MINUS , 0,0,0}},
 
-{2,{ OSDK_F ,OSDK_A  , 0    ,0}, {OSDK_2 , SHIFT_DOWN ,OSDK_3,SHIFT_UP}},		//ふぁふぃふふぇふぉ
-{2,{ OSDK_F ,OSDK_I  , 0    ,0}, {OSDK_2 , SHIFT_DOWN ,OSDK_E,SHIFT_UP}},
-{2,{ OSDK_F ,OSDK_U  , 0    ,0}, {OSDK_2 , 0,0,0}},
-{2,{ OSDK_F ,OSDK_E  , 0    ,0}, {OSDK_2 , SHIFT_DOWN ,OSDK_5,SHIFT_UP}},
-{2,{ OSDK_F ,OSDK_O  , 0    ,0}, {OSDK_2 , SHIFT_DOWN ,OSDK_6,SHIFT_UP}},
-
 {2,{ OSDK_M ,OSDK_A  , 0    ,0}, {OSDK_J , 0,0,0}},				// まみむめも
 {2,{ OSDK_M ,OSDK_I  , 0    ,0}, {OSDK_N , 0,0,0}},
 {2,{ OSDK_M ,OSDK_U  , 0    ,0}, {OSDK_RIGHTBRACKET , 0,0,0}},
@@ -107,13 +101,18 @@ static struct _romaji_tbl romaji_tbl[] = {
 {2,{ OSDK_R ,OSDK_O  , 0    ,0}, {OSDK_UNDERSCORE , 0,0,0}},
 
 
-{2,{ OSDK_W ,OSDK_A  , 0    ,0}, {OSDK_0 , 0,0,0}},				// わうぃうぇをん
+{2,{ OSDK_W ,OSDK_A  , 0    ,0}, {OSDK_0 , 0,0,0}},				// わうぃううぇ
 {2,{ OSDK_W ,OSDK_I  , 0    ,0}, {OSDK_4 , SHIFT_DOWN, OSDK_E, SHIFT_UP}},
+{2,{ OSDK_W ,OSDK_U  , 0    ,0}, {OSDK_4 , 0,0,0}},
 {2,{ OSDK_W ,OSDK_E  , 0    ,0}, {OSDK_4 , SHIFT_DOWN, OSDK_5, SHIFT_UP}},
 
-{2,{ OSDK_W ,OSDK_O  , 0    ,0}, {SHIFT_DOWN , OSDK_0 , SHIFT_UP , 0}},
-{2,{ OSDK_N ,OSDK_N  , 0    ,0}, {OSDK_Y , 0,0,0}},
-{3,{ OSDK_N ,OSDK_N  ,OSDK_N,0}, {OSDK_Y , 0,0,0}},
+
+
+{2,{ OSDK_F ,OSDK_A  , 0    ,0}, {OSDK_2 , SHIFT_DOWN ,OSDK_3,SHIFT_UP}},		//ふぁふぃふふぇふぉ
+{2,{ OSDK_F ,OSDK_I  , 0    ,0}, {OSDK_2 , SHIFT_DOWN ,OSDK_E,SHIFT_UP}},
+{2,{ OSDK_F ,OSDK_U  , 0    ,0}, {OSDK_2 , 0,0,0}},
+{2,{ OSDK_F ,OSDK_E  , 0    ,0}, {OSDK_2 , SHIFT_DOWN ,OSDK_5,SHIFT_UP}},
+{2,{ OSDK_F ,OSDK_O  , 0    ,0}, {OSDK_2 , SHIFT_DOWN ,OSDK_6,SHIFT_UP}},
 
 
 {3,{ OSDK_K ,OSDK_Y  ,OSDK_A ,0}, {OSDK_G , SHIFT_DOWN , OSDK_7 , SHIFT_UP}},	// きゃきぃきゅきぇきょ
@@ -294,9 +293,34 @@ static struct _romaji_tbl romaji_tbl[] = {
 {1,{ OSDK_SLASH       ,0  ,0 ,0}  	, {0      , 0      , 0         ,0}},	//  /
 {1,{ OSDK_UNDERSCORE  ,0  ,0 ,0}  	, {0      , 0      , 0         ,0}},	//  _
 
+{ 3,{ OSDK_G ,OSDK_G  ,OSDK_A ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_T,OSDK_AT} },// っが
+{ 3,{ OSDK_G ,OSDK_G  ,OSDK_I ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_G,OSDK_AT} },// っぎ
+{ 3,{ OSDK_G ,OSDK_G  ,OSDK_U ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_H,OSDK_AT} },// っぐ
+{ 3,{ OSDK_G ,OSDK_G  ,OSDK_E ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_COLON,OSDK_AT} },// っげ
+{ 3,{ OSDK_G ,OSDK_G  ,OSDK_O ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_B,OSDK_AT} },// っご
+
+{ 3,{ OSDK_Z ,OSDK_Z  ,OSDK_A ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_X,OSDK_AT} },// っざ
+{ 3,{ OSDK_Z ,OSDK_Z  ,OSDK_I ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_D,OSDK_AT} },// っじ
+{ 3,{ OSDK_Z ,OSDK_Z  ,OSDK_U ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_R,OSDK_AT} },// っず
+{ 3,{ OSDK_Z ,OSDK_Z  ,OSDK_E ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_P,OSDK_AT} },// っぜ
+{ 3,{ OSDK_Z ,OSDK_Z  ,OSDK_O ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_C,OSDK_AT} },// っぞ
+
 { 3,{ OSDK_D ,OSDK_D  ,OSDK_A ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_Q,OSDK_AT} },// っだ
+{ 3,{ OSDK_D ,OSDK_D  ,OSDK_I ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_A,OSDK_AT} },// っぢ
+{ 3,{ OSDK_D ,OSDK_D  ,OSDK_U ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_Z,OSDK_AT} },// っづ
+{ 3,{ OSDK_D ,OSDK_D  ,OSDK_E ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_W,OSDK_AT} },// っで
 { 3,{ OSDK_D ,OSDK_D  ,OSDK_O ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_S,OSDK_AT} },// っど
 
+{ 3,{ OSDK_B ,OSDK_B  ,OSDK_A ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_F,OSDK_AT} },// っば
+{ 3,{ OSDK_B ,OSDK_B  ,OSDK_I ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_V,OSDK_AT} },// っび
+{ 3,{ OSDK_B ,OSDK_B  ,OSDK_U ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_2,OSDK_AT} },// っぶ
+{ 3,{ OSDK_B ,OSDK_B  ,OSDK_E ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_UPPER,OSDK_AT} },// っべ
+{ 3,{ OSDK_B ,OSDK_B  ,OSDK_O ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_MINUS,OSDK_AT} },// っぼ
+
+                                                                // をん
+{ 2,{ OSDK_W ,OSDK_O  , 0    ,0}, {SHIFT_DOWN , OSDK_0 , SHIFT_UP , 0} },
+{ 2,{ OSDK_N ,OSDK_N  , 0    ,0}, {OSDK_Y , 0,0,0} },
+{ 3,{ OSDK_N ,OSDK_N  ,OSDK_N,0}, {OSDK_Y , 0,0,0} },
 
 {-1,{ -1     ,-1      , -1   },{-1  , 0,0,0}},
 
@@ -414,7 +438,10 @@ int register_autokey(char *buff)
 }
 
 
-// autokey 定期的に呼び出される
+// ****************************************************************************
+// autokeyin_func 
+//    ローマ字変換に成功したときに、キーバッファに書き込んで、押したことにする　コールバック関数
+// ****************************************************************************
 void autokeyin_func(void)
 {
     int keydown;
@@ -435,13 +462,19 @@ void autokeyin_func(void)
 
 
 
-// not 0 :boin    0:not boin
+// ****************************************************************************
+// 　母音かどうか？
+// 非0  :はい    0:いいえ
+// ****************************************************************************
 int isBoin( int osdkeycode)
 {
     return (osdkeycode==OSDK_A || osdkeycode==OSDK_I || osdkeycode==OSDK_U || osdkeycode==OSDK_E || osdkeycode==OSDK_O );
 }
 
-// not 0 :shion    0:not shion
+// ****************************************************************************
+// 　子音かどうか？
+// 非0  :はい    0:いいえ
+// ****************************************************************************
 int isShin( int osdkeycode)
 {
     return (osdkeycode==OSDK_K || osdkeycode==OSDK_S || osdkeycode==OSDK_T || osdkeycode==OSDK_H || osdkeycode==OSDK_M || osdkeycode==OSDK_Y|| osdkeycode==OSDK_R || osdkeycode==OSDK_W ||
@@ -450,11 +483,17 @@ int isShin( int osdkeycode)
 
 // ****************************************************************************
 // 		convert_search:
+//   In:  buff    変換したい文字列
+//        line    変換結果(romaji_tbl テーブルのインデックス)
+//
+//   Out: HENKAN_SUCCESS   変換成功
+//        HENKAN_DOING     変換中
+//        HENKAN_FAILED    変換失敗
 // ****************************************************************************
 int convert_search( char *buff , int *line)
 {
     int i;
-    int found =0;
+    int found =HENKAN_FAILED;
 
     *line = 0;
 
@@ -482,30 +521,28 @@ int convert_search( char *buff , int *line)
 // 		convert_romaji2kana:
 //		ローマ字から、かなに変換する
 //
-//  OSキーイベントのkeydown のところで、かなモードかつ、ローマ字モードなら、これを呼ぶ。
+//  OSキーイベントのkeydown のところで、かなモードかつ、ローマ字変換モードなら、これを呼ぶ。
 //
 //
 //	処理：ローマ字変換できるかチェックして、変換に成功したら、キー入力するように、スケジュールに登録する。
 //
 //
-// Out: 1: ローマ字変換した、キー入力するように、スケジュールに登録した
-//     -1: 変換中
-//      0: 変換失敗
-//      2: 無貧寒
-// ****************************************************************************
+// Out: HENKAN_SUCCESS: ローマ字変換した、キー入力するように、スケジュールに登録した
+//      HENKAN_FAILED:  変換失敗
+//      HENKAN_DOING  : 変換中
+//      HENKAN_CANCEL : 無変換
+//***************************************************************
 int convert_romaji2kana( int osdkeycode )
 {
     static char buff[4];
     static int  idx=0;
     int   line=0;
     int   found=0;
-//	int   tmp1 ,tmp2 ,tmp3;
-//	int   i;
 
     int   saihenkan_flag=0;
 
 
-    if( osdkeycode < 0x20 || osdkeycode == OSDK_LEFT || osdkeycode == OSDK_RIGHT || osdkeycode== OSDK_UP
+    if(  osdkeycode < 0x20 || osdkeycode == OSDK_LEFT || osdkeycode == OSDK_RIGHT || osdkeycode== OSDK_UP
        || osdkeycode== OSDK_DOWN || osdkeycode==OSDK_SCROLLOCK || osdkeycode == OSDK_PAGEUP || osdkeycode == OSDK_PAGEDOWN
 		|| (osdkeycode >= OSDK_F1 && osdkeycode <= OSDK_F5))
         {
@@ -517,7 +554,7 @@ int convert_romaji2kana( int osdkeycode )
     if(idx <3  && 0xd <= osdkeycode && osdkeycode <0x7f)
         {
          buff[ idx++ ]= osdkeycode;
-         if( buff[0]==buff[1] && isShin( buff[0]) && strlen(buff)==2)	// double shiin
+      /*   if( buff[0]==buff[1] && isShin( buff[0]) && strlen(buff)==2)	// double shiin
             {
             found =1; line=0;
             idx--;   saihenkan_flag =1;
@@ -528,9 +565,10 @@ int convert_romaji2kana( int osdkeycode )
             found =1; line=1;
             idx--;   saihenkan_flag =1;
             buff[0]= buff[1]; buff[1]=buff[2]; buff[2]=buff[3]; buff[3]=0;
-            }
-         else
-             found = convert_search( buff , &line);	// pattern match
+            } 
+         else*/
+
+         found = convert_search( buff , &line);	// convert to romaji ローマ字変換してみる
 
          PRINTDEBUG1(KEY_LOG,"[P6][convert_romaji2kana] input buff= '%s' \n ", buff);
 
@@ -540,7 +578,7 @@ int convert_romaji2kana( int osdkeycode )
             memset(buff, 0, sizeof(buff));
             idx=0;
             }
-        else if( found ==1)		// complete match
+        else if( found ==HENKAN_SUCCESS)		// complete match
             {
             int j;
             int output_length=0;
@@ -580,7 +618,7 @@ int convert_romaji2kana( int osdkeycode )
             PRINTDEBUG(KEY_LOG,"\n");
 
             if( !Event_isActive( EVENT_KEYIN))
-                if( !Event_Add( EVENT_KEYIN, 200, EV_LOOP|EV_MS , autokeyin_func) )  return 0;
+                if( !Event_Add( EVENT_KEYIN, 100, EV_LOOP|EV_MS , autokeyin_func) )  return 0;  // 自動キー入力を登録する
 
             if( !saihenkan_flag) {idx =0;	memset( buff , 0,  sizeof( buff));}
             saihenkan_flag=0;
