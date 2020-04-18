@@ -16,6 +16,7 @@
 #include "Win32gui.h"
 #include "Win32stick.h"
 #include "Win32fscr.h"
+#include "winInput.h"
 
 #include "../keys.h"	// for OSDK_xxxx  2006/11/26
 

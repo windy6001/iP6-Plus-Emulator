@@ -482,7 +482,7 @@ void dokodemo_save_mem(void)
 	dokodemo_putentry( "Ext1Name", Ext1Name );    /* Extension ROM 1 file  (4000h-5fffh)*/
 	dokodemo_putentry( "Ext2Name", Ext2Name );    /* Extension ROM 2 file  (6000h-7fffh)*/
 
-	dokodemo_putentry("Use_CompatibleROM", Use_CompatibleROM);	// Use_CompatibleROM
+	DOKODEMO_PUTENTRY_INT( Use_CompatibleROM);	// Use_CompatibleROM
 }
 
 
@@ -554,7 +554,7 @@ void dokodemo_load_mem(void)
 		DOKODEMO_GETENTRY_INT( megarom_bank_no );       // megarom bank no.   
 		memorymap_mode1_extmegarom( 0 , megarom_bank_no); // select megarom bank
 		}
-	dokodemo_getentry("Use_CompatibleROM", Use_CompatibleROM);	// Use_CompatibleROM
+	DOKODEMO_GETENTRY_INT( Use_CompatibleROM);		// Use_CompatibleROM
 }
 
 

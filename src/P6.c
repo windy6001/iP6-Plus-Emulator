@@ -51,6 +51,7 @@
 
 #ifdef WIN32
 #include "win/WinMenu.h"		// for IDM_FULLSCRN
+#include "win/WinInput.h"
 #endif
 
 void BlitSurface(OSD_Surface * dst_surface, int ex, int ey, int w, int h, OSD_Surface * src_surface, int sx, int sy);
@@ -281,8 +282,8 @@ void PutImage(void)
 // ****************************************************************************
 void keyboard_set_stick( int osdkeycode ,int keydown)
 {
-#if 0 // def WIN32
-	stick0 = OSD_get_stick();
+#ifdef WIN32
+	stick0 = OSD_GetStickKeyboard();
 #else
 		/* for stick,strig */
     	{

@@ -92,6 +92,8 @@ float dpiBairitu;	// screen bairitu  96dpi を１にした
 byte  Xtab[4];
 
 
+
+
 int OSD_GetModulePath(char *path , int max)
 {
  getcwd( path , max);
@@ -134,7 +136,6 @@ void TrashMachine(void)
 // ****************************************************************************
 int InitMachine( void)
 {
-
 	OSD_InitTimer();
 
 	setMenuTitle( WINDOW12);
@@ -266,6 +267,9 @@ static int makeWindow(char *Title ,HINSTANCE hThisInst, HINSTANCE hPrevInst, LPS
 //   hmenu= GetMenu(hwndMain);		// menu handle (global variable)
 
 	SetTimer(hwndMain, TIMER_1SEC, 1000, timer_1sec_func);		// install 1sec timer
+
+
+	init_directinput( hwndMain, hThisInst);
 	return(1);
 }
 
@@ -1142,6 +1146,9 @@ char * OSD_getlocale_msg(void)
 	}
 	return msg;
 }
+
+
+
 
 
 // ****************************************************************************

@@ -204,6 +204,8 @@ void dokodemo_save_z80(void)
   DOKODEMO_PUTENTRY_INT( NowClock );
   DOKODEMO_PUTENTRY_INT( hline);
 
+  DOKODEMO_PUTENTRY_INT( nowait_start_addr);
+  DOKODEMO_PUTENTRY_INT( nowait_end_addr);
 }
 
 
@@ -292,6 +294,8 @@ void dokodemo_load_z80(void)
   DOKODEMO_GETENTRY_INT( NowClock );
   DOKODEMO_GETENTRY_INT( hline);
 
+  DOKODEMO_GETENTRY_INT(nowait_start_addr);
+  DOKODEMO_GETENTRY_INT(nowait_end_addr);
 }
 
 
@@ -1082,8 +1086,6 @@ int exec1(void)
 	if (R.PC.W == nowait_start_addr) WaitFlag = 0;
 	if (R.PC.W == nowait_end_addr)   WaitFlag = 1;
 
-//	if (R.PC.W == 0xe900) WaitFlag = 0;	// 惑星メフィウス　グラフィックスを高速化
-//	if (R.PC.W == 0xe920) WaitFlag = 1;
 //	static int ADA1=0;
 //	if( R.PC.W == 0x1B06) {code_log_flag =1; ADA1=1;}
 //	if( R.PC.W == 0x1A6D) {code_log_flag =0; ADA1=0;}

@@ -54,7 +54,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalOptions>-DDEBUG  -DSOUND -DHAVE_DIRECT_H  -DHAVE_LIBPNG_=1  -Ic:\library\include -D_WIN32_WINNT=0x0400 -DWINVER=0x0400  %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-DDEBUG  -DSOUND -DHAVE_DIRECT_H  -DHAVE_LIBPNG_=1  -Ic:\library\include -D_WIN32_WINNT=0x0400 -DWINVER=0x0400 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
@@ -124,6 +124,7 @@
     <ClCompile Include="..\src\win\Win32gui.c" />
     <ClCompile Include="..\src\win\Win32stick.c" />
     <ClCompile Include="..\src\win\Win32Timer.c" />
+    <ClCompile Include="..\src\win\winInput.cpp" />
     <ClCompile Include="..\src\win\WinKanji.c" />
     <ClCompile Include="..\src\win\WinThread.c" />
     <ClCompile Include="..\src\Z80.c" />

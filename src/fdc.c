@@ -154,54 +154,6 @@ static int  busy_cnt=0;
 
 #define DEFAULT_BUSY_CNT 100
 
-void dokodemo_save_fdc(void)
-{
-	dokodemo_putsection("[FDC]");
-	DOKODEMO_PUTENTRY_INT( fdc[0].cylinder);
-	DOKODEMO_PUTENTRY_INT( fdc[0].length);
-	DOKODEMO_PUTENTRY_INT( fdc[1].cylinder);
-	DOKODEMO_PUTENTRY_INT( fdc[1].length);
-	dokodemo_putentry_buffer("fdc_buff[0]" , fdc_buff[0] , 256);
-	dokodemo_putentry_buffer("fdc_buff[1]" , fdc_buff[1] , 256);
-	dokodemo_putentry_buffer("fdc_buff[2]" , fdc_buff[2] , 256);
-	dokodemo_putentry_buffer("fdc_buff[3]" , fdc_buff[3] , 256);
-	DOKODEMO_PUTENTRY_INT( idx[0] );
-	DOKODEMO_PUTENTRY_INT( idx[1] );
-	DOKODEMO_PUTENTRY_INT( idx[2] );
-	DOKODEMO_PUTENTRY_INT( idx[3] );
-	
-	
-	dokodemo_putentry_buffer("fdc_buff_in" , fdc_buff_in , 10);
-	DOKODEMO_PUTENTRY_INT( idx_in);
-	dokodemo_putentry_buffer("fdc_buff_out", fdc_buff_out, 10);
-	DOKODEMO_PUTENTRY_INT( idx_out );
-	
-}
-
-
-void dokodemo_load_fdc(void)
-{
-	DOKODEMO_GETENTRY_INT( fdc[0].cylinder);
-	DOKODEMO_GETENTRY_INT( fdc[0].length);
-	DOKODEMO_GETENTRY_INT( fdc[1].cylinder);
-	DOKODEMO_GETENTRY_INT( fdc[1].length);
-	dokodemo_getentry_buffer("fdc_buff[0]" , fdc_buff[0] , 256);
-	dokodemo_getentry_buffer("fdc_buff[1]" , fdc_buff[1] , 256);
-	dokodemo_getentry_buffer("fdc_buff[2]" , fdc_buff[2] , 256);
-	dokodemo_getentry_buffer("fdc_buff[3]" , fdc_buff[3] , 256);
-	DOKODEMO_GETENTRY_INT( idx[0] );
-	DOKODEMO_GETENTRY_INT( idx[1] );
-	DOKODEMO_GETENTRY_INT( idx[2] );
-	DOKODEMO_GETENTRY_INT( idx[3] );
-	
-	
-	dokodemo_getentry_buffer("fdc_buff_in" , fdc_buff_in , 10);
-	DOKODEMO_GETENTRY_INT( idx_in);
-	dokodemo_getentry_buffer("fdc_buff_out", fdc_buff_out, 10);
-	DOKODEMO_GETENTRY_INT( idx_out );
-	
-}
-
 
 
 
@@ -449,18 +401,7 @@ void fdc_read_data(char *fdc_buff_in)
 //		for(i= fdc.length-1; i>=0; i--)
 		for(i= 0; i< fdc[cur_drive].length; i++)
 			{
-#if 0					// hudson  test code ------------------------
-			if( c>=3)
-				{
-				for(j=255; j>=0; j--)
-					{
-					fdc_buff[i][j]=*p;
-					p++;
-					}
-				idx[i]=256;
-				}
-			else	
-#endif
+
 				{
 				memcpy( fdc_buff[ i], p,256);
 				idx[i]=256;
@@ -523,7 +464,6 @@ void  fdc_write_data(char *fdc_buff_in)
 		p= buff;
 		c= /*fdc_buff_in[2]; */ fdc[cur_drive].cylinder;
 		r= fdc_buff_in[4]-1;
-//      for(i= fdc.length-1; i>=0; i--) 
 		for(i= 0; i< fdc[cur_drive].length; i++)
 			{
 			for(j=0; j<256;j++) { *p=fdc_pop_buffer(i); p++; }	// write data
@@ -569,6 +509,61 @@ int dump3(char *buff,int length)
   printf("\n");
   return 0;
  }
+
+
+
+void dokodemo_save_fdc(void)
+{
+	dokodemo_putsection("[FDC]");
+	DOKODEMO_PUTENTRY_INT(portDC);
+
+	DOKODEMO_PUTENTRY_INT(fdc[0].cylinder);
+	DOKODEMO_PUTENTRY_INT(fdc[0].length);
+	DOKODEMO_PUTENTRY_INT(fdc[1].cylinder);
+	DOKODEMO_PUTENTRY_INT(fdc[1].length);
+	dokodemo_putentry_buffer("fdc_buff[0]", fdc_buff[0], 256);
+	dokodemo_putentry_buffer("fdc_buff[1]", fdc_buff[1], 256);
+	dokodemo_putentry_buffer("fdc_buff[2]", fdc_buff[2], 256);
+	dokodemo_putentry_buffer("fdc_buff[3]", fdc_buff[3], 256);
+	DOKODEMO_PUTENTRY_INT(idx[0]);
+	DOKODEMO_PUTENTRY_INT(idx[1]);
+	DOKODEMO_PUTENTRY_INT(idx[2]);
+	DOKODEMO_PUTENTRY_INT(idx[3]);
+
+
+	dokodemo_putentry_buffer("fdc_buff_in", fdc_buff_in, 10);
+	DOKODEMO_PUTENTRY_INT(idx_in);
+	dokodemo_putentry_buffer("fdc_buff_out", fdc_buff_out, 10);
+	DOKODEMO_PUTENTRY_INT(idx_out);
+
+}
+
+
+void dokodemo_load_fdc(void)
+{
+	DOKODEMO_GETENTRY_INT( portDC);
+
+	DOKODEMO_GETENTRY_INT(fdc[0].cylinder);
+	DOKODEMO_GETENTRY_INT(fdc[0].length);
+	DOKODEMO_GETENTRY_INT(fdc[1].cylinder);
+	DOKODEMO_GETENTRY_INT(fdc[1].length);
+	dokodemo_getentry_buffer("fdc_buff[0]", fdc_buff[0], 256);
+	dokodemo_getentry_buffer("fdc_buff[1]", fdc_buff[1], 256);
+	dokodemo_getentry_buffer("fdc_buff[2]", fdc_buff[2], 256);
+	dokodemo_getentry_buffer("fdc_buff[3]", fdc_buff[3], 256);
+	DOKODEMO_GETENTRY_INT(idx[0]);
+	DOKODEMO_GETENTRY_INT(idx[1]);
+	DOKODEMO_GETENTRY_INT(idx[2]);
+	DOKODEMO_GETENTRY_INT(idx[3]);
+
+
+	dokodemo_getentry_buffer("fdc_buff_in", fdc_buff_in, 10);
+	DOKODEMO_GETENTRY_INT(idx_in);
+	dokodemo_getentry_buffer("fdc_buff_out", fdc_buff_out, 10);
+	DOKODEMO_GETENTRY_INT(idx_out);
+
+}
+
 
 
 #if 0
