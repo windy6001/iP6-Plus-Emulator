@@ -72,18 +72,20 @@ int init_directinput(HWND hWnd ,HINSTANCE hInstance)
 
 /************************************************************/
 /*    get stick   (Direct Input)                            */
-/*                                                          */
+/*    ゲーム割り込みのデータを返す                          */
 /************************************************************/
 BYTE OSD_GetStickKeyboard(void)
 {
 	byte ret=0;
+	int  err=0;
+	byte stat=0;
 
-	// キーの入力
 	BYTE key[256];
-	ZeroMemory(key, sizeof(key));
-	ret = lpKeyboard->GetDeviceState(sizeof(key), key);
-	if (FAILED(ret)) {
-		// 失敗なら再開させてもう一度取得
+
+	memset(key, 0, sizeof(key));
+	err = lpKeyboard->GetDeviceState(sizeof(key), key);
+	if (FAILED(err)) {
+		// 失敗ならもう一度取得
 		lpKeyboard->Acquire();
 		lpKeyboard->GetDeviceState(sizeof(key), key);
 	}
