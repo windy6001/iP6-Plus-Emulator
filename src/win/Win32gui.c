@@ -2122,12 +2122,12 @@ LRESULT CALLBACK WindowFunc( HWND hwnd, UINT message, WPARAM wParam , LPARAM lPa
 				}
 			
 			if (romaji_mode && kanaMode && osdkeycode != OSDK_SHIFT)
-			{
-				if(convert_romaji2kana(osdkeycode)==HENKAN_CANCEL)
-					write_keybuffer(keybuffer, 0, keydown, scancode, osdkeycode);
-			}
-			else
-				write_keybuffer( keybuffer ,0, keydown , scancode , osdkeycode);
+				{
+				if(convert_romaji2kana(osdkeycode)!=HENKAN_CANCEL)
+					break;
+				}
+				
+			write_keybuffer( keybuffer ,0, keydown , scancode , osdkeycode);
 			
 			PRINTDEBUG3(KEY_LOG,"[WIN32GUI][WINDOWFUNC] keydown= %X scancode= %02X osdkeycode= %02X  \n",keydown ,scancode , osdkeycode);
 			//write_keybuffer(0,!(HIWORD(lParam) & 0x8000),wParam);
@@ -2136,21 +2136,18 @@ LRESULT CALLBACK WindowFunc( HWND hwnd, UINT message, WPARAM wParam , LPARAM lPa
 	
 	   case WM_SYSKEYUP:
 	   case WM_KEYUP:
-		//	if(wParam== VK_SPACE || wParam== VK_LEFT || wParam == VK_RIGHT
-		//	|| wParam== VK_DOWN  || wParam== VK_UP   || wParam == VK_PAUSE
-	      //        || wParam== VK_SHIFT || wParam== VK_CONTROL || wParam == VK_MENU)
-	              	{
-					int keydown = !(HIWORD(lParam) & 0x8000);
-					int scancode = wParam;
-					int osdkeycode = OSD_transkey( scancode);
-					if (osdkeycode == OSDK_PAGEDOWN && P6Version == PC60)
-						{
-						break;
-						}
-
-					write_keybuffer( keybuffer, 0, keydown , scancode , osdkeycode);
-					PRINTDEBUG3(KEY_LOG,"[WIN32GUI][WINDOWFUNC] keyup= %X  scancode= %02X osdkeycode= %02X \n",keydown ,scancode , osdkeycode);
+	         {
+			 int keydown = !(HIWORD(lParam) & 0x8000);
+			 int scancode = wParam;
+			 int osdkeycode = OSD_transkey( scancode);
+			 if (osdkeycode == OSDK_PAGEDOWN && P6Version == PC60)
+					{
+					break;
 					}
+
+			 write_keybuffer( keybuffer, 0, keydown , scancode , osdkeycode);
+			 PRINTDEBUG3(KEY_LOG,"[WIN32GUI][WINDOWFUNC] keyup= %X  scancode= %02X osdkeycode= %02X \n",keydown ,scancode , osdkeycode);
+			}
 			break;
 	   case WM_COMMAND:
 			if( !UseCPUThread ) StopSound();

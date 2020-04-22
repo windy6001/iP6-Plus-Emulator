@@ -282,7 +282,8 @@ void PutImage(void)
 // ****************************************************************************
 void keyboard_set_stick( int osdkeycode ,int keydown)
 {
-#ifdef WIN32
+
+#if 0 //#ifdef WIN32
 	stick0 = OSD_GetStickKeyboard();
 #else
 		/* for stick,strig */

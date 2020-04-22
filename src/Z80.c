@@ -104,8 +104,8 @@ SAVEVRAM    savevram[MAX_SAVEVRAM];
 byte TrapBadOps=0;
 
 /*** nowait from PC ADDR to PC ADDR */
-int nowait_start_addr = 0x1000;
-int nowait_end_addr   = 0x1000;
+int nowait_start_addr = 0xffff;
+int nowait_end_addr   = 0xffff;
 
  // all variable is static !
 

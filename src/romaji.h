@@ -33,6 +33,7 @@ THE SOFTWARE.
 #define HENKAN_FAILED   0		// ローマ字変換失敗
 #define HENKAN_DOING   -1		// ローマ字変換中
 #define HENKAN_CANCEL   2		// ローマ字変換しない　& キャンセル
+#define HENKAN_SUCCESS_LTU 3	// ローマ字変換成功(っ)
 
 
 

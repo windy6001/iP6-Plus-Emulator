@@ -44,8 +44,8 @@ struct _romaji_tbl {
 // ****************************************************************************
 static struct _romaji_tbl romaji_tbl[] = {
 
-{1,{ 0      ,0       ,0     ,0}, {SHIFT_DOWN , OSDK_Z , SHIFT_UP  ,0}},	// っ
-{1,{ 0      ,0       ,0     ,0}, {OSDK_Y , 0 , 0  ,0}},	// ん
+{2,{ OSDK_L ,OSDK_L  ,0      ,0}, {SHIFT_DOWN , OSDK_Z , SHIFT_UP  ,0}},	// っ        一番最初のデータは、「っ」でないといけない
+{3,{ OSDK_L ,OSDK_T  ,OSDK_U ,0}, {SHIFT_DOWN , OSDK_Z , SHIFT_UP  ,0}},	// っ
 
 {1,{ OSDK_A , 0      , 0    ,0}, {OSDK_3 , 0,0,0}},		// あいうえお
 {1,{ OSDK_I , 0      , 0    ,0}, {OSDK_E , 0,0,0}},
@@ -53,67 +53,34 @@ static struct _romaji_tbl romaji_tbl[] = {
 {1,{ OSDK_E , 0      , 0    ,0}, {OSDK_5 , 0,0,0}},
 {1,{ OSDK_O , 0      , 0    ,0}, {OSDK_6 , 0,0,0}},
 
+
+{2,{ OSDK_L ,OSDK_A  ,0      ,0}, {SHIFT_DOWN , OSDK_3 , SHIFT_UP  ,0}},	// ぁ
+{2,{ OSDK_L ,OSDK_I  ,0      ,0}, {SHIFT_DOWN , OSDK_E , SHIFT_UP  ,0}},	// ぃ
+{2,{ OSDK_L ,OSDK_U  ,0      ,0}, {SHIFT_DOWN , OSDK_4 , SHIFT_UP  ,0}},	// ぅ
+{2,{ OSDK_L ,OSDK_E  ,0      ,0}, {SHIFT_DOWN , OSDK_5 , SHIFT_UP  ,0}},	// ぇ
+{2,{ OSDK_L ,OSDK_O  ,0      ,0}, {SHIFT_DOWN , OSDK_6 , SHIFT_UP  ,0}},	// ぉ
+
+
+{ 2,{ OSDK_X ,OSDK_A  ,0      ,0 },{ SHIFT_DOWN , OSDK_3 , SHIFT_UP  ,0 } },	// ぁ
+{ 2,{ OSDK_X ,OSDK_I  ,0      ,0 },{ SHIFT_DOWN , OSDK_E , SHIFT_UP  ,0 } },	// ぃ
+{ 2,{ OSDK_X ,OSDK_U  ,0      ,0 },{ SHIFT_DOWN , OSDK_4 , SHIFT_UP  ,0 } },	// ぅ
+{ 2,{ OSDK_X ,OSDK_E  ,0      ,0 },{ SHIFT_DOWN , OSDK_5 , SHIFT_UP  ,0 } },	// ぇ
+{ 2,{ OSDK_X ,OSDK_O  ,0      ,0 },{ SHIFT_DOWN , OSDK_6 , SHIFT_UP  ,0 } },	// ぉ
+
+{ 3,{ OSDK_W ,OSDK_H  ,OSDK_A ,0 },{ OSDK_4 ,SHIFT_DOWN, OSDK_3,SHIFT_UP  ,0 } },	// うぁ
+{ 3,{ OSDK_W ,OSDK_H  ,OSDK_I ,0 },{ OSDK_4 ,SHIFT_DOWN, OSDK_E,SHIFT_UP  ,0 } },	// 
+{ 2,{ OSDK_W ,OSDK_I  ,0      ,0 },{ OSDK_4 ,SHIFT_DOWN, OSDK_E,SHIFT_UP  ,0 } },	// 
+{ 2,{ OSDK_W ,OSDK_U  ,0      ,0 },{ OSDK_4 ,0         , 0     ,0 } },	// 
+{ 3,{ OSDK_W ,OSDK_H  ,OSDK_E ,0 },{ OSDK_4 ,SHIFT_DOWN, OSDK_5,SHIFT_UP  ,0 } },	// 
+{ 2,{ OSDK_W ,OSDK_E  ,0      ,0 },{ OSDK_4 ,SHIFT_DOWN, OSDK_5,SHIFT_UP  ,0 } },	// 
+{ 3,{ OSDK_W ,OSDK_H  ,OSDK_O ,0 },{ OSDK_4 ,SHIFT_DOWN, OSDK_6,SHIFT_UP  ,0 } },	// 
+
+
 {2,{ OSDK_K ,OSDK_A  , 0    ,0}, {OSDK_T , 0,0,0}},		// かきくけこ
 {2,{ OSDK_K ,OSDK_I  , 0    ,0}, {OSDK_G , 0,0,0}},
 {2,{ OSDK_K ,OSDK_U  , 0    ,0}, {OSDK_H , 0,0,0}},
 {2,{ OSDK_K ,OSDK_E  , 0    ,0}, {OSDK_COLON , 0,0,0}},
 {2,{ OSDK_K ,OSDK_O  , 0    ,0}, {OSDK_B , 0,0,0}},
-
-{2,{ OSDK_S ,OSDK_A  , 0    ,0}, {OSDK_X , 0,0,0}},		// さしすせそ
-{2,{ OSDK_S ,OSDK_I  , 0    ,0}, {OSDK_D , 0,0,0}},
-{2,{ OSDK_S ,OSDK_U  , 0    ,0}, {OSDK_R , 0,0,0}},
-{2,{ OSDK_S ,OSDK_E  , 0    ,0}, {OSDK_P , 0,0,0}},
-{2,{ OSDK_S ,OSDK_O  , 0    ,0}, {OSDK_C , 0,0,0}},
-
-{2,{ OSDK_T ,OSDK_A  , 0    ,0}, {OSDK_Q , 0,0,0}},		// たちつてと
-{2,{ OSDK_T ,OSDK_I  , 0    ,0}, {OSDK_A , 0,0,0}},
-{2,{ OSDK_C ,OSDK_I  , 0    ,0}, {OSDK_A , 0,0,0}},
-{2,{ OSDK_T ,OSDK_U  , 0    ,0}, {OSDK_Z , 0,0,0}},
-{2,{ OSDK_T ,OSDK_E  , 0    ,0}, {OSDK_W , 0,0,0}},
-{2,{ OSDK_T ,OSDK_O  , 0    ,0}, {OSDK_S , 0,0,0}},
-
-{2,{ OSDK_N ,OSDK_A  , 0    ,0}, {OSDK_U , 0,0,0}},		// なにぬねの
-{2,{ OSDK_N ,OSDK_I  , 0    ,0}, {OSDK_I , 0,0,0}},
-{2,{ OSDK_N ,OSDK_U  , 0    ,0}, {OSDK_1 , 0,0,0}},
-{2,{ OSDK_N ,OSDK_E  , 0    ,0}, {OSDK_COMMA , 0,0,0}},
-{2,{ OSDK_N ,OSDK_O  , 0    ,0}, {OSDK_K , 0,0,0}},
-
-{2,{ OSDK_H ,OSDK_A  , 0    ,0}, {OSDK_F , 0,0,0}},		//  はひふへほ
-{2,{ OSDK_H ,OSDK_I  , 0    ,0}, {OSDK_V , 0,0,0}},
-{2,{ OSDK_H ,OSDK_U  , 0    ,0}, {OSDK_2 , 0,0,0}},
-{2,{ OSDK_H ,OSDK_E  , 0    ,0}, {OSDK_UPPER , 0,0,0}},
-{2,{ OSDK_H ,OSDK_O  , 0    ,0}, {OSDK_MINUS , 0,0,0}},
-
-{2,{ OSDK_M ,OSDK_A  , 0    ,0}, {OSDK_J , 0,0,0}},				// まみむめも
-{2,{ OSDK_M ,OSDK_I  , 0    ,0}, {OSDK_N , 0,0,0}},
-{2,{ OSDK_M ,OSDK_U  , 0    ,0}, {OSDK_RIGHTBRACKET , 0,0,0}},
-{2,{ OSDK_M ,OSDK_E  , 0    ,0}, {OSDK_SLASH , 0,0,0}},
-{2,{ OSDK_M ,OSDK_O  , 0    ,0}, {OSDK_M , 0,0,0}},
-
-{2,{ OSDK_Y ,OSDK_A  , 0    ,0}, {OSDK_7 , 0,0,0}},				// やゆよ
-{2,{ OSDK_Y ,OSDK_U  , 0    ,0}, {OSDK_8 , 0,0,0}},
-{2,{ OSDK_Y ,OSDK_O  , 0    ,0}, {OSDK_9 , 0,0,0}},
-
-{2,{ OSDK_R ,OSDK_A  , 0    ,0}, {OSDK_O , 0,0,0}},				// らりるれろ
-{2,{ OSDK_R ,OSDK_I  , 0    ,0}, {OSDK_L , 0,0,0}},
-{2,{ OSDK_R ,OSDK_U  , 0    ,0}, {OSDK_PERIOD , 0,0,0}},
-{2,{ OSDK_R ,OSDK_E  , 0    ,0}, {OSDK_SEMICOLON , 0,0,0}},
-{2,{ OSDK_R ,OSDK_O  , 0    ,0}, {OSDK_UNDERSCORE , 0,0,0}},
-
-
-{2,{ OSDK_W ,OSDK_A  , 0    ,0}, {OSDK_0 , 0,0,0}},				// わうぃううぇ
-{2,{ OSDK_W ,OSDK_I  , 0    ,0}, {OSDK_4 , SHIFT_DOWN, OSDK_E, SHIFT_UP}},
-{2,{ OSDK_W ,OSDK_U  , 0    ,0}, {OSDK_4 , 0,0,0}},
-{2,{ OSDK_W ,OSDK_E  , 0    ,0}, {OSDK_4 , SHIFT_DOWN, OSDK_5, SHIFT_UP}},
-
-
-
-{2,{ OSDK_F ,OSDK_A  , 0    ,0}, {OSDK_2 , SHIFT_DOWN ,OSDK_3,SHIFT_UP}},		//ふぁふぃふふぇふぉ
-{2,{ OSDK_F ,OSDK_I  , 0    ,0}, {OSDK_2 , SHIFT_DOWN ,OSDK_E,SHIFT_UP}},
-{2,{ OSDK_F ,OSDK_U  , 0    ,0}, {OSDK_2 , 0,0,0}},
-{2,{ OSDK_F ,OSDK_E  , 0    ,0}, {OSDK_2 , SHIFT_DOWN ,OSDK_5,SHIFT_UP}},
-{2,{ OSDK_F ,OSDK_O  , 0    ,0}, {OSDK_2 , SHIFT_DOWN ,OSDK_6,SHIFT_UP}},
-
 
 {3,{ OSDK_K ,OSDK_Y  ,OSDK_A ,0}, {OSDK_G , SHIFT_DOWN , OSDK_7 , SHIFT_UP}},	// きゃきぃきゅきぇきょ
 {3,{ OSDK_K ,OSDK_Y  ,OSDK_I ,0}, {OSDK_G , SHIFT_DOWN , OSDK_E , SHIFT_UP}},
@@ -121,47 +88,64 @@ static struct _romaji_tbl romaji_tbl[] = {
 {3,{ OSDK_K ,OSDK_Y  ,OSDK_E ,0}, {OSDK_G , SHIFT_DOWN , OSDK_5 , SHIFT_UP}},
 {3,{ OSDK_K ,OSDK_Y  ,OSDK_O ,0}, {OSDK_G , SHIFT_DOWN , OSDK_9 , SHIFT_UP}},
 
+{2,{ OSDK_G ,OSDK_A  ,0      ,0}, {OSDK_T , OSDK_AT    , 0      , 0       }},	// がぎぐげご
+{2,{ OSDK_G ,OSDK_I  ,0      ,0}, {OSDK_G , OSDK_AT    , 0      , 0       }},
+{2,{ OSDK_G ,OSDK_U  ,0      ,0}, {OSDK_H , OSDK_AT    , 0      , 0       }},
+{2,{ OSDK_G ,OSDK_E  ,0      ,0}, {OSDK_COLON , OSDK_AT, 0      , 0       }},
+{2,{ OSDK_G ,OSDK_O  ,0      ,0}, {OSDK_B , OSDK_AT    , 0      , 0       }},
+
+{3,{ OSDK_G ,OSDK_Y  ,OSDK_A ,0}, {OSDK_G , OSDK_AT, SHIFT_DOWN, OSDK_7,SHIFT_UP}},// ぎゃぎぃぎゅぎぇぎょ
+{3,{ OSDK_G ,OSDK_Y  ,OSDK_I ,0}, {OSDK_G , OSDK_AT, SHIFT_DOWN, OSDK_E,SHIFT_UP}},
+{3,{ OSDK_G ,OSDK_Y  ,OSDK_U ,0}, {OSDK_G , OSDK_AT, SHIFT_DOWN, OSDK_8,SHIFT_UP}},
+{3,{ OSDK_G ,OSDK_Y  ,OSDK_E ,0}, {OSDK_G , OSDK_AT, SHIFT_DOWN, OSDK_5,SHIFT_UP}},
+{3,{ OSDK_G ,OSDK_Y  ,OSDK_O ,0}, {OSDK_G , OSDK_AT, SHIFT_DOWN, OSDK_9,SHIFT_UP}},
+
+{3,{ OSDK_G ,OSDK_W  ,OSDK_A ,0}, {OSDK_H , OSDK_AT, SHIFT_DOWN, OSDK_3,SHIFT_UP}},// ぐぁぐぃぐぅぐぇぐぉ
+{3,{ OSDK_G ,OSDK_W  ,OSDK_I ,0}, {OSDK_H , OSDK_AT, SHIFT_DOWN, OSDK_E,SHIFT_UP}},
+{3,{ OSDK_G ,OSDK_W  ,OSDK_U ,0}, {OSDK_H , OSDK_AT, SHIFT_DOWN, OSDK_4,SHIFT_UP}},
+{3,{ OSDK_G ,OSDK_W  ,OSDK_E ,0}, {OSDK_H , OSDK_AT, SHIFT_DOWN, OSDK_5,SHIFT_UP}},
+{3,{ OSDK_G ,OSDK_W  ,OSDK_O ,0}, {OSDK_H , OSDK_AT, SHIFT_DOWN, OSDK_6,SHIFT_UP}},
+
+{2,{ OSDK_S ,OSDK_A  , 0    ,0}, {OSDK_X , 0,0,0}},		// さしすせそ
+{2,{ OSDK_S ,OSDK_I  , 0    ,0}, {OSDK_D , 0,0,0}},
+{2,{ OSDK_S ,OSDK_U  , 0    ,0}, {OSDK_R , 0,0,0}},
+{2,{ OSDK_S ,OSDK_E  , 0    ,0}, {OSDK_P , 0,0,0}},
+{2,{ OSDK_S ,OSDK_O  , 0    ,0}, {OSDK_C , 0,0,0}},
+
 {3,{ OSDK_S ,OSDK_Y  ,OSDK_A ,0}, {OSDK_D , SHIFT_DOWN , OSDK_7 , SHIFT_UP}},	// しゃしぃしゅしぇしょ
 {3,{ OSDK_S ,OSDK_Y  ,OSDK_I ,0}, {OSDK_D , SHIFT_DOWN , OSDK_E , SHIFT_UP}},
 {3,{ OSDK_S ,OSDK_Y  ,OSDK_U ,0}, {OSDK_D , SHIFT_DOWN , OSDK_8 , SHIFT_UP}},
 {3,{ OSDK_S ,OSDK_Y  ,OSDK_E ,0}, {OSDK_D , SHIFT_DOWN , OSDK_5 , SHIFT_UP}},
 {3,{ OSDK_S ,OSDK_Y  ,OSDK_O ,0}, {OSDK_D , SHIFT_DOWN , OSDK_9 , SHIFT_UP}},
 
-{3,{ OSDK_T ,OSDK_Y  ,OSDK_A ,0}, {OSDK_A , SHIFT_DOWN , OSDK_7 , SHIFT_UP}},	// ちゃちぃちゅちぇちょ
-{3,{ OSDK_T ,OSDK_Y  ,OSDK_I ,0}, {OSDK_A , SHIFT_DOWN , OSDK_E , SHIFT_UP}},
-{3,{ OSDK_T ,OSDK_Y  ,OSDK_U ,0}, {OSDK_A , SHIFT_DOWN , OSDK_8 , SHIFT_UP}},
-{3,{ OSDK_T ,OSDK_Y  ,OSDK_E ,0}, {OSDK_A , SHIFT_DOWN , OSDK_5 , SHIFT_UP}},
-{3,{ OSDK_T ,OSDK_Y  ,OSDK_O ,0}, {OSDK_A , SHIFT_DOWN , OSDK_9 , SHIFT_UP}},
+{3,{ OSDK_S ,OSDK_H  ,OSDK_A ,0}, {OSDK_D , SHIFT_DOWN , OSDK_7 , SHIFT_UP}},	// しゃしぃ　しぇしょ
+{3,{ OSDK_S ,OSDK_H  ,OSDK_U ,0}, {OSDK_D , SHIFT_DOWN , OSDK_8 , SHIFT_UP}},
+{3,{ OSDK_S ,OSDK_H  ,OSDK_E ,0}, {OSDK_D , SHIFT_DOWN , OSDK_5 , SHIFT_UP}},
+{3,{ OSDK_S ,OSDK_H  ,OSDK_O ,0}, {OSDK_D , SHIFT_DOWN , OSDK_9 , SHIFT_UP}},
 
-{3,{ OSDK_C ,OSDK_Y  ,OSDK_A ,0}, {OSDK_A , SHIFT_DOWN , OSDK_7 , SHIFT_UP}},	// ちゃちぃちゅちぇちょ
-{3,{ OSDK_C ,OSDK_Y  ,OSDK_I ,0}, {OSDK_A , SHIFT_DOWN , OSDK_E , SHIFT_UP}},
-{3,{ OSDK_C ,OSDK_Y  ,OSDK_U ,0}, {OSDK_A , SHIFT_DOWN , OSDK_8 , SHIFT_UP}},
-{3,{ OSDK_C ,OSDK_Y  ,OSDK_E ,0}, {OSDK_A , SHIFT_DOWN , OSDK_5 , SHIFT_UP}},
-{3,{ OSDK_C ,OSDK_Y  ,OSDK_O ,0}, {OSDK_A , SHIFT_DOWN , OSDK_9 , SHIFT_UP}},
+{3,{ OSDK_S ,OSDK_W  ,OSDK_A ,0}, {OSDK_R , SHIFT_DOWN , OSDK_3 , SHIFT_UP}},	// すぁすぃすぅすぇすぉ
+{3,{ OSDK_S ,OSDK_W  ,OSDK_I ,0}, {OSDK_R , SHIFT_DOWN , OSDK_E , SHIFT_UP}},
+{3,{ OSDK_S ,OSDK_W  ,OSDK_U ,0}, {OSDK_R , SHIFT_DOWN , OSDK_4 , SHIFT_UP}},
+{3,{ OSDK_S ,OSDK_W  ,OSDK_E ,0}, {OSDK_R , SHIFT_DOWN , OSDK_5 , SHIFT_UP}},
+{3,{ OSDK_S ,OSDK_W  ,OSDK_O ,0}, {OSDK_R , SHIFT_DOWN , OSDK_6 , SHIFT_UP}},
 
-{3,{ OSDK_N ,OSDK_Y  ,OSDK_A ,0}, {OSDK_I , SHIFT_DOWN , OSDK_7 , SHIFT_UP}},	// にゃにぃにゅにぇにょ
-{3,{ OSDK_N ,OSDK_Y  ,OSDK_I ,0}, {OSDK_I , SHIFT_DOWN , OSDK_E , SHIFT_UP}},
-{3,{ OSDK_N ,OSDK_Y  ,OSDK_U ,0}, {OSDK_I , SHIFT_DOWN , OSDK_8 , SHIFT_UP}},
-{3,{ OSDK_N ,OSDK_Y  ,OSDK_E ,0}, {OSDK_I , SHIFT_DOWN , OSDK_5 , SHIFT_UP}},
-{3,{ OSDK_N ,OSDK_Y  ,OSDK_O ,0}, {OSDK_I , SHIFT_DOWN , OSDK_9 , SHIFT_UP}},
+{2,{ OSDK_Z ,OSDK_A  ,0      ,0}, {OSDK_X , OSDK_AT    , 0      , 0       }},	// ざじずぜぞ
+{2,{ OSDK_Z ,OSDK_I  ,0      ,0}, {OSDK_D , OSDK_AT    , 0      , 0       }},
+{2,{ OSDK_J ,OSDK_I  ,0      ,0}, {OSDK_D , OSDK_AT    , 0      , 0       }},
+{2,{ OSDK_Z ,OSDK_U  ,0      ,0}, {OSDK_R , OSDK_AT    , 0      , 0       }},
+{2,{ OSDK_Z ,OSDK_E  ,0      ,0}, {OSDK_P , OSDK_AT    , 0      , 0       }},
+{2,{ OSDK_Z ,OSDK_O  ,0      ,0}, {OSDK_C , OSDK_AT    , 0      , 0       }},
 
-{3,{ OSDK_H ,OSDK_Y  ,OSDK_A ,0}, {OSDK_V , SHIFT_DOWN , OSDK_7 , SHIFT_UP}},	// ひゃひぃひゅひぇひょ
-{3,{ OSDK_H ,OSDK_Y  ,OSDK_I ,0}, {OSDK_V , SHIFT_DOWN , OSDK_E , SHIFT_UP}},
-{3,{ OSDK_H ,OSDK_Y  ,OSDK_U ,0}, {OSDK_V , SHIFT_DOWN , OSDK_8 , SHIFT_UP}},
-{3,{ OSDK_H ,OSDK_Y  ,OSDK_E ,0}, {OSDK_V , SHIFT_DOWN , OSDK_5 , SHIFT_UP}},
-{3,{ OSDK_H ,OSDK_Y  ,OSDK_O ,0}, {OSDK_V , SHIFT_DOWN , OSDK_9 , SHIFT_UP}},
+{3,{ OSDK_Z ,OSDK_Y  ,OSDK_A ,0}, {OSDK_D , OSDK_AT    , SHIFT_DOWN, OSDK_7,SHIFT_UP}},	// じゃじぃじゅじぇじょ
+{3,{ OSDK_Z ,OSDK_Y  ,OSDK_I ,0}, {OSDK_D , OSDK_AT    , SHIFT_DOWN, OSDK_E,SHIFT_UP}},
+{3,{ OSDK_Z ,OSDK_Y  ,OSDK_U ,0}, {OSDK_D , OSDK_AT    , SHIFT_DOWN, OSDK_8,SHIFT_UP}},
+{3,{ OSDK_Z ,OSDK_Y  ,OSDK_E ,0}, {OSDK_D , OSDK_AT    , SHIFT_DOWN, OSDK_5,SHIFT_UP}},
+{3,{ OSDK_Z ,OSDK_Y  ,OSDK_O ,0}, {OSDK_D , OSDK_AT    , SHIFT_DOWN, OSDK_9,SHIFT_UP}},
 
-{3,{ OSDK_M ,OSDK_Y  ,OSDK_A ,0}, {OSDK_N , SHIFT_DOWN , OSDK_7 , SHIFT_UP}},	// みゃみぃみゅみぇみょ
-{3,{ OSDK_M ,OSDK_Y  ,OSDK_I ,0}, {OSDK_N , SHIFT_DOWN , OSDK_E , SHIFT_UP}},
-{3,{ OSDK_M ,OSDK_Y  ,OSDK_U ,0}, {OSDK_N , SHIFT_DOWN , OSDK_8 , SHIFT_UP}},
-{3,{ OSDK_M ,OSDK_Y  ,OSDK_E ,0}, {OSDK_N , SHIFT_DOWN , OSDK_5 , SHIFT_UP}},
-{3,{ OSDK_M ,OSDK_Y  ,OSDK_O ,0}, {OSDK_N , SHIFT_DOWN , OSDK_9 , SHIFT_UP}},
-
-{3,{ OSDK_R ,OSDK_Y  ,OSDK_A ,0}, {OSDK_L , SHIFT_DOWN , OSDK_7 , SHIFT_UP}},	// りゃりぃりゅりぇりょ
-{3,{ OSDK_R ,OSDK_Y  ,OSDK_I ,0}, {OSDK_L , SHIFT_DOWN , OSDK_E , SHIFT_UP}},
-{3,{ OSDK_R ,OSDK_Y  ,OSDK_U ,0}, {OSDK_L , SHIFT_DOWN , OSDK_8 , SHIFT_UP}},
-{3,{ OSDK_R ,OSDK_Y  ,OSDK_E ,0}, {OSDK_L , SHIFT_DOWN , OSDK_5 , SHIFT_UP}},
-{3,{ OSDK_R ,OSDK_Y  ,OSDK_O ,0}, {OSDK_L , SHIFT_DOWN , OSDK_9 , SHIFT_UP}},
+{2,{ OSDK_J ,OSDK_A  ,0      ,0}, {OSDK_D , OSDK_AT ,SHIFT_DOWN , OSDK_7 , SHIFT_UP}},	// じゃじゅじぇじょ
+{2,{ OSDK_J ,OSDK_U  ,0      ,0}, {OSDK_D , OSDK_AT ,SHIFT_DOWN , OSDK_8 , SHIFT_UP}},
+{2,{ OSDK_J ,OSDK_E  ,0      ,0}, {OSDK_D , OSDK_AT ,SHIFT_DOWN , OSDK_5 , SHIFT_UP}},
+{2,{ OSDK_J ,OSDK_O  ,0      ,0}, {OSDK_D , OSDK_AT ,SHIFT_DOWN , OSDK_9 , SHIFT_UP}},
 
 {3,{ OSDK_J ,OSDK_Y  ,OSDK_A ,0}, {OSDK_D , OSDK_AT ,SHIFT_DOWN , OSDK_7 , SHIFT_UP}},	// じゃじぃじゅじぇじょ
 {3,{ OSDK_J ,OSDK_Y  ,OSDK_I ,0}, {OSDK_D , OSDK_AT ,SHIFT_DOWN , OSDK_E , SHIFT_UP}},
@@ -169,30 +153,106 @@ static struct _romaji_tbl romaji_tbl[] = {
 {3,{ OSDK_J ,OSDK_Y  ,OSDK_E ,0}, {OSDK_D , OSDK_AT ,SHIFT_DOWN , OSDK_5 , SHIFT_UP}},
 {3,{ OSDK_J ,OSDK_Y  ,OSDK_O ,0}, {OSDK_D , OSDK_AT ,SHIFT_DOWN , OSDK_9 , SHIFT_UP}},
 
-{2,{ OSDK_J ,OSDK_A  ,0      ,0}, {OSDK_D , OSDK_AT ,SHIFT_DOWN , OSDK_7 , SHIFT_UP}},	// じゃじじゅじぇじょ
-{2,{ OSDK_J ,OSDK_I  ,0      ,0}, {OSDK_D , OSDK_AT ,0          , 0      , 0       }},
-{2,{ OSDK_J ,OSDK_U  ,0      ,0}, {OSDK_D , OSDK_AT ,SHIFT_DOWN , OSDK_8 , SHIFT_UP}},
-{2,{ OSDK_J ,OSDK_E  ,0      ,0}, {OSDK_D , OSDK_AT ,SHIFT_DOWN , OSDK_5 , SHIFT_UP}},
-{2,{ OSDK_J ,OSDK_O  ,0      ,0}, {OSDK_D , OSDK_AT ,SHIFT_DOWN , OSDK_9 , SHIFT_UP}},
-
-{2,{ OSDK_G ,OSDK_A  ,0      ,0}, {OSDK_T , OSDK_AT    , 0      , 0       }},	// がぎぐげご
-{2,{ OSDK_G ,OSDK_I  ,0      ,0}, {OSDK_G , OSDK_AT    , 0      , 0       }},
-{2,{ OSDK_G ,OSDK_U  ,0      ,0}, {OSDK_H , OSDK_AT    , 0      , 0       }},
-{2,{ OSDK_G ,OSDK_E  ,0      ,0}, {OSDK_COLON , OSDK_AT, 0      , 0       }},
-{2,{ OSDK_G ,OSDK_O  ,0      ,0}, {OSDK_B , OSDK_AT    , 0      , 0       }},
 
 
-{2,{ OSDK_Z ,OSDK_A  ,0      ,0}, {OSDK_X , OSDK_AT    , 0      , 0       }},	// ざじずぜぞ
-{2,{ OSDK_Z ,OSDK_I  ,0      ,0}, {OSDK_D , OSDK_AT    , 0      , 0       }},
-{2,{ OSDK_Z ,OSDK_U  ,0      ,0}, {OSDK_R , OSDK_AT    , 0      , 0       }},
-{2,{ OSDK_Z ,OSDK_E  ,0      ,0}, {OSDK_P , OSDK_AT    , 0      , 0       }},
-{2,{ OSDK_Z ,OSDK_O  ,0      ,0}, {OSDK_C , OSDK_AT    , 0      , 0       }},
+{2,{ OSDK_T ,OSDK_A  , 0    ,0}, {OSDK_Q , 0,0,0}},		// たちつてと
+{2,{ OSDK_T ,OSDK_I  , 0    ,0}, {OSDK_A , 0,0,0}},
+{3,{ OSDK_C ,OSDK_H  ,OSDK_I,0}, {OSDK_A , 0,0,0}},
+{2,{ OSDK_C ,OSDK_I  , 0    ,0}, {OSDK_A , 0,0,0}},
+{2,{ OSDK_T ,OSDK_U  , 0    ,0}, {OSDK_Z , 0,0,0}},
+{3,{ OSDK_T ,OSDK_S  ,OSDK_U,0}, {OSDK_Z , 0,0,0}},
+{2,{ OSDK_T ,OSDK_E  , 0    ,0}, {OSDK_W , 0,0,0}},
+{2,{ OSDK_T ,OSDK_O  , 0    ,0}, {OSDK_S , 0,0,0}},
+
+{3,{ OSDK_T ,OSDK_Y  ,OSDK_A  ,0}, {OSDK_A ,SHIFT_DOWN, OSDK_7,SHIFT_UP}},	// ちゃちぃちゅちぇちょ
+{3,{ OSDK_T ,OSDK_Y  ,OSDK_I  ,0}, {OSDK_A ,SHIFT_DOWN, OSDK_E,SHIFT_UP}},
+{3,{ OSDK_T ,OSDK_Y  ,OSDK_U  ,0}, {OSDK_A ,SHIFT_DOWN, OSDK_8,SHIFT_UP}},
+{3,{ OSDK_T ,OSDK_Y  ,OSDK_E  ,0}, {OSDK_A ,SHIFT_DOWN, OSDK_5,SHIFT_UP}},
+{3,{ OSDK_T ,OSDK_Y  ,OSDK_O  ,0}, {OSDK_A ,SHIFT_DOWN, OSDK_9,SHIFT_UP}},
+
+{3,{ OSDK_C ,OSDK_Y  ,OSDK_A  ,0}, {OSDK_A ,SHIFT_DOWN, OSDK_7,SHIFT_UP}},	// ちゃちぃちゅちぇちょ
+{3,{ OSDK_C ,OSDK_Y  ,OSDK_I  ,0}, {OSDK_A ,SHIFT_DOWN, OSDK_E,SHIFT_UP}},
+{3,{ OSDK_C ,OSDK_Y  ,OSDK_U  ,0}, {OSDK_A ,SHIFT_DOWN, OSDK_8,SHIFT_UP}},
+{3,{ OSDK_C ,OSDK_Y  ,OSDK_E  ,0}, {OSDK_A ,SHIFT_DOWN, OSDK_5,SHIFT_UP}},
+{3,{ OSDK_C ,OSDK_Y  ,OSDK_O  ,0}, {OSDK_A ,SHIFT_DOWN, OSDK_9,SHIFT_UP}},
+
+{3,{ OSDK_T ,OSDK_S  ,OSDK_A  ,0}, {OSDK_Z ,SHIFT_DOWN, OSDK_3,SHIFT_UP}},	// つぁつぃつぇつぉ
+{3,{ OSDK_T ,OSDK_S  ,OSDK_I  ,0}, {OSDK_Z ,SHIFT_DOWN, OSDK_E,SHIFT_UP}},
+{3,{ OSDK_T ,OSDK_S  ,OSDK_E  ,0}, {OSDK_Z ,SHIFT_DOWN, OSDK_5,SHIFT_UP}},
+{3,{ OSDK_T ,OSDK_S  ,OSDK_O  ,0}, {OSDK_Z ,SHIFT_DOWN, OSDK_6,SHIFT_UP}},
+
+{3,{ OSDK_T ,OSDK_H  ,OSDK_A  ,0}, {OSDK_W ,SHIFT_DOWN, OSDK_7,SHIFT_UP}},	// てゃてぃてゅてぇてょ
+{3,{ OSDK_T ,OSDK_H  ,OSDK_I  ,0}, {OSDK_W ,SHIFT_DOWN, OSDK_E,SHIFT_UP}},
+{3,{ OSDK_T ,OSDK_H  ,OSDK_U  ,0}, {OSDK_W ,SHIFT_DOWN, OSDK_8,SHIFT_UP}},
+{3,{ OSDK_T ,OSDK_H  ,OSDK_E  ,0}, {OSDK_W ,SHIFT_DOWN, OSDK_5,SHIFT_UP}},
+{3,{ OSDK_T ,OSDK_H  ,OSDK_O  ,0}, {OSDK_W ,SHIFT_DOWN, OSDK_9,SHIFT_UP}},
+
+{3,{ OSDK_T ,OSDK_W  ,OSDK_A  ,0}, {OSDK_S ,SHIFT_DOWN, OSDK_3,SHIFT_UP}},	// とぁとぃとぅとぇとぉ
+{3,{ OSDK_T ,OSDK_W  ,OSDK_I  ,0}, {OSDK_S ,SHIFT_DOWN, OSDK_E,SHIFT_UP}},
+{3,{ OSDK_T ,OSDK_W  ,OSDK_U  ,0}, {OSDK_S ,SHIFT_DOWN, OSDK_4,SHIFT_UP}},
+{3,{ OSDK_T ,OSDK_W  ,OSDK_E  ,0}, {OSDK_S ,SHIFT_DOWN, OSDK_5,SHIFT_UP}},
+{3,{ OSDK_T ,OSDK_W  ,OSDK_O  ,0}, {OSDK_S ,SHIFT_DOWN, OSDK_6,SHIFT_UP}},
 
 {2,{ OSDK_D ,OSDK_A  ,0      ,0}, {OSDK_Q , OSDK_AT    , 0      , 0       }},	// だぢづでど
 {2,{ OSDK_D ,OSDK_I  ,0      ,0}, {OSDK_A , OSDK_AT    , 0      , 0       }},
 {2,{ OSDK_D ,OSDK_U  ,0      ,0}, {OSDK_Z , OSDK_AT    , 0      , 0       }},
 {2,{ OSDK_D ,OSDK_E  ,0      ,0}, {OSDK_W , OSDK_AT    , 0      , 0       }},
 {2,{ OSDK_D ,OSDK_O  ,0      ,0}, {OSDK_S , OSDK_AT    , 0      , 0       }},
+
+{3,{ OSDK_D ,OSDK_Y  ,OSDK_A  ,0}, {OSDK_A , OSDK_AT    ,SHIFT_DOWN, OSDK_7,SHIFT_UP}},	// ぢゃぢぃぢゅぢぇぢょ
+{3,{ OSDK_D ,OSDK_Y  ,OSDK_I  ,0}, {OSDK_A , OSDK_AT    ,SHIFT_DOWN, OSDK_E,SHIFT_UP}},
+{3,{ OSDK_D ,OSDK_Y  ,OSDK_U  ,0}, {OSDK_A , OSDK_AT    ,SHIFT_DOWN, OSDK_8,SHIFT_UP}},
+{3,{ OSDK_D ,OSDK_Y  ,OSDK_E  ,0}, {OSDK_A , OSDK_AT    ,SHIFT_DOWN, OSDK_5,SHIFT_UP}},
+{3,{ OSDK_D ,OSDK_Y  ,OSDK_O  ,0}, {OSDK_A , OSDK_AT    ,SHIFT_DOWN, OSDK_9,SHIFT_UP}},
+
+
+            // DHA...
+            // DWA...
+
+{2,{ OSDK_N ,OSDK_A  , 0    ,0}, {OSDK_U , 0,0,0}},		// なにぬねの
+{2,{ OSDK_N ,OSDK_I  , 0    ,0}, {OSDK_I , 0,0,0}},
+{2,{ OSDK_N ,OSDK_U  , 0    ,0}, {OSDK_1 , 0,0,0}},
+{2,{ OSDK_N ,OSDK_E  , 0    ,0}, {OSDK_COMMA , 0,0,0}},
+{2,{ OSDK_N ,OSDK_O  , 0    ,0}, {OSDK_K , 0,0,0}},
+
+{3,{ OSDK_N ,OSDK_Y  ,OSDK_A ,0}, {OSDK_I , SHIFT_DOWN , OSDK_7 , SHIFT_UP}},	// にゃにぃにゅにぇにょ
+{3,{ OSDK_N ,OSDK_Y  ,OSDK_I ,0}, {OSDK_I , SHIFT_DOWN , OSDK_E , SHIFT_UP}},
+{3,{ OSDK_N ,OSDK_Y  ,OSDK_U ,0}, {OSDK_I , SHIFT_DOWN , OSDK_8 , SHIFT_UP}},
+{3,{ OSDK_N ,OSDK_Y  ,OSDK_E ,0}, {OSDK_I , SHIFT_DOWN , OSDK_5 , SHIFT_UP}},
+{3,{ OSDK_N ,OSDK_Y  ,OSDK_O ,0}, {OSDK_I , SHIFT_DOWN , OSDK_9 , SHIFT_UP}},
+
+{2,{ OSDK_H ,OSDK_A  , 0    ,0}, {OSDK_F , 0,0,0}},		//  はひふへほ
+{2,{ OSDK_H ,OSDK_I  , 0    ,0}, {OSDK_V , 0,0,0}},
+{2,{ OSDK_H ,OSDK_U  , 0    ,0}, {OSDK_2 , 0,0,0}},
+{2,{ OSDK_H ,OSDK_E  , 0    ,0}, {OSDK_UPPER , 0,0,0}},
+{2,{ OSDK_H ,OSDK_O  , 0    ,0}, {OSDK_MINUS , 0,0,0}},
+
+{3,{ OSDK_H ,OSDK_Y  ,OSDK_A ,0}, {OSDK_V , SHIFT_DOWN , OSDK_7 , SHIFT_UP}},	// ひゃひぃひゅひぇひょ
+{3,{ OSDK_H ,OSDK_Y  ,OSDK_I ,0}, {OSDK_V , SHIFT_DOWN , OSDK_E , SHIFT_UP}},
+{3,{ OSDK_H ,OSDK_Y  ,OSDK_U ,0}, {OSDK_V , SHIFT_DOWN , OSDK_8 , SHIFT_UP}},
+{3,{ OSDK_H ,OSDK_Y  ,OSDK_E ,0}, {OSDK_V , SHIFT_DOWN , OSDK_5 , SHIFT_UP}},
+{3,{ OSDK_H ,OSDK_Y  ,OSDK_O ,0}, {OSDK_V , SHIFT_DOWN , OSDK_9 , SHIFT_UP}},
+
+{3,{ OSDK_B ,OSDK_Y  ,OSDK_A  ,0}, {OSDK_V , OSDK_AT    ,SHIFT_DOWN, OSDK_7,SHIFT_UP}},	// びゃびぃびゅびぇびょ
+{3,{ OSDK_B ,OSDK_Y  ,OSDK_I  ,0}, {OSDK_V , OSDK_AT    ,SHIFT_DOWN, OSDK_E,SHIFT_UP}},
+{3,{ OSDK_B ,OSDK_Y  ,OSDK_U  ,0}, {OSDK_V , OSDK_AT    ,SHIFT_DOWN, OSDK_8,SHIFT_UP}},
+{3,{ OSDK_B ,OSDK_Y  ,OSDK_E  ,0}, {OSDK_V , OSDK_AT    ,SHIFT_DOWN, OSDK_5,SHIFT_UP}},
+{3,{ OSDK_B ,OSDK_Y  ,OSDK_O  ,0}, {OSDK_V , OSDK_AT    ,SHIFT_DOWN, OSDK_9,SHIFT_UP}},
+
+{3,{ OSDK_P ,OSDK_Y  ,OSDK_A ,0}, {OSDK_V , OSDK_LEFTBRACKET, SHIFT_DOWN, OSDK_7,SHIFT_UP}},// ぴゃぴぃぴゅぴぇぴょ
+{3,{ OSDK_P ,OSDK_Y  ,OSDK_I ,0}, {OSDK_V , OSDK_LEFTBRACKET, SHIFT_DOWN, OSDK_E,SHIFT_UP}},
+{3,{ OSDK_P ,OSDK_Y  ,OSDK_U ,0}, {OSDK_V , OSDK_LEFTBRACKET, SHIFT_DOWN, OSDK_8,SHIFT_UP}},
+{3,{ OSDK_P ,OSDK_Y  ,OSDK_E ,0}, {OSDK_V , OSDK_LEFTBRACKET, SHIFT_DOWN, OSDK_5,SHIFT_UP}},
+{3,{ OSDK_P ,OSDK_Y  ,OSDK_O ,0}, {OSDK_V , OSDK_LEFTBRACKET, SHIFT_DOWN, OSDK_9,SHIFT_UP}},
+
+                // FWA....
+
+{2,{ OSDK_F ,OSDK_A  , 0    ,0}, {OSDK_2 , SHIFT_DOWN ,OSDK_3,SHIFT_UP}},		//ふぁふぃふふぇふぉ
+{2,{ OSDK_F ,OSDK_I  , 0    ,0}, {OSDK_2 , SHIFT_DOWN ,OSDK_E,SHIFT_UP}},
+{2,{ OSDK_F ,OSDK_U  , 0    ,0}, {OSDK_2 , 0,0,0}},
+{2,{ OSDK_F ,OSDK_E  , 0    ,0}, {OSDK_2 , SHIFT_DOWN ,OSDK_5,SHIFT_UP}},
+{2,{ OSDK_F ,OSDK_O  , 0    ,0}, {OSDK_2 , SHIFT_DOWN ,OSDK_6,SHIFT_UP}},
+
 
 {2,{ OSDK_B ,OSDK_A  ,0      ,0}, {OSDK_F , OSDK_AT    , 0      , 0       }},	// ばびぶべぼ
 {2,{ OSDK_B ,OSDK_I  ,0      ,0}, {OSDK_V , OSDK_AT    , 0      , 0       }},
@@ -207,63 +267,44 @@ static struct _romaji_tbl romaji_tbl[] = {
 {2,{ OSDK_P ,OSDK_O  ,0      ,0}, {OSDK_MINUS , OSDK_LEFTBRACKET, 0      , 0       }},
 
 
-{3,{ OSDK_J ,OSDK_Y  ,OSDK_A ,0}, {OSDK_X , OSDK_AT    , SHIFT_DOWN, OSDK_7,SHIFT_UP}},	// じゃじぃじゅじぇじょ
-{3,{ OSDK_J ,OSDK_Y  ,OSDK_I ,0}, {OSDK_D , OSDK_AT    , SHIFT_DOWN, OSDK_E,SHIFT_UP}},
-{3,{ OSDK_J ,OSDK_Y  ,OSDK_U ,0}, {OSDK_R , OSDK_AT    , SHIFT_DOWN, OSDK_8,SHIFT_UP}},
-{3,{ OSDK_J ,OSDK_Y  ,OSDK_E ,0}, {OSDK_P , OSDK_AT    , SHIFT_DOWN, OSDK_5,SHIFT_UP}},
-{3,{ OSDK_J ,OSDK_Y  ,OSDK_O ,0}, {OSDK_C , OSDK_AT    , SHIFT_DOWN, OSDK_9,SHIFT_UP}},
+{2,{ OSDK_M ,OSDK_A  , 0    ,0}, {OSDK_J , 0,0,0}},				// まみむめも
+{2,{ OSDK_M ,OSDK_I  , 0    ,0}, {OSDK_N , 0,0,0}},
+{2,{ OSDK_M ,OSDK_U  , 0    ,0}, {OSDK_RIGHTBRACKET , 0,0,0}},
+{2,{ OSDK_M ,OSDK_E  , 0    ,0}, {OSDK_SLASH , 0,0,0}},
+{2,{ OSDK_M ,OSDK_O  , 0    ,0}, {OSDK_M , 0,0,0}},
 
-{3,{ OSDK_Z ,OSDK_Y  ,OSDK_A ,0}, {OSDK_X , OSDK_AT    , SHIFT_DOWN, OSDK_7,SHIFT_UP}},	// じゃじぃじゅじぇじょ
-{3,{ OSDK_Z ,OSDK_Y  ,OSDK_I ,0}, {OSDK_D , OSDK_AT    , SHIFT_DOWN, OSDK_E,SHIFT_UP}},
-{3,{ OSDK_Z ,OSDK_Y  ,OSDK_U ,0}, {OSDK_R , OSDK_AT    , SHIFT_DOWN, OSDK_8,SHIFT_UP}},
-{3,{ OSDK_Z ,OSDK_Y  ,OSDK_E ,0}, {OSDK_P , OSDK_AT    , SHIFT_DOWN, OSDK_5,SHIFT_UP}},
-{3,{ OSDK_Z ,OSDK_Y  ,OSDK_O ,0}, {OSDK_C , OSDK_AT    , SHIFT_DOWN, OSDK_9,SHIFT_UP}},
+{3,{ OSDK_M ,OSDK_Y  ,OSDK_A ,0}, {OSDK_N , SHIFT_DOWN , OSDK_7 , SHIFT_UP}},	// みゃみぃみゅみぇみょ
+{3,{ OSDK_M ,OSDK_Y  ,OSDK_I ,0}, {OSDK_N , SHIFT_DOWN , OSDK_E , SHIFT_UP}},
+{3,{ OSDK_M ,OSDK_Y  ,OSDK_U ,0}, {OSDK_N , SHIFT_DOWN , OSDK_8 , SHIFT_UP}},
+{3,{ OSDK_M ,OSDK_Y  ,OSDK_E ,0}, {OSDK_N , SHIFT_DOWN , OSDK_5 , SHIFT_UP}},
+{3,{ OSDK_M ,OSDK_Y  ,OSDK_O ,0}, {OSDK_N , SHIFT_DOWN , OSDK_9 , SHIFT_UP}},
 
-{3,{ OSDK_D ,OSDK_Y  ,OSDK_A  ,0}, {OSDK_A , OSDK_AT    ,SHIFT_DOWN, OSDK_7,SHIFT_UP}},	// ぢゃぢぃぢゅぢぇぢょ
-{3,{ OSDK_D ,OSDK_Y  ,OSDK_I  ,0}, {OSDK_A , OSDK_AT    ,SHIFT_DOWN, OSDK_E,SHIFT_UP}},
-{3,{ OSDK_D ,OSDK_Y  ,OSDK_U  ,0}, {OSDK_A , OSDK_AT    ,SHIFT_DOWN, OSDK_8,SHIFT_UP}},
-{3,{ OSDK_D ,OSDK_Y  ,OSDK_E  ,0}, {OSDK_A , OSDK_AT    ,SHIFT_DOWN, OSDK_5,SHIFT_UP}},
-{3,{ OSDK_D ,OSDK_Y  ,OSDK_O  ,0}, {OSDK_A , OSDK_AT    ,SHIFT_DOWN, OSDK_9,SHIFT_UP}},
+{2,{ OSDK_Y ,OSDK_A  , 0    ,0}, {OSDK_7 , 0,0,0}},				// やゆよ
+{2,{ OSDK_Y ,OSDK_U  , 0    ,0}, {OSDK_8 , 0,0,0}},
+{2,{ OSDK_Y ,OSDK_O  , 0    ,0}, {OSDK_9 , 0,0,0}},
 
-{3,{ OSDK_B ,OSDK_Y  ,OSDK_A  ,0}, {OSDK_V , OSDK_AT    ,SHIFT_DOWN, OSDK_7,SHIFT_UP}},	// びゃびぃびゅびぇびょ
-{3,{ OSDK_B ,OSDK_Y  ,OSDK_I  ,0}, {OSDK_V , OSDK_AT    ,SHIFT_DOWN, OSDK_E,SHIFT_UP}},
-{3,{ OSDK_B ,OSDK_Y  ,OSDK_U  ,0}, {OSDK_V , OSDK_AT    ,SHIFT_DOWN, OSDK_8,SHIFT_UP}},
-{3,{ OSDK_B ,OSDK_Y  ,OSDK_E  ,0}, {OSDK_V , OSDK_AT    ,SHIFT_DOWN, OSDK_5,SHIFT_UP}},
-{3,{ OSDK_B ,OSDK_Y  ,OSDK_O  ,0}, {OSDK_V , OSDK_AT    ,SHIFT_DOWN, OSDK_9,SHIFT_UP}},
-
-
-{3,{ OSDK_P ,OSDK_Y  ,OSDK_A ,0}, {OSDK_V , OSDK_LEFTBRACKET, SHIFT_DOWN, OSDK_7,SHIFT_UP}},// ぴゃぴぃぴゅぴぇぴょ
-{3,{ OSDK_P ,OSDK_Y  ,OSDK_I ,0}, {OSDK_V , OSDK_LEFTBRACKET, SHIFT_DOWN, OSDK_E,SHIFT_UP}},
-{3,{ OSDK_P ,OSDK_Y  ,OSDK_U ,0}, {OSDK_V , OSDK_LEFTBRACKET, SHIFT_DOWN, OSDK_8,SHIFT_UP}},
-{3,{ OSDK_P ,OSDK_Y  ,OSDK_E ,0}, {OSDK_V , OSDK_LEFTBRACKET, SHIFT_DOWN, OSDK_5,SHIFT_UP}},
-{3,{ OSDK_P ,OSDK_Y  ,OSDK_O ,0}, {OSDK_V , OSDK_LEFTBRACKET, SHIFT_DOWN, OSDK_9,SHIFT_UP}},
-
-{3,{ OSDK_G ,OSDK_Y  ,OSDK_A ,0}, {OSDK_G , OSDK_AT, SHIFT_DOWN, OSDK_7,SHIFT_UP}},// ぎゃぎぃぎゅぎぇぎょ
-{3,{ OSDK_G ,OSDK_Y  ,OSDK_I ,0}, {OSDK_G , OSDK_AT, SHIFT_DOWN, OSDK_E,SHIFT_UP}},
-{3,{ OSDK_G ,OSDK_Y  ,OSDK_U ,0}, {OSDK_G , OSDK_AT, SHIFT_DOWN, OSDK_8,SHIFT_UP}},
-{3,{ OSDK_G ,OSDK_Y  ,OSDK_E ,0}, {OSDK_G , OSDK_AT, SHIFT_DOWN, OSDK_5,SHIFT_UP}},
-{3,{ OSDK_G ,OSDK_Y  ,OSDK_O ,0}, {OSDK_G , OSDK_AT, SHIFT_DOWN, OSDK_9,SHIFT_UP}},
-
-
-
-{2,{ OSDK_L ,OSDK_A  ,0      ,0}, {SHIFT_DOWN , OSDK_3 , SHIFT_UP  ,0}},	// ぁ
-{2,{ OSDK_L ,OSDK_I  ,0      ,0}, {SHIFT_DOWN , OSDK_E , SHIFT_UP  ,0}},	// ぃ
-{2,{ OSDK_L ,OSDK_U  ,0      ,0}, {SHIFT_DOWN , OSDK_4 , SHIFT_UP  ,0}},	// ぅ
-{2,{ OSDK_L ,OSDK_E  ,0      ,0}, {SHIFT_DOWN , OSDK_5 , SHIFT_UP  ,0}},	// ぇ
-{2,{ OSDK_L ,OSDK_O  ,0      ,0}, {SHIFT_DOWN , OSDK_6 , SHIFT_UP  ,0}},	// ぉ
-{2,{ OSDK_L ,OSDK_L  ,0      ,0}, {SHIFT_DOWN , OSDK_Z , SHIFT_UP  ,0}},	// っ
-
-
-{ 2,{ OSDK_X ,OSDK_A  ,0      ,0 },{ SHIFT_DOWN , OSDK_3 , SHIFT_UP  ,0 } },	// ぁ
-{ 2,{ OSDK_X ,OSDK_I  ,0      ,0 },{ SHIFT_DOWN , OSDK_E , SHIFT_UP  ,0 } },	// ぃ
-{ 2,{ OSDK_X ,OSDK_U  ,0      ,0 },{ SHIFT_DOWN , OSDK_4 , SHIFT_UP  ,0 } },	// ぅ
-{ 2,{ OSDK_X ,OSDK_E  ,0      ,0 },{ SHIFT_DOWN , OSDK_5 , SHIFT_UP  ,0 } },	// ぇ
-{ 2,{ OSDK_X ,OSDK_O  ,0      ,0 },{ SHIFT_DOWN , OSDK_6 , SHIFT_UP  ,0 } },	// ぉ
-
-{3,{ OSDK_L ,OSDK_T  ,OSDK_U ,0}, {SHIFT_DOWN , OSDK_Z , SHIFT_UP  ,0}},	// っ
 {3,{ OSDK_L ,OSDK_Y  ,OSDK_A ,0}, {SHIFT_DOWN , OSDK_7 , SHIFT_UP  ,0}},	// ゃ
 {3,{ OSDK_L ,OSDK_Y  ,OSDK_U ,0}, {SHIFT_DOWN , OSDK_8 , SHIFT_UP  ,0}},	// ゅ
 {3,{ OSDK_L ,OSDK_Y  ,OSDK_O ,0}, {SHIFT_DOWN , OSDK_9 , SHIFT_UP  ,0}},	// ょ
+
+{2,{ OSDK_R ,OSDK_A  , 0    ,0}, {OSDK_O , 0,0,0}},				// らりるれろ
+{2,{ OSDK_R ,OSDK_I  , 0    ,0}, {OSDK_L , 0,0,0}},
+{2,{ OSDK_R ,OSDK_U  , 0    ,0}, {OSDK_PERIOD , 0,0,0}},
+{2,{ OSDK_R ,OSDK_E  , 0    ,0}, {OSDK_SEMICOLON , 0,0,0}},
+{2,{ OSDK_R ,OSDK_O  , 0    ,0}, {OSDK_UNDERSCORE , 0,0,0}},
+
+{3,{ OSDK_R ,OSDK_Y  ,OSDK_A ,0}, {OSDK_L , SHIFT_DOWN , OSDK_7 , SHIFT_UP}},	// りゃりぃりゅりぇりょ
+{3,{ OSDK_R ,OSDK_Y  ,OSDK_I ,0}, {OSDK_L , SHIFT_DOWN , OSDK_E , SHIFT_UP}},
+{3,{ OSDK_R ,OSDK_Y  ,OSDK_U ,0}, {OSDK_L , SHIFT_DOWN , OSDK_8 , SHIFT_UP}},
+{3,{ OSDK_R ,OSDK_Y  ,OSDK_E ,0}, {OSDK_L , SHIFT_DOWN , OSDK_5 , SHIFT_UP}},
+{3,{ OSDK_R ,OSDK_Y  ,OSDK_O ,0}, {OSDK_L , SHIFT_DOWN , OSDK_9 , SHIFT_UP}},
+
+{2,{ OSDK_W ,OSDK_A  , 0    ,0}, {OSDK_0 , 0,0,0}},				// わうぃううぇ
+{2,{ OSDK_W ,OSDK_I  , 0    ,0}, {OSDK_4 , SHIFT_DOWN, OSDK_E, SHIFT_UP}},
+{2,{ OSDK_W ,OSDK_U  , 0    ,0}, {OSDK_4 , 0,0,0}},
+{2,{ OSDK_W ,OSDK_E  , 0    ,0}, {OSDK_4 , SHIFT_DOWN, OSDK_5, SHIFT_UP}},
+
+
 
 {1,{ OSDK_MINUS       ,0  ,0 ,0}  	, {OSDK_BACKSLASH  , 0  , 0    ,0}},	//  -
 {1,{ OSDK_BACKSLASH   ,0  ,0 ,0}  	, {OSDK_BACKSLASH  , 0  , 0    ,0}},	//  -
@@ -293,30 +334,6 @@ static struct _romaji_tbl romaji_tbl[] = {
 {1,{ OSDK_SLASH       ,0  ,0 ,0}  	, {0      , 0      , 0         ,0}},	//  /
 {1,{ OSDK_UNDERSCORE  ,0  ,0 ,0}  	, {0      , 0      , 0         ,0}},	//  _
 
-{ 3,{ OSDK_G ,OSDK_G  ,OSDK_A ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_T,OSDK_AT} },// っが
-{ 3,{ OSDK_G ,OSDK_G  ,OSDK_I ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_G,OSDK_AT} },// っぎ
-{ 3,{ OSDK_G ,OSDK_G  ,OSDK_U ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_H,OSDK_AT} },// っぐ
-{ 3,{ OSDK_G ,OSDK_G  ,OSDK_E ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_COLON,OSDK_AT} },// っげ
-{ 3,{ OSDK_G ,OSDK_G  ,OSDK_O ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_B,OSDK_AT} },// っご
-
-{ 3,{ OSDK_Z ,OSDK_Z  ,OSDK_A ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_X,OSDK_AT} },// っざ
-{ 3,{ OSDK_Z ,OSDK_Z  ,OSDK_I ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_D,OSDK_AT} },// っじ
-{ 3,{ OSDK_Z ,OSDK_Z  ,OSDK_U ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_R,OSDK_AT} },// っず
-{ 3,{ OSDK_Z ,OSDK_Z  ,OSDK_E ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_P,OSDK_AT} },// っぜ
-{ 3,{ OSDK_Z ,OSDK_Z  ,OSDK_O ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_C,OSDK_AT} },// っぞ
-
-{ 3,{ OSDK_D ,OSDK_D  ,OSDK_A ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_Q,OSDK_AT} },// っだ
-{ 3,{ OSDK_D ,OSDK_D  ,OSDK_I ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_A,OSDK_AT} },// っぢ
-{ 3,{ OSDK_D ,OSDK_D  ,OSDK_U ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_Z,OSDK_AT} },// っづ
-{ 3,{ OSDK_D ,OSDK_D  ,OSDK_E ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_W,OSDK_AT} },// っで
-{ 3,{ OSDK_D ,OSDK_D  ,OSDK_O ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_S,OSDK_AT} },// っど
-
-{ 3,{ OSDK_B ,OSDK_B  ,OSDK_A ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_F,OSDK_AT} },// っば
-{ 3,{ OSDK_B ,OSDK_B  ,OSDK_I ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_V,OSDK_AT} },// っび
-{ 3,{ OSDK_B ,OSDK_B  ,OSDK_U ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_2,OSDK_AT} },// っぶ
-{ 3,{ OSDK_B ,OSDK_B  ,OSDK_E ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_UPPER,OSDK_AT} },// っべ
-{ 3,{ OSDK_B ,OSDK_B  ,OSDK_O ,0}, {SHIFT_DOWN, OSDK_Z,SHIFT_UP , OSDK_MINUS,OSDK_AT} },// っぼ
-
                                                                 // をん
 { 2,{ OSDK_W ,OSDK_O  , 0    ,0}, {SHIFT_DOWN , OSDK_0 , SHIFT_UP , 0} },
 { 2,{ OSDK_N ,OSDK_N  , 0    ,0}, {OSDK_Y , 0,0,0} },
@@ -333,7 +350,6 @@ static struct _romaji_tbl romaji_tbl[] = {
 // ****************************************************************************
 //      テキストファイルから自動入力変換テーブル
 // ****************************************************************************
-
 static struct _romaji_tbl  text_tbl[] = {
 { 1,{ 0x21   ,0  ,0 ,0 },{ SHIFT_DOWN , OSDK_1 , SHIFT_UP ,0 }},	//  !
 { 1,{ 0x22   ,0  ,0 ,0 },{ SHIFT_DOWN , OSDK_2 , SHIFT_UP ,0 } },//  "
@@ -477,18 +493,21 @@ int isBoin( int osdkeycode)
 // ****************************************************************************
 int isShin( int osdkeycode)
 {
-    return (osdkeycode==OSDK_K || osdkeycode==OSDK_S || osdkeycode==OSDK_T || osdkeycode==OSDK_H || osdkeycode==OSDK_M || osdkeycode==OSDK_Y|| osdkeycode==OSDK_R || osdkeycode==OSDK_W ||
-    osdkeycode==OSDK_P || osdkeycode==OSDK_F);
+    return (osdkeycode==OSDK_K || osdkeycode==OSDK_S || osdkeycode==OSDK_T || osdkeycode==OSDK_H || osdkeycode==OSDK_M || osdkeycode==OSDK_Y
+    || osdkeycode==OSDK_R || osdkeycode==OSDK_W || osdkeycode==OSDK_P || osdkeycode==OSDK_F 
+    || osdkeycode==OSDK_G || osdkeycode == OSDK_D || osdkeycode == OSDK_Z || osdkeycode == OSDK_B);
 }
 
 // ****************************************************************************
-// 		convert_search:
+// 		convert_search:ローマ字の綴りをマッチングする (convert_romaji2kana から呼ばれる)
+//
 //   In:  buff    変換したい文字列
 //        line    変換結果(romaji_tbl テーブルのインデックス)
 //
 //   Out: HENKAN_SUCCESS   変換成功
 //        HENKAN_DOING     変換中
 //        HENKAN_FAILED    変換失敗
+//        HENKAN_SUCCESS_LTU っ変換成功
 // ****************************************************************************
 int convert_search( char *buff , int *line)
 {
@@ -496,6 +515,13 @@ int convert_search( char *buff , int *line)
     int found =HENKAN_FAILED;
 
     *line = 0;
+    
+    if( buff[0]== buff[1])				// 子音が重なって入力されたら、っに変換
+        if( isShin( buff[0]) && isShin(buff[1]))
+            {
+             return HENKAN_SUCCESS_LTU;
+            }
+
 
     for(i=0; romaji_tbl[i].num !=-1 ; i++)
         {
@@ -531,6 +557,7 @@ int convert_search( char *buff , int *line)
 //      HENKAN_FAILED:  変換失敗
 //      HENKAN_DOING  : 変換中
 //      HENKAN_CANCEL : 無変換
+//      HENKAN_SUCCESS_LTU っ変換成功
 //***************************************************************
 int convert_romaji2kana( int osdkeycode )
 {
@@ -554,19 +581,6 @@ int convert_romaji2kana( int osdkeycode )
     if(idx <3  && 0xd <= osdkeycode && osdkeycode <0x7f)
         {
          buff[ idx++ ]= osdkeycode;
-      /*   if( buff[0]==buff[1] && isShin( buff[0]) && strlen(buff)==2)	// double shiin
-            {
-            found =1; line=0;
-            idx--;   saihenkan_flag =1;
-            buff[0]= buff[1]; buff[1]=buff[2]; buff[2]=buff[3]; buff[3]=0;
-            }
-         else if( (buff[0]=='n' ||buff[0]=='N') && isShin( buff[1]))	// double shiin
-            {
-            found =1; line=1;
-            idx--;   saihenkan_flag =1;
-            buff[0]= buff[1]; buff[1]=buff[2]; buff[2]=buff[3]; buff[3]=0;
-            } 
-         else*/
 
          found = convert_search( buff , &line);	// convert to romaji ローマ字変換してみる
 
@@ -578,10 +592,13 @@ int convert_romaji2kana( int osdkeycode )
             memset(buff, 0, sizeof(buff));
             idx=0;
             }
-        else if( found ==HENKAN_SUCCESS)		// complete match
+        else if( found ==HENKAN_SUCCESS || found == HENKAN_SUCCESS_LTU)		// match
             {
             int j;
             int output_length=0;
+
+            if( found == HENKAN_SUCCESS_LTU)
+                line =0;        // 子音がダブルで来たときは、強制的に、「っ」に変換する
 
             PRINTDEBUG1(KEY_LOG,"[P6][convert_romaji2kana] convert_success '%s' -> ",buff);
 
@@ -620,8 +637,18 @@ int convert_romaji2kana( int osdkeycode )
             if( !Event_isActive( EVENT_KEYIN))
                 if( !Event_Add( EVENT_KEYIN, 100, EV_LOOP|EV_MS , autokeyin_func) )  return 0;  // 自動キー入力を登録する
 
-            if( !saihenkan_flag) {idx =0;	memset( buff , 0,  sizeof( buff));}
-            saihenkan_flag=0;
+            //if( !saihenkan_flag) {idx =0;	memset( buff , 0,  sizeof( buff));}
+            //saihenkan_flag=0;
+            if (found == HENKAN_SUCCESS_LTU)        // 子音ダブルできたとき（例えば、KKのときは、KK -> K にして、次の母音を待つ
+                {
+                 buff[0]= buff[1]; buff[1] = buff[2]; buff[2]= buff[3]; buff[3]=0;
+                 idx--;
+                }
+            else 
+                {
+                memset(buff,0, sizeof(buff));
+                idx=0;
+                }
             }
         else	// part match , continue buffaling...
             {
