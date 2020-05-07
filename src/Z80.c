@@ -1086,6 +1086,8 @@ int exec1(void)
 	if (R.PC.W == nowait_start_addr) WaitFlag = 0;
 	if (R.PC.W == nowait_end_addr)   WaitFlag = 1;
 
+
+
 //	static int ADA1=0;
 //	if( R.PC.W == 0x1B06) {code_log_flag =1; ADA1=1;}
 //	if( R.PC.W == 0x1A6D) {code_log_flag =0; ADA1=0;}

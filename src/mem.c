@@ -632,7 +632,6 @@ int i,j;
 	}
 }
 
-
 // ****************************************************************************
 //          peek_memory: RAMからデータを読み出す。（常にRAMから読み出す。）
 //	In:  A: address
@@ -2398,12 +2397,14 @@ void OpenFile1(unsigned int num)
     		if(*CasName[1])
       			if((CasStream[1]=fopen(fullpath,"r+b")) != NULL)
 				{
+				fclose(CasStream[1]);
 		 		if(Verbose) printf("Using %s as a save tape\n",fullpath);
 				}
       		else
         		{
          		if((CasStream[1]=fopen(fullpath,"wb")) != NULL)
            			{
+					fclose(CasStream[1]);
 		    		}
          		else
            			{
@@ -2447,6 +2448,29 @@ void OpenFile1(unsigned int num)
   		}
 	 setMenuTitle(num);
 }
+
+
+// ****************************************************************************
+//		OutputSaveTape
+//  Save Tape に出力する
+//  In: Value : 出力したいデータ
+// ****************************************************************************
+int OutputSaveTape( byte Value)
+{
+	if (CasStream[1]) { fclose(CasStream[1]); CasStream[1] = NULL; }
+	if (*CasName[1])
+		{
+		char fullpath[PATH_MAX];
+		sprintf(fullpath, "%s%s", CasPath[1], CasName[1]);	// make fullpath
+		if ((CasStream[1] = fopen(fullpath, "ab")) != NULL)	// 1バイトごとにopen/close
+			{
+			fputc(Value, CasStream[1]);
+			fclose(CasStream[1]);
+			}
+		}
+}
+
+
 
 // ****************************************************************************
 //    		ramdump: memory dump

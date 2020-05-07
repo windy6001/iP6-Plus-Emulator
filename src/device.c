@@ -1461,9 +1461,9 @@ void subcpuOUT(byte Value)
                 /* CMT SAVE */
       if (CasMode==CAS_SAVEBYTE)
 		{ 
-		 fputc(Value,CasStream[1]);
-		 CasMode=CAS_NONE; 
-		 return; 
+		OutputSaveTape(Value );		// SAVE TAPE Ç…èëÇ´çûÇ›
+		CasMode=CAS_NONE; 
+		return;
 		}
 
                 /* CMT LOAD STOP */
