@@ -276,6 +276,7 @@ ROMイメージなど　大切なものに関しては、
     - libpng とzlib のスタティックライブラリ版( libpngd.lib , zlibd.lib ) をビルドする。
     - libpngd.lib と、zlibd.lib を、c:\library\lib にコピーしてください。　（デフォルトの場合）
     - Win_Project/iP6plus.vcxproj を開いて、ビルドしてください。
+
     
 #### 5.2.2 Unix系OSでのコンパイルの仕方
 
