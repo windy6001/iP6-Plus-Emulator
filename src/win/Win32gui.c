@@ -595,6 +595,13 @@ int OnClickOpenExtRom( HWND hdwnd )
 	op.lpstrFilter  = TEXT("rom files {*.rom;*.bin}\0*.rom;*.bin\0")
 					  TEXT("All files {*.*}  \0*.*\0\0");
 	op.lpstrInitialDir= ExtRomPath;
+	if (Ext1Name[0])
+		{
+		strcpy(fullpath, ExtRomPath);
+		strcat(fullpath, Ext1Name);
+		}
+
+
 	_getcwd( curdir, sizeof(curdir));	// backup curdir
 	if(GetOpenFileName( &op))
 		{
@@ -1075,8 +1082,16 @@ int OnMenuOpenLoadTape(HWND hwnd)
 	TCHAR fullpath[FILENAME_MAX];
 	TCHAR name[ FILENAME_MAX];
 	OPENFILENAME op = {0};
+
+	memset(&op ,0,sizeof(op));
 	  // ---------------- open file structer ------------
 	fullpath[0]=0;
+	name[0]=0;
+	if( CasStream[0])		// set already opened file name
+		{
+		strcpy( fullpath , CasPath[0]);
+		strcat( fullpath , CasName[0]);
+		}
 	op.lStructSize        = sizeof( OPENFILENAME);
 	op.hwndOwner          = hwnd;
 	op.lpstrFilter        = TEXT("All files {*.*}\0*.*\0\0");
@@ -1087,6 +1102,7 @@ int OnMenuOpenLoadTape(HWND hwnd)
 	op.nMaxFileTitle      = FILENAME_MAX;
 	op.Flags              = OFN_NONETWORKBUTTON | OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY;	// Overwrite check 2003/4/29
 	op.lpstrInitialDir= NULL;
+
 
 	op.Flags |= OFN_FILEMUSTEXIST;
 	op.lpstrFilter  = TEXT("cas files {*.cas *.p6 *p6t *.hex}\0*.cas;*.p6;*.p6t;*.hex\0")
@@ -1133,6 +1149,11 @@ int OnMenuOpenSaveTape(HWND hwnd)
 	op.Flags              = OFN_NONETWORKBUTTON | OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY;	// Overwrite check 2003/4/29
 	op.lpstrInitialDir= NULL;
 
+	if( CasStream[1])		// set already opened file name
+		{
+		strcpy( fullpath,CasPath[1]);
+		strcat( fullpath,CasName[1]);
+		}
 	op.Flags |=    OFN_CREATEPROMPT |OFN_OVERWRITEPROMPT; /* çÏÇÈÇ©êqÇÀÇÈÅBè„èëÇ´Ç∑ÇÈÇ©êqÇÀÇÈ 2003/10/27 */
 	op.lpstrFilter  = TEXT("cas files {*.cas *.p6 *p6t}\0*.cas;*.p6;*.p6t\0")
 					  TEXT("All files {*.*}  \0*.*\0\0");
@@ -1179,7 +1200,7 @@ int OnMenuOpenDokodemoLoad(HWND hwnd)
 	op.Flags |= OFN_FILEMUSTEXIST;
 	op.lpstrFilter  = TEXT("Dokodemo save file {*.ds }\0*.ds\0")
 					  TEXT("All files {*.*}  \0*.*\0\0");
-//	op.lpstrInitialDir= CasPath[0];
+
 	_getcwd( curdir, sizeof(curdir));	// backup curdir
 	if(GetOpenFileName( &op))
 		{
@@ -1228,12 +1249,6 @@ int OnMenuOpenDokodemoSave(HWND hwnd)
 		chdir( curdir);					// resotre curdir
 		dokodemo_save( fullpath);
 
-/*		my_strncpy( CasName[1] , name    , FILENAME_MAX);
-		fullpath[ op.nFileOffset]=0;
-		my_strncpy( CasPath[1] , fullpath, FILENAME_MAX);
-		ConfigWrite();
-		OpenFile1( FILE_SAVE_TAPE); 
-*/
 		ret=1;
 		}
 	return(ret);
@@ -1264,6 +1279,13 @@ int OnMenuOpenDisk(HWND hwnd, int drive)
 	op.nMaxFileTitle      = FILENAME_MAX;
 	op.Flags              = OFN_NONETWORKBUTTON | OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY;	// Overwrite check 2003/4/29
 	op.lpstrInitialDir= NULL;
+
+	if (DskStream[drive])			// set already opened file name
+		{
+		strcpy(fullpath, DskPath[drive]);
+		strcat(fullpath, DskName[drive]);
+		}
+
 
 	if( disk_num)
 		{
@@ -2121,7 +2143,8 @@ LRESULT CALLBACK WindowFunc( HWND hwnd, UINT message, WPARAM wParam , LPARAM lPa
 				 break;
 				}
 			
-			if (romaji_mode && kanaMode && osdkeycode != OSDK_SHIFT)
+			if (romaji_mode && kanaMode && osdkeycode != OSDK_SHIFT && osdkeycode != OSDK_END && osdkeycode != OSDK_ALT 
+			&& osdkeycode != OSDK_F6 && inTrace == DEBUG_NONE)  // Exclusion debug mode
 				{
 				if(convert_romaji2kana(osdkeycode)!=HENKAN_CANCEL)
 					break;

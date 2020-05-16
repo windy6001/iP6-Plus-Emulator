@@ -91,6 +91,7 @@ extern byte kanaMode ;
 extern byte katakana ;
 extern byte kbFlagGraph ;
 extern byte kbFlagCtrl ;
+extern byte kbFlagShift;
 
 
 	// ************** TIMER *********************************

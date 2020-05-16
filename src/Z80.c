@@ -1087,7 +1087,7 @@ int exec1(void)
 	if (R.PC.W == nowait_end_addr)   WaitFlag = 1;
 
 
-
+	if( peek_memory(0xfa5e)*256+peek_memory(0xfa5d)==390 ) { code_log_flag = 1;}
 //	static int ADA1=0;
 //	if( R.PC.W == 0x1B06) {code_log_flag =1; ADA1=1;}
 //	if( R.PC.W == 0x1A6D) {code_log_flag =0; ADA1=0;}
@@ -1113,9 +1113,9 @@ int exec1(void)
 
 	if(code_log_flag)
 		{
-		char buff[256];
-		char machineCode[256];
-		char comment[20];
+		static char buff[256];
+		static char machineCode[256];
+		static char comment[20];
 		buff[0]=0;
 		DAsm( buff, machineCode, comment , R.PC.W);
 		PRINTDEBUG2(CPU_LOG,"[Z80][exec1] PC:0x%04X  %-15s ",R.PC.W ,buff);

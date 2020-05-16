@@ -130,7 +130,7 @@ byte kanaMode = 0;
 byte katakana = 0;
 byte kbFlagGraph = 0;
 byte kbFlagCtrl = 0;
-
+byte kbFlagShift =0;
 
 	// ************** TIMER *********************************
 
@@ -1559,7 +1559,7 @@ byte Value=0;
       } else if (StrigIntFlag == INTFLAG_EXEC) {
 		/* ------- stick,strig ------- */
 		StrigIntFlag = INTFLAG_NONE;
-          Value = stick0; //stick0=0;
+		Value = stick0; //stick0=0;
           printf("stick0=%d \n",Value);
 		/*
 		if (ExecStringInt) {

@@ -2381,9 +2381,9 @@ void OpenFile1(unsigned int num)
 				{
 				 fseek(CasStream[0],0,SEEK_END);
 				 fgetpos(CasStream[0], &CasSize[0] );	// tape size
-				 //CasSize[0] = ftell( CasStream[0]);
+
 				 fseek(CasStream[0],0,SEEK_SET);
-				if(Verbose) printf("Using %s as a load tape\n",fullpath);
+				 if(Verbose) printf("Using %s as a load tape\n",fullpath);
 				}
       		else
 			    {

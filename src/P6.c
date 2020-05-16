@@ -282,10 +282,13 @@ void PutImage(void)
 // ****************************************************************************
 void keyboard_set_stick( int osdkeycode ,int keydown)
 {
+	if (osdkeycode == OSDK_SHIFT || osdkeycode == OSDK_LSHIFT || osdkeycode == OSDK_RSHIFT) 
+		if( keydown)
+			kbFlagShift = 1;
+		else
+			kbFlagShift = 0;
 
-#if 0 //#ifdef WIN32
-	stick0 = OSD_GetStickKeyboard();
-#else
+#ifndef WIN32
 		/* for stick,strig */
     	{
     	byte tmp;
@@ -302,14 +305,14 @@ void keyboard_set_stick( int osdkeycode ,int keydown)
 			case OSDK_RIGHTDOWN:tmp= STICK0_RIGHT| STICK0_DOWN; break;
 			case OSDK_SHIFT  :
 			case OSDK_LSHIFT : 
-			case OSDK_RSHIFT : tmp = STICK0_SHIFT; break;
+			case OSDK_RSHIFT : tmp = STICK0_SHIFT;break;
 			default: tmp = 0;
 	      }
 		if( keydown )
 			stick0 |= tmp;
       	else
       		stick0 &=~tmp;
-    	}
+		}
 #endif
 }
 
@@ -343,15 +346,15 @@ void keyboard_set_key(int osdkeycode,int *_keyGFlag ,int *_p6key)
 			 Keys = Keys7[ osdkeycode ];
          else if (kanaMode && inTrace == DEBUG_NONE)
 			if (katakana)
-	  			if (stick0 & STICK0_SHIFT) 
+	  			if (kbFlagShift ) 
                 	Keys = Keys6[ osdkeycode ];
 	  			else 
                 	Keys = Keys5[ osdkeycode ];
-			else if (stick0 & STICK0_SHIFT) 
+			else if (kbFlagShift)
                 	Keys = Keys4[ osdkeycode ];
 	  			else 
                 	Keys = Keys3[ osdkeycode ];
-      		else if (stick0 & STICK0_SHIFT) 
+      		else if (kbFlagShift)
             		Keys = Keys2[ osdkeycode ];
 				else 
             		Keys = Keys1[ osdkeycode ];
@@ -392,14 +395,6 @@ void keyboard_func_key( int osdkeycode)
 				printf("** f1 ＼n");
 				//code_log_flag= !code_log_flag;	// op code logging
 				break;
-#if 0
-			case OSDK_END:
-				toggleFullScr();  /* switch fullscreen or window */
-#ifdef WIN32
-				setMenuCheck( IDM_FULLSCR ,isFullScreen() );
-#endif
-				break;
-#endif
 
         	case OSDK_F10:
 #ifdef SOUND
@@ -458,7 +453,9 @@ void Keyboard(void)
 #ifdef SOUND
 	FlushSound();  /* Flush sound stream on each interrupt */
 #endif
-
+#ifdef WIN32
+	stick0 = OSD_GetStickKeyboard();
+#endif
 
 	if( read_keybuffer( keybuffer ,NULL ,&keydown , &scancode ,&osdkeycode) )
 		{
@@ -466,7 +463,7 @@ void Keyboard(void)
 		if( osdkeycode == OSDK_SHIFT) PRINTDEBUG(KEY_LOG," SHIFT KEY ");
 
 		keyboard_set_stick(osdkeycode ,keydown);		// for stick
-	
+
 		if( keydown || osdkeycode==OSDK_CAPSLOCK)       // caps lock のみ、keydown /up ともに押したことにする。
 			{
 			int  _keyGFlag ,_p6key;
@@ -814,6 +811,7 @@ void InitVariable(void)
 	katakana = 0;
 	kbFlagGraph = 0;
 	kbFlagCtrl = 0;
+	kbFlagShift = 0;
 	TimerSW = 0;
 	TimerSW_F3 = 1;		/* 初期値は1とする（PC-6001対応） */
 
