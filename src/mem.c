@@ -32,6 +32,8 @@
 #endif
 #endif
 
+#include "os.h"
+
 
 #include "buffer.h"
 #include "types.h"

@@ -146,6 +146,7 @@ int StartP6(void);
 void TrashP6(void);
 
 
+int OutputSaveTape( byte Value);
 
 #endif
 

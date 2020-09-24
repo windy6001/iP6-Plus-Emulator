@@ -29,3 +29,4 @@ byte * GetXtab(void);
 
 int unix_soundOpen(void );
 void unix_soundClose(void);
+int OSD_SelectMachine(void);

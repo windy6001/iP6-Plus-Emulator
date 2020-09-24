@@ -10,3 +10,5 @@
 #define MSG_REWIND_LOAD_TAPE		"MSG_REWIND_LOAD_TAPE"
 #define MSG_REWIND_SAVE_TAPE		"MSG_REWIND_SAVE_TAPE"
 #define MSG_SAME_DISK_IMAGE		"MSG_SAME_DISK_IMAGE"
+
+unsigned char *mgettext(unsigned char *key);

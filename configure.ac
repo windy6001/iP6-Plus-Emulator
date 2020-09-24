@@ -67,13 +67,13 @@ esac
 
 
 AC_SUBST( CFLAGS)
-CFLAGS="$CFLAGS -O0 -DX11 -DUNIX -I/usr/X11/include -I/usr/X11R6/include -I/usr/local/include"
+CFLAGS="$CFLAGS -O0 -DX11 -DUNIX -I/usr/X11/include -I/usr/X11R6/include -I/opt/X11/include -I/usr/local/include"
 
 AC_SUBST( CXXFLAGS)
 CXXFLAGS="$CFLAGS"
 
 AC_SUBST( LIBS)
-LIBS="-L/usr/X11/lib -L/usr/X11R6/lib -L/usr/local/lib -lpthread \
+LIBS="-L/usr/X11/lib -L/opt/X11/lib -L/usr/X11R6/lib -L/usr/local/lib -lpthread \
   -lXaw -lXt -lXmu -lXext -lX11 -lm `libpng-config --static --libs`\
   $LIBS"
 

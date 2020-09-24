@@ -39,13 +39,15 @@ typedef struct {
 		
 		int ncount;			// イベント発生回数
 		int ratio;			// イベント発生率
-		int (SCALL *CallbackProc)( void*);	// コールバック関数
+		//int (SCALL *CallbackProc)( void*);	// コールバック関数
+		int (SCALL *CallbackProc)( int id, void*);	// コールバック関数
 		int id;
 	} evinfo;
 
 
 void Event_init(void);
-int Event_Add( int id, double hz ,int flag, int (SCALL *CallbackProc)( void*) );
+//int Event_Add( int id, double hz ,int flag, int (SCALL *CallbackProc)( void*) );
+int Event_Add( int id, double hz ,int flag, int (SCALL *CallbackProc)( int id, void*) );
 void Event_Del(int id);
 int Event_Update(int clk);
 double Event_Scale( int id );
