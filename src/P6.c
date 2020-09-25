@@ -288,7 +288,6 @@ void keyboard_set_stick( int osdkeycode ,int keydown)
 		else
 			kbFlagShift = 0;
 
-#ifndef WIN32
 		/* for stick,strig */
     	{
     	byte tmp;
@@ -313,7 +312,6 @@ void keyboard_set_stick( int osdkeycode ,int keydown)
       	else
       		stick0 &=~tmp;
 		}
-#endif
 }
 
 byte keyboard_get_stick(void)
@@ -453,9 +451,6 @@ void Keyboard(void)
 #ifdef SOUND
 	FlushSound();  /* Flush sound stream on each interrupt */
 #endif
-#ifdef WIN32
-	stick0 = OSD_GetStickKeyboard();
-#endif
 
 	if( read_keybuffer( keybuffer ,NULL ,&keydown , &scancode ,&osdkeycode) )
 		{
@@ -487,6 +482,10 @@ void Keyboard(void)
 			if (osdkeycode==OSDK_CTRL|| osdkeycode==OSDK_LCTRL ) kbFlagCtrl=0;
 			PRINTDEBUG(KEY_LOG,"KEYUP \n");
      		}
+		if( p6key == 0x40)
+			{
+			 code_log_flag = 1;
+			}
 		}
 }
 
@@ -698,7 +697,8 @@ void InitVariable(void)
 {
 	int i;
 
-	
+	init_tapeCounter();	// テープカウンターの保存先を初期化
+
 #ifdef TARGET_OS_IPHONE
 	UseCPUThread=2;
 #endif
@@ -1010,7 +1010,7 @@ void putStatusBar(void)
 
 	OSD_Setcolor(C_BLUESKY);
 	sprintf(str, "%-15s  ", CasName[0]);
-	if (CasStream[0])
+	if (CasStream[0]!=NULL)
 	{
 		fgetpos(CasStream[0], &pos[0]);
 		sprintf(tmp, "[%05lld/%05lld]", pos[0], CasSize[0]);

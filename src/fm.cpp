@@ -40,8 +40,8 @@ int ym2203_Open(void)
  	}
 
  ym2203_Reset();
- ym2203_SetVolumePSG( 14);
- ym2203_SetVolumeFM( 14);
+ //ym2203_SetVolumePSG( 14);
+ //ym2203_SetVolumeFM( 14);
 
  return(1);
 }
@@ -59,12 +59,13 @@ void ym2203_Reset(void)
 // ****************************************************************************
 //			ym2203 set Volume PSG
 // ****************************************************************************
-void ym2203_SetVolumePSG(int vol)
+void ym2203_SetVolumePSG(int v)
 {
- if( vol < 0 ) vol=0;
- if( vol >20)  vol=20;
+ int vol;
+ if( v < 0 ) v =0;
+ if( v >20)  v =20;
 
- vol = vol * SCALE_VOL;
+ vol = v * SCALE_VOL;
  vol = vol + BASE_VOL;
  //psg_vol = vol;
 

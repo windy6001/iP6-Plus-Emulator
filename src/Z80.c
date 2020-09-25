@@ -1101,6 +1101,10 @@ int exec1(void)
 	//if( R.PC.W == 0xdf4d) code_log_flag = 1;
 //	if( R.PC.W >= 0xe000 && R.PC.W <=0xefff ) code_log_flag = 1;
 //	if( R.PC.W == 0xf903) code_log_flag = 1;
+//	if (R.PC.W == 0xe400) code_log_flag = 1;
+//	if (R.PC.W == 0xab00) code_log_flag = 0;
+//	if (R.PC.W == 0x5a05) code_log_flag = 1;
+//	if (R.PC.W == 0x59d4) code_log_flag = 0;
 
 #if CPU_LOG && defined(DEBUG)
 	if( R.PC.W == 0xEB5) { PRINTDEBUG(KEY_LOG,"[Z80][exec1] keyin Interrupt start\n"); flag =1;}
@@ -1119,8 +1123,9 @@ int exec1(void)
 		buff[0]=0;
 		DAsm( buff, machineCode, comment , R.PC.W);
 		PRINTDEBUG2(CPU_LOG,"[Z80][exec1] PC:0x%04X  %-15s ",R.PC.W ,buff);
-		PRINTDEBUG5(CPU_LOG,"AF:%04X BC:%04X DE:%04X HL:%04X SP:%04X\n",R.AF.W ,R.BC.W ,R.DE.W ,R.HL.W ,R.SP.W);
-		}
+		PRINTDEBUG5(CPU_LOG,"AF:%04X BC:%04X DE:%04X HL:%04X SP:%04X",R.AF.W ,R.BC.W ,R.DE.W ,R.HL.W ,R.SP.W);
+		PRINTDEBUG1(CPU_LOG," Line:%d\n", peek_memory(0xfa5e)*256+peek_memory(0xfa5d));
+	}
 #endif
 
 	switch((j=M_RDMEM(R.PC.W++)))	// –½—ß fetch

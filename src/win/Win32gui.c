@@ -335,6 +335,12 @@ int  i;
 unsigned char nextboottime[] = "MS_REBOOT_NEW_SETTING"; // MSG_ENABLE_CONFIG_REBOOT
 
 	alert=0;
+	psg_vol = SendMessage(hPSGVolWnd, TBM_GETPOS, 0, 0);
+	fm_vol  = SendMessage(hFMVolWnd , TBM_GETPOS, 0, 0);
+
+	ym2203_SetVolumePSG(psg_vol);						// set volume PSG
+	ym2203_SetVolumeFM(fm_vol);							// set volume FM
+
 	for(i=ID_RDPC60; i<=ID_RDPC68 ; i+=2)		// machine type
 	  if(SendDlgItemMessage(hdwnd,i,BM_GETCHECK,0,0)==BST_CHECKED)
 		{
@@ -649,13 +655,11 @@ int alert=0;
 			{
 			psg_vol = SendMessage( hPSGVolWnd, TBM_GETPOS , 0,0);
 			
-			ym2203_SetVolumePSG( psg_vol );							// set volume PSG
 			//PRINTDEBUG(1,"PSG VOl.%d \n",tmp);
 			}
 		else if( hFMVolWnd == (HWND) lParam)
 			{
 			fm_vol = SendMessage( hFMVolWnd, TBM_GETPOS , 0,0);
-			ym2203_SetVolumeFM( fm_vol );							// set volume PSG
 			//PRINTDEBUG(1,"FM VOl.%d \n",tmp);
 			}
 		break;
@@ -1116,7 +1120,15 @@ int OnMenuOpenLoadTape(HWND hwnd)
 		fullpath[ op.nFileOffset]=0;
 		my_strncpy( CasPath[0] , fullpath, FILENAME_MAX);
 		ConfigWrite();
+		if (IsSameLoadSaveTape())		// Load Tape と Save Tapeが同じだったら、Save Tape をイジェクトする
+			{
+			*CasName[1] = 0;
+			ConfigWrite();
+			OpenFile1(FILE_SAVE_TAPE);
+			}
+
 		OpenFile1( FILE_LOAD_TAPE);
+
 		ret=1;
 		}
 	return(ret);
@@ -1431,20 +1443,49 @@ void wm_command( HWND hwnd, UINT message, WPARAM wParam , LPARAM lParam)
 
 					/* *********************** TAPE (LOAD) ************************* */
 	case IDM_OPEN_LOAD_TAPE: 
-            OnMenuOpenLoadTape( hwnd);
+			{
+			char fullpath[MAX_PATH];							// イジェクトする前にカウンターを覚えておく
+			sprintf(fullpath, "%s%s", CasPath[0], CasName[0]);
+			fpos_t pos;
+			if( CasStream[0]!=NULL)
+				{
+				fgetpos(CasStream[0], &pos);
+				SetTapeCounter(fullpath, pos);
+				}
+
+            if( OnMenuOpenLoadTape( hwnd)==1)				// ファイルオープンダイアログ
+				{
+				sprintf(fullpath,"%s%s",CasPath[0],CasName[0]);
+				if( GetTapeCounter( fullpath , &pos))
+					{
+					if( OSD_MessageBox("MSG_RESTORE_TAPE_COUNTER","",OSDM_YESNO) == OSDR_YES)
+						{
+						fsetpos( CasStream[0] , &pos);
+						}
+					}
+				  putStatusBar();                 // ステータスバー更新
+				 }
 			break;
+			}
 	case IDM_REWIND_LOAD_TAPE: 
 			if( *CasName[0]!=0)
 				if(OSD_MessageBox(MSG_REWIND_LOAD_TAPE ,"",OSDM_YESNO)== OSDR_YES) 
 					OpenFile1( FILE_LOAD_TAPE);
 			break;
-	case IDM_EJECT_LOAD_TAPE: 
+	case IDM_EJECT_LOAD_TAPE:
+			{
+			char fullpath[MAX_PATH];							// イジェクトする前にカウンターを覚えておく
+			sprintf(fullpath,"%s%s",CasPath[0],CasName[0]);
+			fpos_t pos;
+			fgetpos( CasStream[0], &pos);
+			SetTapeCounter( fullpath ,pos);
+
 			*CasName[0]=0;
 			ConfigWrite();
 			OpenFile1( FILE_LOAD_TAPE);
 			putStatusBar();                 // ステータスバー更新
 			break;
-
+			}
 					/* *********************** TAPE (SAVE)************************* */
 	case IDM_OPEN_SAVE_TAPE:
             OnMenuOpenSaveTape( hwnd);
@@ -1787,7 +1828,7 @@ void savemenu(void)
 // ****************************************************************************
 int hidemenu(void)
 {
-	int ret;
+	int ret=0;
     if( prev_hmenu) 
 	  	ret= SetMenu( hwndMain, NULL);
 	return(ret);
@@ -2143,8 +2184,7 @@ LRESULT CALLBACK WindowFunc( HWND hwnd, UINT message, WPARAM wParam , LPARAM lPa
 				 break;
 				}
 			
-			if (romaji_mode && kanaMode && osdkeycode != OSDK_SHIFT && osdkeycode != OSDK_END && osdkeycode != OSDK_ALT 
-			&& osdkeycode != OSDK_F6 && inTrace == DEBUG_NONE)  // Exclusion debug mode
+			if (romaji_mode && kanaMode && inTrace == DEBUG_NONE)  // Exclusion debug mode
 				{
 				if(convert_romaji2kana(osdkeycode)!=HENKAN_CANCEL)
 					break;

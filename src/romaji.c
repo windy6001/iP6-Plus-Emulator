@@ -570,8 +570,9 @@ int convert_romaji2kana( int osdkeycode )
 
 
     if(  osdkeycode < 0x20 || osdkeycode == OSDK_LEFT || osdkeycode == OSDK_RIGHT || osdkeycode== OSDK_UP
-       || osdkeycode== OSDK_DOWN || osdkeycode==OSDK_SCROLLOCK || osdkeycode == OSDK_PAGEUP || osdkeycode == OSDK_PAGEDOWN
-		|| (osdkeycode >= OSDK_F1 && osdkeycode <= OSDK_F5))
+       || osdkeycode== OSDK_DOWN || osdkeycode==OSDK_SCROLLOCK || osdkeycode == OSDK_PAGEUP 
+        || osdkeycode == OSDK_PAGEDOWN|| (osdkeycode >= OSDK_F1 && osdkeycode <= OSDK_F10) || osdkeycode==OSDK_END 
+        || osdkeycode ==OSDK_SHIFT || osdkeycode == OSDK_ALT || osdkeycode == OSDK_SPACE)
         {
         idx=0;
         memset(buff,0, sizeof(buff));

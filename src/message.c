@@ -115,7 +115,7 @@ static unsigned char *translate[][3]={
 },
 {
 	"MSG_NOT_FOUND_COMPATIBLE_ROM",
-	"ROM file is not found. Launch with compatible rom ?",
+	"ROM file is not found. Do you want to Launch with compatible rom ?",
 	"ROMファイルが見つかりません。互換ROMで起動しますか？",
 },
 {
@@ -132,6 +132,11 @@ static unsigned char *translate[][3]={
 	"MSG_COPY_ROM_FILE",
 	"copy ROM file to the following path",
 	"下記のパスにROM ファイルをコピーしてください"
+},
+{
+	"MSG_RESTORE_TAPE_COUNTER",
+	"Do you want to restore tape position ?",
+	"テープの位置を復元しますか?"
 },
 {NULL,NULL,NULL}
 };

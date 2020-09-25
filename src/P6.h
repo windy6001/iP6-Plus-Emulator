@@ -207,7 +207,7 @@ extern int new_romaji_mode;
 #define DSK_LOG  0		// for DISK
 #define DEV_LOG  0		// for DEVICE
 #define SND_LOG  0		// for SOUND
-#define CPU_LOG  0		// for CPU
+#define CPU_LOG  1		// for CPU
 #define KEY_LOG  0      // for key
 #define MEM_LOG  0      // for memory
 

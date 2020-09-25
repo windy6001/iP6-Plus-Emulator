@@ -32,7 +32,7 @@ extern "C" {
 	void ym2203_Reset(void);
 
 
-#define BASE_VOL     (-80)
+#define BASE_VOL     (-100)
 #define SCALE_VOL    (6)
 #define MAX_VOL      20
 

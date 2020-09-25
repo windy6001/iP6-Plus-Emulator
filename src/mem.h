@@ -145,6 +145,9 @@ char * read_disasm_comment(word adr);
 int StartP6(void);
 void TrashP6(void);
 
+void init_tapeCounter(void);
+int SetTapeCounter(char* fpath, fpos_t cnt);
+int GetTapeCounter(char* fpath, fpos_t cnt);
 
 
 #endif

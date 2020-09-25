@@ -2364,6 +2364,105 @@ int mount_fd(int drive ,char *fullpath)
 
 
 // ****************************************************************************
+//		tape counter store/restore
+//   テープをイジェクトするときにカウンターを保存しておいて、再度挿入したときに復元する
+// ****************************************************************************
+
+#define MAX_TAPECOUNTER 3
+
+struct _tapeCounter {
+	char    fullpath[PATH_MAX];
+	fpos_t  counter;
+} tapeCounter[MAX_TAPECOUNTER];
+
+
+
+// ****************************************************************************
+//		init tape counter
+// ****************************************************************************
+void init_tapeCounter(void)
+{
+#ifdef USE_SAVETAPECOUNTER
+	for (int i = 0; i < MAX_TAPECOUNTER; i++)
+		{
+		 tapeCounter[i].fullpath[0]='\0';
+		}
+#endif
+}
+
+// ****************************************************************************
+//		set tape counter
+//  In: fpath: fullpath of tape file
+//      cnt:   counter of tape file
+//  Out: 1: SUCESS  0: FAILED
+// ****************************************************************************
+int SetTapeCounter(char* fpath, fpos_t cnt)
+{
+	int found = 0;
+
+#ifdef USE_SAVETAPECOUNTER
+	for (int i = 0; i < MAX_TAPECOUNTER; i++)
+		{
+		if ( tapeCounter[i].fullpath[0] == 0)
+			{
+			my_strncpy( tapeCounter[i].fullpath ,fpath ,MAX_PATH);
+			tapeCounter[i].counter = cnt;
+			found =1;
+			break;
+			}
+		}
+#endif
+	return found;
+}
+
+// ****************************************************************************
+//		get tape counter
+//  In:  fpath: fullpath of tape file
+//  Inout: cnt: counter of tape file
+//  Out: 1:found     0:not found
+// ****************************************************************************
+int GetTapeCounter(char* fpath, fpos_t *cnt)
+{
+
+	int found =0;
+
+#ifdef USE_SAVETAPECOUNTER
+	for(int i=0; i< MAX_TAPECOUNTER ; i++)
+		{
+		if (strcmp(tapeCounter[i].fullpath, fpath) == 0)
+			{
+			found =1;
+			*cnt = tapeCounter[i].counter;
+			tapeCounter[i].fullpath[0]= 0;	// clear counter
+			break;
+			}
+		}
+#endif
+	return found;
+}
+
+// ****************************************************************************
+//     Load tape と Save tape は同じか？
+//  Out: TRUE: 同じ   FALSE:違う
+// ****************************************************************************
+int IsSameLoadSaveTape(void)
+{
+	int ret = FALSE;
+
+#ifdef USE_SAVETAPECOUNTER
+	if (strncmp(CasPath[0], CasPath[1], MAX_PATH) == 0)
+		{
+		if (strncmp(CasName[0], CasName[1], MAX_PATH) == 0)
+				{ 
+				ret = TRUE;
+				}
+		}
+#endif
+	return ret;
+
+}
+
+// ****************************************************************************
 //   OpenFIle1:  open file 
 // Close(if needed) and Open tape/disk/printer file.
 // ****************************************************************************
