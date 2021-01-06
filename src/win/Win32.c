@@ -1192,7 +1192,7 @@ static int new_keyrepeat;
 // ****************************************************************************
 void setKeyrepeat(int value)
 {
-#if 1
+#if 0
  	if( keyrepeat ==-1)		/* 起動時のキーリピートの値を取得する */
 		SystemParametersInfo(SPI_GETKEYBOARDSPEED, 0    , &keyrepeat, 0);	// get key repeat
 	SystemParametersInfo(SPI_SETKEYBOARDSPEED, value, 0, 0);	// set key repeat
@@ -1205,7 +1205,7 @@ void setKeyrepeat(int value)
 // ****************************************************************************
 void storeKeyrepeat(void)
 {
-#if 1
+#if 0
 	if( keyrepeat !=-1)
     	{
 /*		if( keyrepeat == new_keyrepeat)

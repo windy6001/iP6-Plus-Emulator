@@ -8,7 +8,7 @@ int bin2c(char *path)
 	int  idx=0;		//read index
 	char var_name[256];	//variable name
 
-	fp= fopen(path,"rb"); if(fp==NULL) {printf("file open error '%s'",path); exit(0);}
+	fp= fopen(path,"rb"); if(fp==NULL) {fprintf(stderr,"file open error '%s'",path); exit(0);}
 	ch = fgetc(fp); if( ch==EOF) {fclose(fp); return 0;}
 
 	// get filename index
@@ -35,7 +35,8 @@ int bin2c(char *path)
 			}
 		} 
 
-	printf("unsigned char compati_%s []= {\n",var_name);
+//	printf("unsigned char compati_%s []= {\n", var_name);
+	printf("unsigned char %s []= {\n", var_name);
 	while(!feof(fp))
 		{
 		 printf("0x%02X,",ch);

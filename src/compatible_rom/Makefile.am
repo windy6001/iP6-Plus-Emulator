@@ -10,6 +10,6 @@ EXTRA_DIST = basicrom60.h \
 	voicerom66.h \
 	CGROM60 \
 	font66 \
-	basic60-v07 \
-	basic66-v022
+	basic60-v072 \
+	basic66-v032
 

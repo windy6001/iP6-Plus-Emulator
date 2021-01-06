@@ -55,12 +55,6 @@
 #include "compatible_rom/basicrom60.h"
 #include "compatible_rom/cgrom60.h"
 
-//--------- PC-6001mkII ---------------
-//#include "compatible_rom/basicrom62.h"
-//#include "compatible_rom/cgrom6062.h"
-//#include "compatible_rom/cgrom60m62.h"
-//#include "compatible_rom/voicerom62.h"
-//#include "compatible_rom/kanjirom62.h"
 
 //--------- PC-6601 ---------------
 #include "compatible_rom/basicrom66.h"
@@ -850,13 +844,12 @@ char *ROMName[5][6+3] = {
     /* 2003/8/8    SR ÇÃCGROMÇÕÅA16kbíPëÃëŒâûÇ…ïœçX */
 
   char **compati_ROM[5][6 + 3] = {
-	{&compati_BASICROM60 ,&compati_CGROM6060,NULL           ,NULL           ,NULL           ,NULL},	// PC-6001
+	{&c_BASICROM60n ,&c_CGROM6060n,NULL           ,NULL           ,NULL           ,NULL},	// PC-6001
 	{NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL },													// mkII
 	{NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL },													// mkIISR
-	{&compati_BASICROM66,&compati_CGROM6066, &compati_CGROM6666 , &compati_KANJIROM66, &compati_VOICEROM66,NULL,NULL,NULL,NULL},	// 6601
+	{&c_BASICROM66n,&c_CGROM6066n, &c_CGROM6666n , &c_KANJIROM66n, &c_VOICEROM66n,NULL,NULL,NULL,NULL},	// 6601
   };
 
-  //{&compati_BASICROM62 ,&compati_CGROM6060, &compati_CGROM60m62 ,&compati_KANJIROM62,&compati_VOICEROM62,NULL,NULL,NULL,NULL}, // mkII
 
 // ****************************************************************************
 //         existROM(): exist ROM file ?                             

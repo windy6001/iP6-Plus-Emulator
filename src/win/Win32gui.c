@@ -2176,6 +2176,17 @@ LRESULT CALLBACK WindowFunc( HWND hwnd, UINT message, WPARAM wParam , LPARAM lPa
 	   case WM_SYSKEYDOWN:
 	   case WM_KEYDOWN:					// key in  buffering
 			{
+			static int cnt=0;
+			int isRepeat = HIWORD(lParam) & 0x4000 ? 1:0;
+			PRINTDEBUG1(KEY_LOG,"repeat= %d \n", isRepeat);
+			if( isRepeat )
+				{
+				 ++cnt;
+				 if( ((cnt % 4) ==0) || ((cnt % 2) ==0))	// Slow down key repeat 
+					{
+					break;
+					}
+				}
 			int keydown = !(HIWORD(lParam) & 0x8000);
 			int scancode = wParam;
 			int osdkeycode = OSD_transkey( scancode);

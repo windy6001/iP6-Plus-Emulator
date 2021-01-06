@@ -1087,7 +1087,7 @@ int exec1(void)
 	if (R.PC.W == nowait_end_addr)   WaitFlag = 1;
 
 
-	if( peek_memory(0xfa5e)*256+peek_memory(0xfa5d)==390 ) { code_log_flag = 1;}
+//	if( peek_memory(0xfa5e)*256+peek_memory(0xfa5d)==390 ) { code_log_flag = 1;}
 //	static int ADA1=0;
 //	if( R.PC.W == 0x1B06) {code_log_flag =1; ADA1=1;}
 //	if( R.PC.W == 0x1A6D) {code_log_flag =0; ADA1=0;}
@@ -1105,6 +1105,9 @@ int exec1(void)
 //	if (R.PC.W == 0xab00) code_log_flag = 0;
 //	if (R.PC.W == 0x5a05) code_log_flag = 1;
 //	if (R.PC.W == 0x59d4) code_log_flag = 0;
+
+//	if (R.PC.W == 0x4f85) code_log_flag = 1;
+//	if (R.PC.W == 0x442)  code_log_flag = 0;
 
 #if CPU_LOG && defined(DEBUG)
 	if( R.PC.W == 0xEB5) { PRINTDEBUG(KEY_LOG,"[Z80][exec1] keyin Interrupt start\n"); flag =1;}
