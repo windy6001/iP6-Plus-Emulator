@@ -36,6 +36,7 @@ byte * OSD_GetXtab(void);
 void OSD_SetWindowTitle(char *name);
 void OSD_Delay(int s);
 
+int OSD_getlocale(void);
 
 #define	OSDM_OK				0x000
 #define	OSDM_OKCANCEL		0x001

@@ -149,6 +149,7 @@ void init_tapeCounter(void);
 int SetTapeCounter(char* fpath, fpos_t cnt);
 int GetTapeCounter(char* fpath, fpos_t cnt);
 
+int OutputSaveTape( byte Value);
 
 #endif
 

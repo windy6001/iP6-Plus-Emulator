@@ -17,6 +17,9 @@
 #ifdef UNIX
 #include <unistd.h>
 #endif
+#ifdef X11
+#include "unix/Xconf.h"
+#endif
 
 #include <stdio.h>
 #include <string.h>

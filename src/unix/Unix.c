@@ -47,6 +47,7 @@
 #include "../Build.h"
 #include "../keys.h"
 #include "../mem.h"
+#include "../Timer.h"
 
 /** MIT Shared Memory Extension for X ************************/
 #ifdef MITSHM
@@ -492,7 +493,7 @@ int InitMachine(void)
     	gettimeofday(&tv,NULL);
     	psec=tv.tv_sec;pusec=tv.tv_usec;
   		}
-  Xt_init_menu();   // setup menu
+  //Xt_init_menu();   // setup menu
 
 	return(1);
 }
@@ -1204,7 +1205,10 @@ OSD_Surface * OSD_GetVideoSurface()
 	return screen;
 }
 
-int OSD_SelectMachine()
+// ****************************************************************************
+//          OSD_SelectMachine  互換ROM用　機種選択
+// ****************************************************************************
+int OSD_SelectMachine(void)
 {
     return -1;
 }
@@ -1308,7 +1312,7 @@ int OSD_getlocale(void)
 
 
 
-menu_testcode()
+/*menu_testcode()
 {
 	XFontSet fs;
 	char **miss ,*def;
@@ -1362,7 +1366,7 @@ menu_testcode()
 		}
 }
 
-
+*/
 
 #endif // UNIX
 
