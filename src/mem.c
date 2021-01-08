@@ -53,18 +53,6 @@
 #include "font6x10.h"
 #include "chkcrc32.h"
 
-//--------- PC-6001 ---------------
-#include "compatible_rom/basicrom60.h"
-#include "compatible_rom/cgrom60.h"
-
-
-//--------- PC-6601 ---------------
-#include "compatible_rom/basicrom66.h"
-#include "compatible_rom/cgrom6066.h"
-#include "compatible_rom/cgrom6666.h"
-#include "compatible_rom/voicerom66.h"
-#include "compatible_rom/kanjirom66.h"
-
 
 int load_extroms(void);
 int get_filesize( char * path);
@@ -845,13 +833,6 @@ char *ROMName[5][6+3] = {
     /* 2002/5/25   SR なら BASICROM ,KANJIROM,SYSROM2, VOICEROMを読まない */
     /* 2003/8/8    SR のCGROMは、16kb単体対応に変更 */
 
-  char **compati_ROM[5][6 + 3] = {
-	{&c_BASICROM60n ,&c_CGROM6060n,NULL           ,NULL           ,NULL           ,NULL},	// PC-6001
-	{NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL },													// mkII
-	{NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL },													// mkIISR
-	{&c_BASICROM66n,&c_CGROM6066n, &c_CGROM6666n , &c_KANJIROM66n, &c_VOICEROM66n,NULL,NULL,NULL,NULL},	// 6601
-  };
-
 
 // ****************************************************************************
 //         existROM(): exist ROM file ?                             
@@ -1174,6 +1155,7 @@ int load_roms(void)
 // ****************************************************************************
 int load_compatible_roms(void)
 {
+#if 0
 	int K;
 	int size;
 
@@ -1213,6 +1195,7 @@ int load_compatible_roms(void)
 
 	load_extroms();
 	return 1;
+#endif
 }
 
 
@@ -2054,35 +2037,6 @@ int StartP6(void)
 	DEBUG_CGROM = (byte*)malloc(0x1000);  if (!DEBUG_CGROM) { printf("FAILED\n"); return(0); }
 	conv_cgrom(DEBUG_CGROM);
 
-	if (Use_CompatibleROM)		// ====================== Compatible ROM =======================
-		{
-		if (OSD_MessageBox("MSG_COMPATIBLE_ROM", "", OSDM_YESNO) == OSDR_YES)
-			{
-			if (P6Version != PC60 && P6Version != PC66)	// 互換ROMのない機種だと、機種選択してもらう
-				{
-				int stat = OSD_SelectMachine();  // PC-6001/ 6601 どちらかを選択する
-				if (stat >= 0)
-					{
-					newP6Version = P6Version = stat;
-					sr_mode = (P6Version == PC66SR || P6Version == PC60M2SR) ? 1 : 0;/* SR_MODE ? */
-					}
-				}
-
-
-			if (!load_compatible_roms())
-				{
-				put_notfoundromfile();
-				ret = FALSE;
-				}
-			}
-		else
-			{
-			put_notfoundromfile();
-			ret = FALSE;
-			}
-		}
-	else							// ============== 実機ROM ==========================
-		{
 		if (!load_roms())           /* load roms */
 			{
 			if (OSD_MessageBox("MSG_SEARCH_ROM", "", OSDM_YESNO) == OSDR_YES)
@@ -2101,38 +2055,12 @@ int StartP6(void)
 						ret = FALSE;
 						}
 					}
-				else
-					{
-					if (OSD_MessageBox("MSG_NOT_FOUND_COMPATIBLE_ROM", "", OSDM_YESNO) == OSDR_YES)
-						{
-						if (P6Version != PC60 && P6Version != PC66)	// 互換ROMのない機種だと、機種選択してもらう
-							{
-							int stat = OSD_SelectMachine();  // PC-6001/ 6601 どちらかを選択する
-							if (stat >= 0)
-								{
-								newP6Version = P6Version = stat;
-								sr_mode = (P6Version == PC66SR || P6Version == PC60M2SR) ? 1 : 0;/* SR_MODE ? */
-								}
-							}
-
-						if (load_compatible_roms())
-							{
-							new_Use_CompatibleROM = Use_CompatibleROM = TRUE;
-							}
-						else
-							{
-							put_notfoundromfile();
-							ret = FALSE;
-							}
-						}
-					}
 				}
 			else {
 				put_notfoundromfile();
 				ret = FALSE;
 				}
 			}
-		}
 #ifdef X11
 	if(ret==FALSE)			/* X11: failed -> exit */
 		exit(0);

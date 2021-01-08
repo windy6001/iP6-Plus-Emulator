@@ -8,7 +8,7 @@ bin_PROGRAMS= iP6
 iP6_LDADD   = unix/libunix.a fmgen/libfmgen.a   
 
 #noinst_LIBRARIES = libvm.a
-SUBDIRS=unix fmgen  win sysdep compatible_rom
+SUBDIRS=unix fmgen  win sysdep 
 
 # libvm_a_SOURCES 
 iP6_SOURCES = \
