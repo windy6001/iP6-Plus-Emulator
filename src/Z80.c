@@ -1096,8 +1096,6 @@ int exec1(void)
 	if (R.PC.W == nowait_start_addr) WaitFlag = 0;
 	if (R.PC.W == nowait_end_addr)   WaitFlag = 1;
 
-//	if( R.PC.W == 0xAF97 && R.HL.W >= 0xa7c0) R.HL.W = 0xa7c0;	// pacman demo 
-
 //	if( peek_memory(0xfa5e)*256+peek_memory(0xfa5d)==390 ) { code_log_flag = 1;}
 //	if( R.PC.W == 0xf9b2) set_fd_send(1);    // こら娘で、データ送る前に0EHを送ってないため動かない。強制的に、fd_send を１にすると、動く。
 	
