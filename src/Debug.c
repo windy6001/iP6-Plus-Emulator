@@ -136,10 +136,10 @@ static char commandHistory[ MAX_CMD_HISTORY][256];	// command line history
 
 int is_open_debug_dialog=0;  /* 1: open  0:close */
 
-static int is_debug_rdmem_ram=0;    /* 1: read emmory from RAM  0: read memory from current bank */
+static int is_debug_rdmem_ram=0;    /* 1: read memmory from RAM  0: read memory from current bank */
 
 
-
+char debugWorkPath[MAX_PATH]="";		// デバッグの作業パス
 
 
 void  DebugCommandPrompt( void);
@@ -584,13 +584,16 @@ static void DisplayRegisters(reg *R)
 static void DisplayUsage(void)
 {
 	at += sprintf(DebugResult+at, "***** Built-in Z80 Debugger Commands *****\r\n");
-	at += sprintf(DebugResult+at, "reg           : Display regist4ers\r\n");
-	at += sprintf(DebugResult+at, "step(s)       : Break at next instruction\r\n");
-	at += sprintf(DebugResult+at, "go(g)         : Continue without break\r\n");
-	at += sprintf(DebugResult+at, "dump <addr>   : Memory dump at addr\r\n");
-	at += sprintf(DebugResult+at, "disasm <addr> : Disassembly at addr\r\n");
-	at += sprintf(DebugResult+at, "nowait <start addr> <end addr>: set nowait mode from start-addr to end-addr \r\n");
-	at += sprintf(DebugResult+at, "?,h           : Show this help text\r\n\r\n");
+	at += sprintf(DebugResult + at, "break <addr>  : Set Breakpoint\r\n");
+	at += sprintf(DebugResult + at, "dump <addr>   : Memory dump at addr\r\n");
+	at += sprintf(DebugResult + at, "disasm <addr> : Disassembly at addr\r\n");
+	at += sprintf(DebugResult + at, "go(g)         : Continue with debugger window\r\n");
+	at += sprintf(DebugResult + at, "G             : Continue without debugger window\r\n");
+	at += sprintf(DebugResult + at, "loadmem       : Load memory \r\n");
+	at += sprintf(DebugResult + at, "reg           : Display registers\r\n");
+	at += sprintf(DebugResult + at, "step(s)       : Break at next instruction\r\n");
+	at += sprintf(DebugResult + at, "nowait <start addr> <end addr>: set nowait mode\r\n");
+	at += sprintf(DebugResult + at, "?,h           : Show this help text\r\n\r\n");
 
 
 
@@ -1850,10 +1853,62 @@ int debug_vrams()
 	return 0;
 }
 
+//*************************************************************/
+//				no wait
+//*************************************************************/
 debug_nowait(int argc, char *argv[])
 {
 	nowait_start_addr = my_atoi( argv[1] );
 	nowait_end_addr   = my_atoi( argv[2] );
+}
+
+//*************************************************************/
+//				loadmem
+//*************************************************************/
+debug_loadmem(int argc, char* argv[])
+{
+	WORD start_addr , end_addr;
+	start_addr = my_atoi(argv[2]);
+	if( argv[3][0]!='#') {
+		end_addr = my_atoi(argv[3]);			// end_addr
+		}
+	else{
+		end_addr = start_addr+ my_atoi(argv[3]+1);	// size
+	}
+
+
+	if (start_addr > end_addr) {
+		at += sprintf(DebugResult + at, "Invalid : start_addr is bigger than end_addr \r\n");
+		return;
+	}
+
+	char *path=NULL;
+	int  len = strlen( debugWorkPath)+strlen( argv[1])+2;
+	path = malloc( len);
+	if (path == NULL) {
+		at += sprintf(DebugResult + at, "memory allocate failed \r\n");
+		return;
+	}
+	sprintf(path ,"%s\\%s", debugWorkPath ,argv[1] );
+	
+	
+
+	FILE *fp = fopen(path,"rb");
+	if( fp !=NULL) {
+		int size=0;
+		for(WORD i= start_addr; i<=end_addr; i++) {
+			int v = fgetc(fp);
+			if( v== EOF) break;
+			poke_memory(i, v);
+			size++;
+			}
+		fclose(fp);
+		at += sprintf(DebugResult + at, "loaded from '%s' %d (0x%4X) bytes  \r\n",argv[1] , size,size);
+	}
+	else {
+		at += sprintf(DebugResult + at, "file '%s' is not found  \r\n", argv[1]);
+	}
+	free( path);
 }
 
 //*************************************************************/
@@ -1916,6 +1971,7 @@ int DebugCommand(reg *R, const char *Command)
 		case D_SAVEVRAM: debug_savevram(argc, argv); break;
 		case D_VRAMS:    debug_vrams(); break;
 		case D_NOWAIT:   if( argc >=2) debug_nowait(argc, argv); break;
+		case D_LOADMEM:  if( argc >=3) debug_loadmem(argc, argv); break;
 		}
 
   /* Continue emulation */
@@ -2574,6 +2630,7 @@ void RefreshDebugString(void)
 //*************************************************************/
 void open_debug_dialog(void)
 {
+
 	if( !is_open_debug_dialog )		// すでに開いているか確認
 		{
 		//	int isfullscrn = isFullScreen();

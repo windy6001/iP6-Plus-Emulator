@@ -4,8 +4,8 @@
 // *******************************************************
 
 #define PROGRAM_NAME "iP6 Plus "
-#define BUILD_VER    "4.9 Beta-3"
-#define BUILD_DATE   "Build 2021/01/06"
+#define BUILD_VER    "4.9 Beta-4"
+#define BUILD_DATE   "Build 2021/3/04"
 
 #define AUTHOR       "Modified by Windy"
 #define HOMEPAGE_URL "http://www.eonet.ne.jp/~windy/"

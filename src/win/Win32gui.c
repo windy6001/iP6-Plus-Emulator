@@ -1915,18 +1915,25 @@ int drag_open(char *path, int max)
 		ConfigWrite();				// 設定ファイル書き込み
 		OpenFile1(FILE_DISK1);
 	}
+
 	if (!stricmp(ext, ".TXT"))			// テキストファイル 流し込み
 	{
+		int size=0;
 		FILE *fp;
-		char buff[256];
+		char *buff;
 		char *p;
-		p = buff;
 
 		fp = fopen(path, "rb"); 
 		if (!fp) {
 			MessageBox(hwndMain,"ファイルオープンエラー", "",MB_OK);
 			return 0;
 		 }
+		fseek(fp, 0, SEEK_END);
+		size = ftell(fp);			// file size
+		fseek(fp, 0, SEEK_SET);
+
+		p = buff = malloc(size);
+
 		while (!feof(fp))
 		{
 			*p = fgetc(fp);
@@ -1934,7 +1941,8 @@ int drag_open(char *path, int max)
 			*p = 0;
 		}
 		fclose(fp);
-		register_autokey(buff);
+		putAutokeyMessage(buff);
+		free(buff);
 	}
 	return 1;
 
@@ -2176,6 +2184,9 @@ LRESULT CALLBACK WindowFunc( HWND hwnd, UINT message, WPARAM wParam , LPARAM lPa
 	   case WM_SYSKEYDOWN:
 	   case WM_KEYDOWN:					// key in  buffering
 			{
+			if( wParam ==0 && lParam ==0) {
+				break;
+			}
 			static int cnt=0;
 			int isRepeat = HIWORD(lParam) & 0x4000 ? 1:0;
 			PRINTDEBUG1(KEY_LOG,"repeat= %d \n", isRepeat);
@@ -2211,7 +2222,7 @@ LRESULT CALLBACK WindowFunc( HWND hwnd, UINT message, WPARAM wParam , LPARAM lPa
 	   case WM_SYSKEYUP:
 	   case WM_KEYUP:
 	         {
-			 int keydown = !(HIWORD(lParam) & 0x8000);
+ 			 int keydown = !(HIWORD(lParam) & 0x8000);
 			 int scancode = wParam;
 			 int osdkeycode = OSD_transkey( scancode);
 			 if (osdkeycode == OSDK_PAGEDOWN && P6Version == PC60)
@@ -2228,11 +2239,11 @@ LRESULT CALLBACK WindowFunc( HWND hwnd, UINT message, WPARAM wParam , LPARAM lPa
 			wm_command(hwnd, message, wParam , lParam);	// menu selection
 			if( !UseCPUThread ) ResumeSound();
 			break;
-	   case WM_SETFOCUS: 		// set keyrepeat slowly  when getting focus  2003/10/18
-	   		setKeyrepeat(DEFAULT_KEY_REPEAT);
-	   		break;
+	   //case WM_SETFOCUS: 		// set keyrepeat slowly  when getting focus  2003/10/18
+	   //		setKeyrepeat(DEFAULT_KEY_REPEAT);
+	   //		break;
 	   case WM_KILLFOCUS: 		// set keyrepeat fastly when  killing focus  2003/10/18
-	   		storeKeyrepeat();
+	   //		storeKeyrepeat();
 			kbFlagGraph=0;		// force GRAPH keyup
 	   		break;
 	   case WM_ENTERMENULOOP:	// when menu showing , stop sound  2005/12/31

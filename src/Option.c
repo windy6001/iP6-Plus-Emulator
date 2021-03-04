@@ -32,7 +32,7 @@
 #include "Help.h"
 #include "Option.h"
 #include "mem.h"
-
+#include "Debug.h"
 
 extern int SaveCPU;
 
@@ -72,6 +72,7 @@ D_DSKPATH2,
 D_DSKNAME2,
 D_ROMAJI_MODE,
 D_USE_COMPATIBLEROM,
+D_DEBUGWORKPATH,
 };
 
 char *ConfigOptions[]=
@@ -90,6 +91,7 @@ char *ConfigOptions[]=
 "DskName2=",
 "RomajiMode=",
 "Use_CompatibleROM=",
+"DebugWorkPath=",
 NULL
 };
 
@@ -192,6 +194,7 @@ int ConfigWrite(void)
 
  fprintf(configStream,"%s%s\n" ,ConfigOptions[D_ROMPATH]         ,RomPath);
  fprintf(configStream,"%s%d\n", ConfigOptions[D_USE_COMPATIBLEROM], new_Use_CompatibleROM);
+ fprintf(configStream,"%s%s\n", ConfigOptions[D_DEBUGWORKPATH]    , debugWorkPath);
 
  fclose( configStream);
 
@@ -366,7 +369,10 @@ int ConfigRead(void)
 				if (Use_CompatibleROM > 1) Use_CompatibleROM = 1;
 				new_Use_CompatibleROM = Use_CompatibleROM;
 				break;
-	   }
+         case D_DEBUGWORKPATH:
+                my_strncpy( debugWorkPath , (&tmp[N][K]) , MAX_PATH);
+                break;
+       }
     }
  printf("Done.\n");
  printf("%s \n",msg);
@@ -581,7 +587,8 @@ int chkOption( int argc, char *argv[])
 			new_Use_CompatibleROM = Use_CompatibleROM;
 			printf("Use_Compatible is '%d' \n", Use_CompatibleROM	);
 			break;
-		default: printf("Wrong option '%s'\n",argv[N]);
+
+        default: printf("Wrong option '%s'\n",argv[N]);
         }
      }
  return(1);

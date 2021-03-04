@@ -87,8 +87,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\autokey.c" />
     <ClCompile Include="..\src\buffer.c" />
     <ClCompile Include="..\src\chkcrc32.c" />
+    <ClCompile Include="..\src\conv.c" />
     <ClCompile Include="..\src\d88.c" />
     <ClCompile Include="..\src\Debug.c" />
     <ClCompile Include="..\src\device.c" />
@@ -130,6 +132,7 @@
     <ClCompile Include="..\src\Z80.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\autokey.h" />
     <ClInclude Include="..\src\buffer.h" />
     <ClInclude Include="..\src\Build.h" />
     <ClInclude Include="..\src\cgrom.h" />
@@ -140,6 +143,7 @@
     <ClInclude Include="..\src\CodesXCB.h" />
     <ClInclude Include="..\src\CodesXX.h" />
     <ClInclude Include="..\src\config.h" />
+    <ClInclude Include="..\src\conv.h" />
     <ClInclude Include="..\src\cycles.h" />
     <ClInclude Include="..\src\d88.h" />
     <ClInclude Include="..\src\Debug.h" />

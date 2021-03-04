@@ -50,6 +50,7 @@
 #include "fm.h"
 
 #include "Debug.h"
+#include "autokey.h"
 
 
 #ifdef WIN32
@@ -301,10 +302,10 @@ void keyboard_set_stick( int osdkeycode ,int keydown)
 			case OSDK_DOWN   : tmp = STICK0_DOWN;  break;
 			case OSDK_UP     : tmp = STICK0_UP;    break;
 			case OSDK_PAUSE  : tmp = STICK0_STOP;  break;
-			case OSDK_LEFTUP : tmp = STICK0_LEFT | STICK0_UP; break;
-			case OSDK_RIGHTUP: tmp = STICK0_RIGHT| STICK0_UP; break;
-			case OSDK_LEFTDOWN:tmp = STICK0_LEFT | STICK0_DOWN; break;
-			case OSDK_RIGHTDOWN:tmp= STICK0_RIGHT| STICK0_DOWN; break;
+			//case OSDK_LEFTUP : tmp = STICK0_LEFT | STICK0_UP; break;
+			//case OSDK_RIGHTUP: tmp = STICK0_RIGHT| STICK0_UP; break;
+			//case OSDK_LEFTDOWN:tmp = STICK0_LEFT | STICK0_DOWN; break;
+			//case OSDK_RIGHTDOWN:tmp= STICK0_RIGHT| STICK0_DOWN; break;
 			case OSDK_SHIFT  :
 			case OSDK_LSHIFT : 
 			case OSDK_RSHIFT : tmp = STICK0_SHIFT;break;
@@ -449,7 +450,7 @@ void Keyboard(void)
 	if( inTrace != DEBUG_NONE) return;		// debug mode:  do nothing
 #endif
 
-	if( KeyIntFlag != INTFLAG_NONE) return;		// keyin interrupt requesting , do nothing  2010/3/5
+//	if( KeyIntFlag != INTFLAG_NONE) return;		// keyin interrupt requesting , do nothing  2010/3/5 -> ƒQ[ƒ€ƒL[‚¾‚ß‚É‚È‚éíœ 2021/2/27
 
 #ifdef SOUND
 	FlushSound();  /* Flush sound stream on each interrupt */
@@ -843,6 +844,13 @@ void InitVariable(void)
 	CSS1=1;
 	CSS2=0;
 	CSS3=0;
+
+	initAutokey();		// init auto key
+
+	if (debugWorkPath[0] == 0) {
+		OSD_GetModulePath(debugWorkPath, MAX_PATH);
+	}
+
 }
 
 

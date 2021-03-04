@@ -959,8 +959,9 @@ AFTER_TRACE:
 			{
 			hline++;
 			ClockCount += z80_clock/(60*262);
-			  // キーボード状態をチェックする
-	    	Keyboard();
+
+			// キーボード状態をチェックする
+			Keyboard();
 			if (++HCount == 262) 
 			   {
 				HCount = 0;
@@ -974,6 +975,15 @@ AFTER_TRACE:
 				 	else
 						VrtcIntFlag =INTFLAG_REQ;  // VRTC Interrupt request
     				}
+
+
+				if (isAutokey()) {		// Auto key ? 
+					if (getAutokey(&p6key)) {
+						keyGFlag = 0;				// Graph文字はどうする？
+						KeyIntFlag = INTFLAG_REQ;	// Request key Interrupt 
+					}
+				}
+
 				/* 割り込みを発生させる
 				（他の割り込み処理を帰線期間で検出させるため） */
 			    IFlag=1;
@@ -1086,26 +1096,11 @@ int exec1(void)
 	if (R.PC.W == nowait_start_addr) WaitFlag = 0;
 	if (R.PC.W == nowait_end_addr)   WaitFlag = 1;
 
+//	if( R.PC.W == 0xAF97 && R.HL.W >= 0xa7c0) R.HL.W = 0xa7c0;	// pacman demo 
 
 //	if( peek_memory(0xfa5e)*256+peek_memory(0xfa5d)==390 ) { code_log_flag = 1;}
-//	static int ADA1=0;
-//	if( R.PC.W == 0x1B06) {code_log_flag =1; ADA1=1;}
-//	if( R.PC.W == 0x1A6D) {code_log_flag =0; ADA1=0;}
-//	if( R.PC.W == 0xADA1) {code_log_flag =1; ADA1=1;}
-//	if( R.PC.W == 0xADA0 && ADA1==1) code_log_flag=1;	// CPUの動きを記録するようにする for PACMAN
-//	if( R.PC.W == 0xAD94 && ADA1==1) code_log_flag=0;	// 
-//	if( R.PC.W == 0xf903) { code_log_flag=1; Trap=0x6b11;}	// 
 //	if( R.PC.W == 0xf9b2) set_fd_send(1);    // こら娘で、データ送る前に0EHを送ってないため動かない。強制的に、fd_send を１にすると、動く。
-//    if(R.PC.W == 0x442) 		dokodemo_load("/Users/windy/aaa.dds");
 	
-	//if( R.PC.W == 0xdf4d) code_log_flag = 1;
-//	if( R.PC.W >= 0xe000 && R.PC.W <=0xefff ) code_log_flag = 1;
-//	if( R.PC.W == 0xf903) code_log_flag = 1;
-//	if (R.PC.W == 0xe400) code_log_flag = 1;
-//	if (R.PC.W == 0xab00) code_log_flag = 0;
-//	if (R.PC.W == 0x5a05) code_log_flag = 1;
-//	if (R.PC.W == 0x59d4) code_log_flag = 0;
-
 //	if (R.PC.W == 0x4f85) code_log_flag = 1;
 //	if (R.PC.W == 0x442)  code_log_flag = 0;
 

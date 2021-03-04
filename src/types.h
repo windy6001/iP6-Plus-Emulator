@@ -15,9 +15,6 @@
 #define FALSE 0
 #endif
 
-//#ifndef __OBJC__
-//typedef int  BOOL;
-//#endif
 
 typedef unsigned char byte;
 typedef unsigned short word;
