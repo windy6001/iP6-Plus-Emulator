@@ -848,7 +848,7 @@ void InitVariable(void)
 	initAutokey();		// init auto key
 
 	if (debugWorkPath[0] == 0) {
-		OSD_GetModulePath(debugWorkPath, MAX_PATH);
+		OSD_GetModulePath(debugWorkPath, PATH_MAX);
 	}
 
 }

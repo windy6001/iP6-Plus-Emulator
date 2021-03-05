@@ -29,6 +29,7 @@
 #include "Timer.h"
 #include "schedule.h"
 #include "dokodemo.h"
+#include "autokey.h"
 
 
 /*** Registers ***********************************************/

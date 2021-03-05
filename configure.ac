@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT(iP6,4.9-Beta-2, [BUG-REPORT-ADDRESS])
+AC_INIT(iP6,4.9-Beta-4, [BUG-REPORT-ADDRESS])
 AC_CONFIG_SRCDIR([src/config.h.in])
 AC_CONFIG_HEADERS([src/config.h])
 AM_INIT_AUTOMAKE(1.15   foreign)

@@ -41,4 +41,4 @@ void DisplayDisasm(void);
 void  DebugDo(void);
 
 #define DEBUG_WINDOW_RATE 3.0   // 2.7
-extern char debugWorkPath[MAX_PATH];
+extern char debugWorkPath[PATH_MAX];

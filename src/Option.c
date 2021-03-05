@@ -370,7 +370,7 @@ int ConfigRead(void)
 				new_Use_CompatibleROM = Use_CompatibleROM;
 				break;
          case D_DEBUGWORKPATH:
-                my_strncpy( debugWorkPath , (&tmp[N][K]) , MAX_PATH);
+                my_strncpy( debugWorkPath , (&tmp[N][K]) , PATH_MAX);
                 break;
        }
     }

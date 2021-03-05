@@ -139,7 +139,7 @@ int is_open_debug_dialog=0;  /* 1: open  0:close */
 static int is_debug_rdmem_ram=0;    /* 1: read memmory from RAM  0: read memory from current bank */
 
 
-char debugWorkPath[MAX_PATH]="";		// デバッグの作業パス
+char debugWorkPath[PATH_MAX]="";		// デバッグの作業パス
 
 
 void  DebugCommandPrompt( void);
@@ -1865,9 +1865,9 @@ debug_nowait(int argc, char *argv[])
 //*************************************************************/
 //				loadmem
 //*************************************************************/
-debug_loadmem(int argc, char* argv[])
+void debug_loadmem(int argc, char* argv[])
 {
-	WORD start_addr , end_addr;
+	word start_addr , end_addr;
 	start_addr = my_atoi(argv[2]);
 	if( argv[3][0]!='#') {
 		end_addr = my_atoi(argv[3]);			// end_addr
@@ -1895,8 +1895,8 @@ debug_loadmem(int argc, char* argv[])
 
 	FILE *fp = fopen(path,"rb");
 	if( fp !=NULL) {
-		int size=0;
-		for(WORD i= start_addr; i<=end_addr; i++) {
+        int size=0;
+		for(word i= start_addr; i<=end_addr; i++) {
 			int v = fgetc(fp);
 			if( v== EOF) break;
 			poke_memory(i, v);
