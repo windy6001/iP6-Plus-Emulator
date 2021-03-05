@@ -11,5 +11,5 @@ EXTRA_DIST = basicrom60.h \
 	CGROM60 \
 	font66 \
 	basic60-v072 \
-	basic66-v032
+	basic66-v031
 

@@ -8,6 +8,6 @@ SUBDIRS = src doc Win_Project
 
 
 EXTRA_DIST=\
-	Readme.html
+	README.md	
 
 AUTOMAKE_OPTIONS = foreign 
