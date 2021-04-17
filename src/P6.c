@@ -218,8 +218,8 @@ void PutImage(void)
 	  y *= scale;
 
 	  dx = surface1->w -x;
-	  dy = surface1->h -y;
-
+	  //dy = surface1->h -y;
+	  dy = lines *scale -y;		// cƒXƒNƒ[ƒ‹‚Å‰¡ü“ü‚é‚Ì‚Å
 
 	  BlitSurface(surface2, dx, dy, x, y, surface1, 0, 0);
 	  BlitSurface(surface2, 0, dy, dx, y, surface1, x, 0);

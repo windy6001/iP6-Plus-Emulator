@@ -636,10 +636,10 @@ int i,j;
 byte peek_memory(register word A)
 {
 	 byte port;
-	 port = A / 0x2000;
-	 if( sr_mode && port60[ port] & 0x20)     // 拡張RAM64KBか？
-		 return M_RDMEM( A);
-	 else
+//	 port = A / 0x2000;
+//	 if( sr_mode && port60[ port] & 0x20)     // 拡張RAM64KBか？
+//		 return M_RDMEM( A);
+//	 else
 		 return *(RAM+A);
 }
 
@@ -769,7 +769,7 @@ void gvram_write(register word A,register byte V)
  byte* adr;
  int x,y,z,w,off;
 
- if( A >319) { PRINTDEBUG1(MEM_LOG,"gvram_write:out of range:  x is %d **************\n",A); return;}
+ if(( A & 0x1fff) >319) { PRINTDEBUG1(MEM_LOG,"gvram_write:out of range:  x is %d **************\n",A); return;}
 	x = A & 0x1fff;
 	y = portCF*16+portCE;           /* y座標 */
 	if( y >=204) y-=204;			/* Y座標 204 以上だと 204 引く add 2003/10/22 */

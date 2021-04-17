@@ -60,9 +60,9 @@ struct {
 	{"ー",0xb0},{"ア",0xb1},{"イ",0xb2},{"ウ",0xb3},{"エ",0xb4},{"オ",0xb5},{"カ",0xb6},{"キ",0xb7},
 	{"ク",0xb8},{"ケ",0xb9},{"コ",0xba},{"サ",0xbb},{"シ",0xbc},{"ス",0xbd},{"セ",0xbe},{"ソ",0xbf},
 
-	{"タ",0xc0},{"チ",0xc1},{"ッ",0xc2},{"テ",0xc3},{"ト",0xc4},{"ナ",0xc5},{"ニ",0xc6},{"ヌ",0xc7},
+	{"タ",0xc0},{"チ",0xc1},{"ツ",0xc2},{"テ",0xc3},{"ト",0xc4},{"ナ",0xc5},{"ニ",0xc6},{"ヌ",0xc7},
 	{"ネ",0xc8},{"ノ",0xc9},{"ハ",0xca},{"ヒ",0xcb},{"フ",0xcc},{"ヘ",0xcd},{"ホ",0xce},{"マ",0xcf},
-	{"ミ",0xd0},{"ム",0xf1},{"メ",0xf2},{"モ",0xd3},{"ヤ",0xd4},{"ユ",0xd5},{"ヨ",0xd6},{"ラ",0xd7},
+	{"ミ",0xd0},{"ム",0xd1},{"メ",0xd2},{"モ",0xd3},{"ヤ",0xd4},{"ユ",0xd5},{"ヨ",0xd6},{"ラ",0xd7},
 	{"リ",0xd8},{"ル",0xd9},{"レ",0xda},{"ロ",0xdb},{"ワ",0xdc},{"ン",0xdd},
 
 	{"た",0xe0},{"ち",0xe1},{"つ",0xe2},{"て",0xe3},{"と",0xe4},{"な",0xe5},{"に",0xe6},{"ぬ",0xe7},
@@ -78,40 +78,53 @@ struct {
 	{"ば",0xea, 0xDE},{"び",0xeb, 0xDE},{"ぶ",0xec, 0xDE},{"べ",0xed, 0xDE},{"ぼ",0xee, 0xDE},
 	{"ぱ",0xea, 0xDF},{"ぴ",0xeb, 0xDF},{"ぷ",0xec, 0xDF},{"ぺ",0xed, 0xDF},{"ぽ",0xee, 0xDF},
 
+	{"ガ",0xb6, 0xDE},{"ギ",0xb7, 0xDE},{"グ",0xb8, 0xDE},{"ゲ",0xb9, 0xDE},{"ゴ",0xba, 0xDE},
+	{"ザ",0xbb, 0xDE},{"ジ",0xbc, 0xDE},{"ズ",0xbd, 0xDE},{"ゼ",0xbe, 0xDE},{"ゾ",0xbf, 0xDE},
+	{"ダ",0xc0, 0xDE},{"ヂ",0xc1, 0xDE},{"ヅ",0xc2, 0xDE},{"デ",0xc3, 0xDE},{"ド",0xc4, 0xDE},
+	{"バ",0xca, 0xDE},{"ビ",0xcb, 0xDE},{"ブ",0xcc, 0xDE},{"ベ",0xcd, 0xDE},{"ボ",0xce, 0xDE},
+	{"パ",0xca, 0xDF},{"ピ",0xcb, 0xDF},{"プ",0xcc, 0xDF},{"ペ",0xcd, 0xDF},{"ポ",0xce, 0xDF},
+
 	{{0xff,0xff},{0xff,0xff}},
 };
 
 // *******************************************************************
 //	 convert SJIS string --> P6 key code
 // *******************************************************************
-int convertSjis2p6(unsigned char *inData ,unsigned char *outData)
+int convertSjis2p6key(unsigned char *inData ,unsigned char *outData)
 {
-	int found = FALSE;
+//	int found = FALSE;
 	int i,j;
 
 	*outData =0;
-	for(j=0; j< strlen(inData);j+=2) {
-		i=0;
-		do {
-			if( conv_tbl[i].sjis[0]== 0xff) {
-				break;
+	for(j=0; j< strlen(inData);j++) {	// read inData
+		if( isSjis( inData[j+0])) {		// SJIS ?
+			i=0;
+			do {							// search table
+				if( conv_tbl[i].sjis[0]== 0xff) {
+					break;
+					}
+				if( inData[j+0] == conv_tbl[i].sjis[0] && inData[j+1]==conv_tbl[i].sjis[1]) {
+					strcat( outData, conv_tbl[i].p6);
+					//found = TRUE;
+					break;
 				}
-			if( inData[0+j] == conv_tbl[i].sjis[0] && inData[1+j]==conv_tbl[i].sjis[1]) {
-				strcat( outData, conv_tbl[i].p6);
-				found = TRUE;
-				break;
-			}
-		i++;
-		}while(1);
+				i++;
+			}while(1);
+			j++;
+		}
+		else {								// hankaku
+			unsigned char buff[2];
+			buff[0] = inData[j];
+			buff[1] = 0;
+			strcat( outData, buff);
+		}
 	}
-	return found;
+	return 1;
 }
 
 
-// *******************************************************************
-//	 convert P6 key code --> SJIS string
-// *******************************************************************
-int convertp62Sjis(unsigned char* inData, unsigned char* outData)
+/*
+int convertSjis2p6key(unsigned char* inData, unsigned char* outData)
 {
 	int found = FALSE;
 	int i, j;
@@ -123,7 +136,34 @@ int convertp62Sjis(unsigned char* inData, unsigned char* outData)
 			if (conv_tbl[i].sjis[0] == 0xff) {
 				break;
 			}
-			if (inData[0 + j] == conv_tbl[i].p6[0] ) {
+			if (inData[0 + j] == conv_tbl[i].sjis[0] && inData[1 + j] == conv_tbl[i].sjis[1]) {
+				strcat(outData, conv_tbl[i].p6);
+				found = TRUE;
+				break;
+			}
+			i++;
+		} while (1);
+	}
+	return found;
+}
+*/
+
+// *******************************************************************
+//	 convert P6 key code --> SJIS string
+// *******************************************************************
+int convertp6key2Sjis(unsigned char* inData, unsigned char* outData)
+{
+	int found = FALSE;
+	int i, j;
+
+	*outData = 0;
+	for (j = 0; j < strlen(inData); j += 2) {
+		i = 0;
+		do {
+			if (conv_tbl[i].sjis[0] == 0xff) {
+				break;
+			}
+			if (inData[0 + j] == conv_tbl[i].p6[0]) {
 				strcat(outData, conv_tbl[i].sjis);
 				found = TRUE;
 				break;
@@ -134,3 +174,16 @@ int convertp62Sjis(unsigned char* inData, unsigned char* outData)
 	return found;
 }
 
+
+// *******************************************************************
+//	 is SJIS ?
+// *******************************************************************
+int isSjis(unsigned char c) 
+{
+	int ret= FALSE;
+	if (((c >= 0x81) && (c <= 0x9f)) || ((c >= 0xe0) && (c <= 0xfc))) {
+		ret= TRUE;
+		}
+	return ret;
+	
+}

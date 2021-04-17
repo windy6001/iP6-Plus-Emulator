@@ -1334,7 +1334,7 @@ dword CPUThreadProc(char * lpParameter)
 				
 				if( inTrace == DEBUG_START)
 					{
-					open_debug_dialog();  
+					open_debug_dialog();
 					DebugStart(&R);
 					if (DebugResult[0]) {
 						DebugPutResult();

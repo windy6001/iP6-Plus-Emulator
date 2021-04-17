@@ -1905,7 +1905,7 @@ int drag_open(char *path, int max)
 		ConfigWrite();				// 設定ファイル書き込み
 		OpenFile1(FILE_LOAD_TAPE);
 	}
-	if (!stricmp(ext, ".D88"))			// ディスク
+	else if (!stricmp(ext, ".D88"))			// ディスク
 	{
 		int drv_no = 0;
 		strcpy(DskPath[drv_no], drive);
@@ -1915,35 +1915,42 @@ int drag_open(char *path, int max)
 		ConfigWrite();				// 設定ファイル書き込み
 		OpenFile1(FILE_DISK1);
 	}
-
-	if (!stricmp(ext, ".TXT"))			// テキストファイル 流し込み
+#if 0
+	else if (!stricmp(ext, ".TXT")|| !stricmp(ext, ".MD"))			// テキストファイル 流し込み
 	{
-		int size=0;
+		int size=512;
 		FILE *fp;
-		char *buff;
+		char *inbuff ,*outbuff;
 		char *p;
 
-		fp = fopen(path, "rb"); 
+		fp = fopen(path, "r"); 
 		if (!fp) {
 			MessageBox(hwndMain,"ファイルオープンエラー", "",MB_OK);
 			return 0;
 		 }
-		fseek(fp, 0, SEEK_END);
-		size = ftell(fp);			// file size
-		fseek(fp, 0, SEEK_SET);
 
-		p = buff = malloc(size);
-
-		while (!feof(fp))
-		{
-			*p = fgetc(fp);
-			p++;
-			*p = 0;
+		inbuff  = malloc(size);
+		outbuff = malloc(size);
+		if (inbuff != NULL && outbuff !=NULL) {
+			while (1){
+				if (fgets(inbuff, size, fp) == NULL) {
+					break;
+					}
+				if( inbuff[strlen(inbuff)-1] == 0xa) {
+					strcat( inbuff, "\r");
+				}
+				convertSjis2p6key(inbuff, outbuff);
+				putAutokeyMessage(outbuff);
+				}
+			fclose(fp);
+			free(inbuff);
+			free(outbuff);
+			}
+		else {
+			return 0;
 		}
-		fclose(fp);
-		putAutokeyMessage(buff);
-		free(buff);
 	}
+#endif
 	return 1;
 
 }

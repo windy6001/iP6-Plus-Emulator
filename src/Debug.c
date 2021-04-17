@@ -45,8 +45,8 @@ void chk_backlog(void);
 // 
 
 #define MAX_BACK_LOG 300
-#define MAX_COMMANDLINES 30
-#define MAX_COMMANDCOWS  56 // 63
+#define MAX_COMMANDLINES (30+11)
+#define MAX_COMMANDCOWS  (61) // 63
 
 #define  COMMANDLINE_TOP_YY  21
 
@@ -54,7 +54,7 @@ void chk_backlog(void);
 
 
 #define  MAX_DUMP_LINES   16
-#define  DUMP_TOP_XX      57  
+#define  DUMP_TOP_XX      (62)  
 #define  DUMP_TOP_YY	  22
 
 #define  STATUS_TOP_XX    (71+14+18)
@@ -63,11 +63,11 @@ void chk_backlog(void);
 #define  DISASM_TOP_XX    (40+14)
 #define  DISASM_TOP_YY	   1
 
-#define  IO_TOP_XX        57
+#define  IO_TOP_XX        62
 #define  IO_TOP_YY	      40
 
 #define  FUNCTION_TOP_XX  0
-#define  FUNCTION_TOP_YY  52
+#define  FUNCTION_TOP_YY  (52+11)
 
 #define MAX_CMD_HISTORY      20	/* 命令のヒストリー　最大数 */
 
@@ -586,13 +586,15 @@ static void DisplayUsage(void)
 	at += sprintf(DebugResult+at, "***** Built-in Z80 Debugger Commands *****\r\n");
 	at += sprintf(DebugResult + at, "break <addr>  : Set Breakpoint\r\n");
 	at += sprintf(DebugResult + at, "dump <addr>   : Memory dump at addr\r\n");
-	at += sprintf(DebugResult + at, "disasm <addr> : Disassembly at addr\r\n");
+	at += sprintf(DebugResult + at, "disasm <addr> : Disassembly at addr of current BANK\r\n");
+	at += sprintf(DebugResult + at, "ur <addr>     : Disassembly at addr of RAM\r\n");
 	at += sprintf(DebugResult + at, "go(g)         : Continue with debugger window\r\n");
 	at += sprintf(DebugResult + at, "G             : Continue without debugger window\r\n");
 	at += sprintf(DebugResult + at, "loadmem       : Load memory \r\n");
 	at += sprintf(DebugResult + at, "reg           : Display registers\r\n");
 	at += sprintf(DebugResult + at, "step(s)       : Break at next instruction\r\n");
 	at += sprintf(DebugResult + at, "nowait <start addr> <end addr>: set nowait mode\r\n");
+	at += sprintf(DebugResult + at, "reset         : reset  (PC address =0) \r\n");
 	at += sprintf(DebugResult + at, "?,h           : Show this help text\r\n\r\n");
 
 
@@ -1280,7 +1282,7 @@ D_HELP ,D_GO     ,D_GOFULL  , D_TRACE, D_STEP,
 D_BREAK ,D_READ ,D_WRITE  , D_FILL   , D_MOVE,
 D_SEARCH,D_OUT,  D_LOADMEM ,D_SAVEMEM , D_RESET ,
 D_REG , D_DISASM ,D_DUMP ,D_ANIMATE , D_UR,
-D_IN , D_SAVEVRAM,D_LOADVRAM, D_VRAMS,D_NOWAIT};
+D_IN , D_SAVEVRAM,D_LOADVRAM, D_VRAMS,D_NOWAIT , D_PWD};
 
 static char   cmd[][10]= {
 "help"   , "?"          , "go"       ,"g"	    ,"G",
@@ -1288,7 +1290,7 @@ static char   cmd[][10]= {
 "b"      , "read"       , "write"    ,"out"     ,"loadmem"  ,
 "savemem",  "reset"     , "reg"      , "disasm" , "dump"    ,
 "out"    ,"animate"     , "ur"       ,"in"      , "savevram" ,
-"loadvram","vrams"      , "nowait",
+"loadvram","vrams"      , "nowait"   ,"pwd" ,
 };
 
 static char   cmdNo[]   ={
@@ -1297,7 +1299,7 @@ D_TRACE  ,D_TRACE      , D_STEP     , D_STEP     ,D_BREAK ,
 D_BREAK,  D_READ       , D_WRITE    , D_OUT      ,D_LOADMEM,
 D_SAVEMEM,D_RESET      ,D_REG       , D_DISASM   ,D_DUMP,
 D_OUT ,   D_ANIMATE,   D_UR         , D_IN       ,D_SAVEVRAM,
-D_LOADVRAM , D_VRAMS,  D_NOWAIT     ,
+D_LOADVRAM , D_VRAMS,  D_NOWAIT     , D_PWD      ,
 -1}; 
 
 
@@ -1702,9 +1704,10 @@ void debug_break( int argc , char *argv[])
 	if( !invalid ) {		// ----------- 設定されたブレークポイントを表示する -------
 		set_breakpoint( action , addr ,idx, enable);
 	}
-	else
-		at += sprintf(DebugResult+at, "Invalid operand\r\n");
-
+	else {
+		at += sprintf(DebugResult+at, "Invalid operand.\r\n");
+		return;
+	}
 
 }
 
@@ -1858,6 +1861,10 @@ int debug_vrams()
 //*************************************************************/
 debug_nowait(int argc, char *argv[])
 {
+	if (argc != 3) {
+		at += sprintf(DebugResult + at, "usage: nowait (start address) (end address)\r\n");
+		return;
+	}
 	nowait_start_addr = my_atoi( argv[1] );
 	nowait_end_addr   = my_atoi( argv[2] );
 }
@@ -1867,6 +1874,10 @@ debug_nowait(int argc, char *argv[])
 //*************************************************************/
 void debug_loadmem(int argc, char* argv[])
 {
+	if( argc !=4) {
+		at += sprintf(DebugResult + at, "Invalid!\r\n"); 
+		return;
+		}
 	word start_addr , end_addr;
 	start_addr = my_atoi(argv[2]);
 	if( argv[3][0]!='#') {
@@ -1906,10 +1917,147 @@ void debug_loadmem(int argc, char* argv[])
 		at += sprintf(DebugResult + at, "loaded from '%s' %d (0x%4X) bytes  \r\n",argv[1] , size,size);
 	}
 	else {
-		at += sprintf(DebugResult + at, "file '%s' is not found  \r\n", argv[1]);
+		at += sprintf(DebugResult + at, "file '%s' open error  \r\n", argv[1]);
 	}
 	free( path);
 }
+
+//*************************************************************/
+//				savemem
+//*************************************************************/
+void debug_savemem(int argc, char* argv[])
+{
+	if (argc != 4) {
+		at += sprintf(DebugResult + at, "Invalid!\r\n");
+		return;
+	}
+	word start_addr, end_addr;
+	start_addr = my_atoi(argv[2]);
+	if (argv[3][0] != '#') {
+		end_addr = my_atoi(argv[3]);			// end_addr
+	}
+	else {
+		end_addr = start_addr + my_atoi(argv[3] + 1);	// size
+	}
+
+
+	if (start_addr > end_addr) {
+		at += sprintf(DebugResult + at, "Invalid : start_addr is bigger than end_addr \r\n");
+		return;
+	}
+
+	char* path = NULL;
+	int  len = strlen(debugWorkPath) + strlen(argv[1]) + 2;
+	path = malloc(len);
+	if (path == NULL) {
+		at += sprintf(DebugResult + at, "memory allocate failed \r\n");
+		return;
+	}
+	sprintf(path, "%s\\%s", debugWorkPath, argv[1]);
+
+
+
+	FILE* fp = fopen(path, "w+b");
+	if (fp != NULL) {
+		int size = 0;
+		for (word i = start_addr; i <= end_addr; i++) {
+			int v = peek_memory(i);
+			fputc(v, fp);
+			size++;
+		}
+		fclose(fp);
+		at += sprintf(DebugResult + at, "Save memory [%04X]->'%s' (0x%X) bytes  \r\n", start_addr, argv[1], size, size);
+	}
+	else {
+		at += sprintf(DebugResult + at, "file '%s' open error  \r\n", argv[1]);
+	}
+	free(path);
+}
+
+//*************************************************************/
+//				reset
+//*************************************************************/
+void debug_reset(int argc, char* argv[])
+{
+	R.PC.W = 0;
+	at += sprintf(DebugResult + at, "reset ok  \r\n");
+
+}
+
+
+//*************************************************************/
+//				pwd
+//*************************************************************/
+void debug_pwd(int argc, char* argv[])
+{
+	at += sprintf(DebugResult + at, debugWorkPath );
+	at += sprintf(DebugResult + at, "\r\n");
+}
+
+
+//*************************************************************/
+//				HELP
+//*************************************************************/
+void debug_help(int argc, char* argv[])
+{
+	if (argc == 2) {
+		int cmd_no = DebugConvCmd(argv[1]);
+		switch( cmd_no) {
+			case D_ANIMATE: break;
+			case D_REG:     at += sprintf(DebugResult + at, "reg <name> <value>\r\n");
+							at += sprintf(DebugResult + at, "set to register\r\n");
+							at += sprintf(DebugResult + at, "\r\n");
+							at += sprintf(DebugResult + at, "no parameter : show all registers\r\n");
+							at += sprintf(DebugResult + at, "name: register name \r\n");
+							at += sprintf(DebugResult + at, "      AF BC DE HL IX IY SP PC AF'BC'DE'HL'\r\n");
+							at += sprintf(DebugResult + at, "      A B C D E H L  A'B'C'D'E'H'L'\r\n");
+							at += sprintf(DebugResult + at, "value: setting value \r\n");
+							break;
+			case D_STEP:    break;
+			case D_GO:      
+			case D_GOFULL:  at += sprintf(DebugResult + at, "g:    continue with monitor\r\n");
+							at += sprintf(DebugResult + at, "G:    continue without monitor\r\n");
+							break;
+			case D_DUMP:    at += sprintf(DebugResult + at, "dump <addr>\r\n");
+							at += sprintf(DebugResult + at, "dump list\r\n");
+							break;
+			case D_DISASM:  at += sprintf(DebugResult + at, "disasm <addr>\r\n");
+							at += sprintf(DebugResult + at, "disasmble on CURRENT memory bank\r\n");
+							at += sprintf(DebugResult + at, "\r\n");
+							break;
+			case D_UR:      at += sprintf(DebugResult + at, "ur <addr>\r\n");
+							at += sprintf(DebugResult + at, "disasmble on MAIN RAM\r\n");
+							at += sprintf(DebugResult + at, "\r\n");
+							break;
+			case D_OUT:     break;
+			case D_IN:      break;
+			case D_BREAK:	at += sprintf(DebugResult + at, "break <action> <addr/port> #<slot no>\r\n");
+							at += sprintf(DebugResult + at, "set break points\r\n");
+							at += sprintf(DebugResult + at, "\r\n");
+							at += sprintf(DebugResult + at, "no parameter:   show all breakpoints\r\n");
+							at += sprintf(DebugResult + at, "break <addr>:   break at address\r\n");
+							at += sprintf(DebugResult + at, "\r\n");
+							at += sprintf(DebugResult + at, "action:in:      break at in \r\n");
+							at += sprintf(DebugResult + at, "       out:     break at out \r\n");
+							at += sprintf(DebugResult + at, "       on:      enable break point \r\n");
+							at += sprintf(DebugResult + at, "       off:     disable break point \r\n");
+							at += sprintf(DebugResult + at, "slot no:        #1-#10\r\n");
+							break;
+
+			case D_SAVEVRAM:break;
+			case D_VRAMS:   break;
+			case D_NOWAIT:  at += sprintf(DebugResult + at, "nowait <start addr> <end addr>\r\n");
+							at += sprintf(DebugResult + at, "Accelerate only specific routines\r\n");
+							break;
+			case D_LOADMEM: break;
+			case D_SAVEMEM: break;
+			case D_RESET:   break;
+			case D_PWD:     break;
+		}
+		return;
+	}
+}
+
 
 //*************************************************************/
 //				Debug Command   デバッグコマンドの実行
@@ -1957,7 +2105,11 @@ int DebugCommand(reg *R, const char *Command)
 	switch( cmd_no)
 		{
 		case D_ANIMATE: animatemode = !animatemode;break;		// test!
-		case D_HELP:  DisplayUsage(); break;
+		case D_HELP:  if( argc ==1) 
+							DisplayUsage();
+					  else
+							debug_help(argc, argv);
+					  break;
 		case D_REG:   if( argc ==1 ) DisplayRegisters(R); else debug_reg(argc, argv); break;
 		case D_STEP:  disasm_is_backscroll=0; return 1;
 		case D_GO:    Trap=0xFFFF;Trace=0; disasm_is_backscroll=0; kbFlagGraph = 0; return 1;
@@ -1970,8 +2122,11 @@ int DebugCommand(reg *R, const char *Command)
 		case D_BREAK:  debug_break( argc, argv ); break;
 		case D_SAVEVRAM: debug_savevram(argc, argv); break;
 		case D_VRAMS:    debug_vrams(); break;
-		case D_NOWAIT:   if( argc >=2) debug_nowait(argc, argv); break;
-		case D_LOADMEM:  if( argc >=3) debug_loadmem(argc, argv); break;
+		case D_NOWAIT:   debug_nowait(argc, argv); break;
+		case D_LOADMEM:  debug_loadmem(argc, argv); break;
+		case D_SAVEMEM:  debug_savemem(argc, argv); break;
+		case D_RESET:    debug_reset(argc,argv); break;
+		case D_PWD:      debug_pwd(argc, argv);  break;
 		}
 
   /* Continue emulation */
@@ -2638,7 +2793,7 @@ void open_debug_dialog(void)
 
 	    debug_surface = OSD_CreateSurface(M6WIDTH* DEBUG_WINDOW_RATE ,M6HEIGHT* DEBUG_WINDOW_RATE ,bitpix ,SURFACE_BITMAP);
 
-		resizewindow((float)scale ,DEBUG_WINDOW_RATE  ,0);
+		resizewindow((float)scale ,DEBUG_WINDOW_RATE  , WINDOW_NOBOARDER);
 
 		ignore_padding_flag =1;		// padding 無視する
 		if( isFullScreen() ) {toggleFullScr();toggleFullScr();}	// isfullscrn 1:  back to fullscreen 

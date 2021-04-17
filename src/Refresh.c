@@ -1251,7 +1251,7 @@ void xx_putOneChar(int sx,int sy , char chr , char attr)
 // ****************************************************************************
 //        　デバッガ用の一文字出力
 // ****************************************************************************
-#define CHR_WIDTH 6
+#define CHR_WIDTH (6)
 #define CHR_HEIGHT 10
 
 //extern OSD_Surface * screen;
@@ -1265,7 +1265,7 @@ void putOneChar(int sx, int sy, char chr, char attr)
 	G = DEBUG_CGROM;
 	X = 0;
 	sx *= CHR_WIDTH;
-	sy *= CHR_HEIGHT+1;
+	sy *= CHR_HEIGHT;
 	for (Y = 0; Y < CHR_HEIGHT; Y++)
 	{
 		debug_SetScrVar(Y + sy, X + sx);/* Drawing area */
@@ -1276,7 +1276,7 @@ void putOneChar(int sx, int sy, char chr, char attr)
 		SeqPix21(K & 0x20 ? FC : BC); SeqPix21(K & 0x10 ? FC : BC);
 		SeqPix21(K & 0x08 ? FC : BC); SeqPix21(K & 0x04 ? FC : BC);
 		SeqPix21(K & 0x02 ? FC : BC); SeqPix21(K & 0x01 ? FC : BC);
-	}
+    }
 }
 
 

@@ -38,6 +38,8 @@ typedef unsigned long XID;
 #define WINDOW_SOFTWARE  0x100
 #define WINDOW_HARDWARE  0x110
 
+#define WINDOW_NOBOARDER 0x1000			// ウインドウの余白なし
+
 #define FULLSCREEN       0x4
 
 

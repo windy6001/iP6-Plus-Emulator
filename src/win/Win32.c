@@ -757,9 +757,12 @@ OSD_Surface * OSD_setwindowsurface(int width , int height, int bitpix,int flags)
 	surface->handle = 0;
 	surface->hdcBmp = 0;
 	surface->flags  = SURFACE_WINDOW;			// window
-	
-	SetWindowPos( hwndMain,0,0,0,width +BORDERW+PADDINGW*2 , height+BORDERH+PADDINGH*2 ,SWP_NOMOVE);  // resize window
 
+	if( flags & WINDOW_NOBOARDER == WINDOW_NOBOARDER) {		// resize window
+		SetWindowPos( hwndMain, 0, 0, 0, width , height , SWP_NOMOVE);  
+	} else {
+		SetWindowPos( hwndMain, 0, 0, 0, width +BORDERW+PADDINGW*2 , height+BORDERH+PADDINGH*2 ,SWP_NOMOVE);
+	}
 	return surface;
 }
 
