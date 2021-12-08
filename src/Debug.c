@@ -28,6 +28,9 @@
 #include "Debug.h"
 #include "voice.h"
 
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -164,8 +167,14 @@ void ClearAttr(void);
 //void make_disasm(reg *R, const char *S);
 void make_disasm(word start_adr, const char *S);
 static void DisplayRegisters(reg *R);
-void push_stacks(word stack_addr, int mode, int reg, word addr);
+void push_stacks(word stack_addr , int cmd ,int reg , word value ,word addr);
 void pop_stacks(void);
+void debug_savevram(int argc, char*argv[]);
+void debug_settape(int argc, char *argv[]);
+void debug_setnowait(int argc, char* argv[]);
+void help_set(void);
+void do_stacks( byte opcode1 , byte opcode2 , byte opcode3);
+void debug_loadvram(int argc, char* argv[]);
 
 
 static char *Mnemonics[256] =
@@ -1958,7 +1967,7 @@ setBreakPointMessage( char *str)
 //				debug_saveram  VRAMの内容を拡張メモリーに保存する
 //    Input:　
 //*************************************************************/
-debug_savevram(int argc, char*argv[])
+void debug_savevram(int argc, char*argv[])
 {
 	byte *vram_addr;
 	byte *extram_addr;
@@ -2026,7 +2035,7 @@ debug_savevram(int argc, char*argv[])
 //				debug_loadram  拡張メモリーからVRAMにロードする
 //    Input:　
 //*************************************************************/
-debug_loadvram(int argc, char* argv[])
+void debug_loadvram(int argc, char* argv[])
 {
 	byte* vram_addr;
 	byte* extram_addr;
@@ -2352,7 +2361,7 @@ void debug_set(int argc, char* argv[])
 //*************************************************************/
 //				set tape
 //*************************************************************/
-debug_settape(int argc, char *argv[])
+void debug_settape(int argc, char *argv[])
 {
 	if( argc ==3) {
 		long current = ftell(CasStream[0]);
@@ -2374,7 +2383,7 @@ debug_settape(int argc, char *argv[])
 //*************************************************************/
 //				set no wait
 //*************************************************************/
-debug_setnowait(int argc, char* argv[])
+void debug_setnowait(int argc, char* argv[])
 {
 	if (argc == 2) {
 		at += sprintf(DebugResult + at, "nowait: 0x%04X - 0x%04X \r\n", nowait_start_addr, nowait_end_addr);;
@@ -2645,7 +2654,7 @@ void debug_fill(int argc, char* argv[])
 
 
 
-help_set(void)
+void help_set(void)
 {
 	at += sprintf(DebugResult + at, "setting  \r\n");	// 色んな設定ができる
 	at += sprintf(DebugResult + at, " - set tape <new tape position> \r\n");

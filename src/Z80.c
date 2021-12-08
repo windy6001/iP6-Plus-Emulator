@@ -1096,7 +1096,7 @@ int exec1(void)
 	register pair J;
 	long NowClock;
 
-	debug_save_reg(&R);			// レジスターを保存する
+	debug_save_reg(R);			// レジスターを保存する
 
 	StartCount = ClockCount;
 	if (R.PC.W == nowait_start_addr) WaitFlag = 0;

@@ -132,8 +132,14 @@ void InitMemmap(void);
 void dokodemo_save_mem(void);
 void dokodemo_load_mem(void);
 
+
+
 byte peek_memory(register word A);
+byte peek_ext_memory(register word A);
+
 void poke_memory(register word A ,byte V);
+void poke_ext_memory(register word A, byte V);
+
 
 char * read_disasm_comment(word adr);
 

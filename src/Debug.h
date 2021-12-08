@@ -41,6 +41,7 @@ void DisplayDisasm(void);
 void  DebugDo(void);
 
 #define DEBUG_WINDOW_RATE 3.2
-void do_stacks(byte opcode);
 
 extern char debugWorkPath[PATH_MAX];
+void do_stacks( byte opcode1 , byte opcode2 , byte opcode3);
+void debug_save_reg( reg r);

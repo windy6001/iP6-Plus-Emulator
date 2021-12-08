@@ -58,6 +58,13 @@
 #include "win/WinInput.h"
 #endif
 
+int stricmp(const char* a, const char* b)
+{
+   return strcasecmp(a,b);
+}
+
+
+
 void BlitSurface(OSD_Surface * dst_surface, int ex, int ey, int w, int h, OSD_Surface * src_surface, int sx, int sy);
 
 

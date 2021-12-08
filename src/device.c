@@ -32,6 +32,7 @@
 #include "error.h"
 #include "Sound.h"
 #include "voice.h"
+#include "conv.h"
 
 #include "dokodemo.h"
 
