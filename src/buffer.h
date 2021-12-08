@@ -57,6 +57,7 @@ typedef struct keybuffer_tag {
 } KEYBUFFER;
 
 KEYBUFFER*  init_keybuffer(void);
+void clear_keybuffer(KEYBUFFER* _keybuffer);
 void write_keybuffer( KEYBUFFER* keybuffer,char chr ,int keydown , int scancode  ,int osdkeycode );
 int  read_keybuffer ( KEYBUFFER* keybuffer,char *chr ,int *keydown ,int *scancode ,int *osdkeycode );
 int sense_keybuffer( KEYBUFFER *keybuffer ,char *chr ,int *keydown ,int *scancode ,int *osdkeycode);

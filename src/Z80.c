@@ -118,6 +118,8 @@ int nowait_end_addr   = 0xffff;
  static int	NowClock;
  static int hline;
 
+int pre_sp;	// 命令実行前のSP
+
 // ****************************************************************************
 //			dokodemo save z80  (どこでもSAVEから呼ばれる）
 // ****************************************************************************
@@ -1087,12 +1089,15 @@ word getB(void)
 // ****************************************************************************
 int exec1(void)
 {
+	static int cnt =0;
 	static int flag= 0;
 	
 	register byte I, j;
 	register pair J;
 	long NowClock;
-  
+
+	debug_save_reg(&R);			// レジスターを保存する
+
 	StartCount = ClockCount;
 	if (R.PC.W == nowait_start_addr) WaitFlag = 0;
 	if (R.PC.W == nowait_end_addr)   WaitFlag = 1;
@@ -1125,7 +1130,10 @@ int exec1(void)
 	}
 #endif
 
-	switch((j=M_RDMEM(R.PC.W++)))	// 命令 fetch
+	byte op1 = M_RDMEM(R.PC.W++);	// 命令 fetch
+	byte op2 = M_RDMEM(R.PC.W);
+	byte op3 = M_RDMEM(R.PC.W + 1);
+	switch (op1 )				// 命令 fetch
 		{
 #include "Codes.h"							// 通常命令
 
@@ -1153,8 +1161,9 @@ int exec1(void)
 		 			);
 		}
 
+	do_stacks(op1 ,op2 ,op3);					// スタックを記録する
 
-	ClockCount-=cycles_main[j]+1;			/* 残クロック数 */
+	ClockCount-=cycles_main[op1]+1;			/* 残クロック数 */
 	NowClock = StartCount - ClockCount;		/* 実行したクロック数 */
 	return( NowClock);						/* 実行したクロック数　返す */
 }

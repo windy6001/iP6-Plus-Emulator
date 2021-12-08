@@ -327,13 +327,20 @@ int main(void)
 KEYBUFFER* init_keybuffer(void)
 {
 	KEYBUFFER *_keybuffer = malloc( sizeof(KEYBUFFER) );
-	
-	_keybuffer->read_idx=0;
-	_keybuffer->write_idx=0;
-	_keybuffer->length=1024-1;
+
+	clear_keybuffer( _keybuffer);
 	
 	return _keybuffer;
 }
+
+void clear_keybuffer(KEYBUFFER* _keybuffer)
+{
+
+	_keybuffer->read_idx = 0;
+	_keybuffer->write_idx = 0;
+	_keybuffer->length = 1024 - 1;
+}
+
 
 void write_keybuffer(KEYBUFFER *_keybuffer , char chr ,int keydown , int scancode ,int osdkeycode)
 {

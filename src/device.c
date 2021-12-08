@@ -874,8 +874,25 @@ void DoOut(register byte Port,register byte Value)
 			return;
 
 		// --------- 8255 PORT B   (SUB CPU) --------------
-   case 0x91: 
-			Printer(~Value); return;  /* printer data         */
+   case 0x91:{
+			char inData[4] ,outData[4];
+			char c;
+			inData[0]= ~Value; inData[1]=0;
+			c= ~Value & 0xff;
+			if ('!' <= c && c <= 'z') {
+				Printer( c);
+				return;
+			}
+			
+			if( convertp6key2Sjis(inData, outData) ) {
+				Printer(outData[0]);
+				Printer(outData[1]);
+			}
+			else {
+				Printer( ~Value);
+			}
+			 return;  /* printer data         */
+			}
 
 		// --------- 8255 PORT C   (SUB CPU) --------------
    case 0x92: return;                   /* printer,CRT,CG,sub   */

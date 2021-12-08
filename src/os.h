@@ -27,7 +27,7 @@ int OSD_RunApplicationEventLoop(void);
 void OSD_initKeymap(void);
 int OSD_transkey( int scancode);
 int OSD_GetModulePath(char *path , int max);
-void OSD_SetModulePath( char *path );
+void OSD_SetModulePath( void );
 int OSD_MessageBox( const char *mes, const char *cap, int type );
 int OSD_GetModulePath(char *path , int max);
 int setMenuTitle(int type);

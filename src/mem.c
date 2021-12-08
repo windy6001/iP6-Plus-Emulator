@@ -635,13 +635,19 @@ int i,j;
 // ****************************************************************************
 byte peek_memory(register word A)
 {
-	 byte port;
-//	 port = A / 0x2000;
-//	 if( sr_mode && port60[ port] & 0x20)     // 拡張RAM64KBか？
-//		 return M_RDMEM( A);
-//	 else
-		 return *(RAM+A);
+	 return *(RAM+A);
 }
+
+// ****************************************************************************
+//          peek_ext_memory: RAMからデータを読み出す。（常にEXTRAMから読み出す。）
+//	In:  A: address
+//  Out: data
+// ****************************************************************************
+byte peek_ext_memory(register word A)
+{
+	return *(EXTRAM64 + A);
+}
+
 
 // ****************************************************************************
 //          poke_memory: RAMにデータを書き込む。（常にRAMに書き込む。）
@@ -650,15 +656,18 @@ byte peek_memory(register word A)
 // ****************************************************************************
 void poke_memory(register word A ,byte V)
 {
-	 byte port;
-	 port = A / 0x2000+0x8;
-
-	 if( sr_mode && port60[ port] & 0x20)     // 拡張RAM64KBか？
-		M_WRMEM( A,V);
-	 else
-		 *(RAM+A) = V;
+	 *(RAM+A) = V;
 }
 
+// ****************************************************************************
+//          poke_ext_memory: EXTRAMにデータを書き込む。（常にEXTRAMに書き込む。）
+//	In:  A: address
+//  Out: data
+// ****************************************************************************
+void poke_ext_memory(register word A, byte V)
+{
+	*(EXTRAM64 + A) = V;
+}
 // ****************************************************************************
 //   		M_RDMEM: This function is called when a read from RAM occurs.
 //  In:  A: address
@@ -2186,6 +2195,8 @@ int StartP6(void)
 			printf("  BASICROM crc error \n");
 			}
 		}
+
+	BASICROM[ 0x1a4f ] = 0xc9;			// printer katakana にしない　　暫定パッチ★
 
   /* ***************  INIT MEMORY MAPPER *****************/
 	InitMemmap();

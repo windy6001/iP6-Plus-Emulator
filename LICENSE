@@ -1,8 +1,9 @@
 License
 
+Commercial use is prohibited. For non-commercial use, you may leave it free, but be sure to include a reference
+
 This software is based on fmsx. (https://fms.komkon.org/fMSX/)
 The code written by Mr.Marat Fayzullin is under the license of fmsx.
-Commercial use is prohibited. For non-commercial use, you may leave it free, but be sure to include a reference
 
 The Roma character conversion function (romaji.c) is MIT license.
 

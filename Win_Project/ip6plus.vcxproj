@@ -88,6 +88,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\autokey.c" />
+    <ClCompile Include="..\src\bmp.c" />
     <ClCompile Include="..\src\buffer.c" />
     <ClCompile Include="..\src\chkcrc32.c" />
     <ClCompile Include="..\src\conv.c" />

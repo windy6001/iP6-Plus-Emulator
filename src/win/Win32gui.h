@@ -10,3 +10,4 @@ int hidemenu(void);
 int restoremenu(void);
 
 int setMenuCheck(int type ,int sw);
+void OSD_OpenFiler(char* path);

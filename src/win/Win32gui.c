@@ -1057,6 +1057,7 @@ int OnMenuScreenshot(HWND hwnd)
 	op.lpstrInitialDir= NULL;
 
 	op.lpstrFilter  = TEXT("PNG image files {*.png}\0*.png\0")
+					  TEXT("BMP image files {*.bmp}\0*.bmp\0")
 					  TEXT("All files {*.*}  \0*.*\0\0");
 	op.lpstrInitialDir= ImgPath;			// initial directory
 	op.lpstrDefExt  = "*.png";
@@ -1894,7 +1895,10 @@ int drag_open(char *path, int max)
 
 	_splitpath(path, drive, dir, file, ext);
 
+	if( inTrace !=DEBUG_NONE) {			// ファイル名を自動入力　　 できればしたい
 
+		return 1;
+	}
 
 	if (!stricmp(ext, ".CAS") || !stricmp(ext, ".P6") || !stricmp(ext, ".P6T"))	// テープ
 	{
@@ -2359,6 +2363,16 @@ void putlasterror(void)
 
  LocalFree(lpMsgBuf);
 }
+
+
+// ****************************************************************************
+//          OpenFiler
+// ****************************************************************************
+void OSD_OpenFiler(char *path)
+{
+	ShellExecute(hwndMain ,"open", path, NULL, NULL, SW_SHOWNORMAL);
+}
+
 
 
 // ********************************************************************************

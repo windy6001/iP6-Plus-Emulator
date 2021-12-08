@@ -79,6 +79,7 @@ int write_png( char * file_name , OSD_Surface *surface_in)
     unsigned char *image = surface_in->pixels;
     int Width  = surface_in->w;
     int Height = surface_in->h;
+    if( Height ==204) Height=200;
     int pitch  = surface_in->pitch;
     int s_depth= surface_in->format->BitsPerPixel;  // source depth
     int d_depth= s_depth !=32 ? s_depth : 24;       // dest depth

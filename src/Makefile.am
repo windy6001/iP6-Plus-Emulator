@@ -13,9 +13,10 @@ SUBDIRS=unix fmgen  win sysdep compatible_rom
 # libvm_a_SOURCES 
 iP6_SOURCES = \
 iP6.c \
-Autokey.c \
-Autokey.h \
+autokey.c \
+autokey.h \
 Build.h \
+bmp.c \
 Codes.h \
 CodesCB.h \
 CodesED.h \

@@ -45,7 +45,7 @@ void chk_backlog(void);
 // 
 
 #define MAX_BACK_LOG 300
-#define MAX_COMMANDLINES (30+11)
+#define MAX_COMMANDLINES (30+12)
 #define MAX_COMMANDCOWS  (61) // 63
 
 #define  COMMANDLINE_TOP_YY  21
@@ -81,9 +81,10 @@ static int com_top_yy_bak = 0;     /* com_top_yy ÇÃÉoÉbÉNÉAÉbÉvÅ@ÅiÉoÉbÉNÉçÉOÇÇ
 static int com_is_backscroll=0;		/* 1:ÉoÉbÉNÉXÉNÉçÅ[ÉãíÜ  0:í èÌ*/
 
 
+enum {DEFAULT_BANK=0 , RAM_BANK ,EXTRAM_BANK};
 
-static int dump_is_ram=0;	      /* dump list mode 1:RAM  0:BANK memory  */
-static int dump_is_ram_bak=0;	  /* dump list mode 1:RAM  0:BANK memory  */
+static int dump_is_ram= DEFAULT_BANK;	 /* dump list mode  0:DEFAULT_BANK 1:RAM_BANK  2:EXTRAM_BANK  */
+static int dump_is_ram_bak=DEFAULT_BANK;	  
 extern int ignore_padding_flag;   /* 1:ignore padding variable */
 
 static int  dump_xx=0;			  /* dump xx */
@@ -141,6 +142,8 @@ static int is_debug_rdmem_ram=0;    /* 1: read memmory from RAM  0: read memory 
 
 char debugWorkPath[PATH_MAX]="";		// ÉfÉoÉbÉOÇÃçÏã∆ÉpÉX
 
+static reg pre_reg;		// ëOâÒÇÃÉåÉWÉXÉ^Å[
+
 
 void  DebugCommandPrompt( void);
 void  DebugDisasmPrompt( void);
@@ -150,7 +153,7 @@ void  DebugDumpPrompt( void);
 void DisplayMemDump(void);
 void DisplayStatus(reg *R);
 void DisplayIO(void);
-void make_memdump( reg *R ,const char *S , int spc_flag);
+int  make_memdump( reg *R ,const char *S , int spc_flag);
 
 void RefreshDebugString(void);
 void DebugPutResult(void);
@@ -161,6 +164,8 @@ void ClearAttr(void);
 //void make_disasm(reg *R, const char *S);
 void make_disasm(word start_adr, const char *S);
 static void DisplayRegisters(reg *R);
+void push_stacks(word stack_addr, int mode, int reg, word addr);
+void pop_stacks(void);
 
 
 static char *Mnemonics[256] =
@@ -403,6 +408,7 @@ void DebugStart(reg *R)
 	DisplayIO();
 	disasm_current_adr = R->PC.W;
 
+	chdir( debugWorkPath);		// ÉfÉoÉbÉOÉpÉXÇ… cd Ç∑ÇÈ
 }
 
 
@@ -530,6 +536,58 @@ int DAsm(char *S, char *MachineCode ,char *comment , word A)
 
 
 
+char* cnvCommandName(int cmd)
+{
+	char* name[] = {
+	"END","FOR","NEXT","DATA","INPUT","DIM","READ","LET",
+	"GOTO","RUN","IF","RESTORE","GOSUB","RETURN","REM",
+	"STOP","OUT","ON","LPRINT","DEF","POKE","PRINT",
+	"CONT","LIST","LLIST","CLEAR","COLOR","PSET",
+	"PRESET","LINE","PAINT","SCREEN","CLS","LOCATE",
+	"CONSOLE","CLOAD","CSAVE","EXEC","SOUND","PLAY","KEY",
+	"LCOPY","NEW",
+	"RENUM","CIRCLE", "GET","PUT","BLOAD","BSAVE","FILES",
+	"LFILES","LOAD","MERGE", "NAME","SAVE","FIELD","LSET","RSET",
+	"OPEN","CLOSE","DSKO$","KILL","TALK","MON","KANJI","DELETE",  // DELETE = C1
+	"TAB","TO","FN","SPC","INKEY$","THEN","NOT","STEP","+","-","*","/","^","AND","OR",">","=","<",
+	"SGN","INT","ABS","USR","FRE","INP","LPOS","POS","SQR","RND","LOG",
+	"EXP","COS","SIN","TAN","PEEK","LEN","HEX$","STR$","VAL","ASC",
+	"CHR$","LEFT$","RIGHT$","MID$","POINT","CSRLIN","STICK","STRIG","TIME",
+	"PAD", "DSKI$","LOF","LOC","EOF","DSKF","CVS","MKS$","ATN","CVI","MKI$",
+	};
+	
+	if( 0x80 <= cmd  && cmd <=0xfc)
+		return (name[cmd-0x80]);
+	else
+		return "";
+}
+
+
+char* getOperand( word addr)
+{
+	static byte buff[512];
+	byte *out = buff;
+	memset(buff,0,sizeof(buff));
+
+	byte a = peek_memory(addr);
+	while (a != ':' && a != 0x00)		// TO FIX  É_ÉuÉãÉRÅ[ÉeÅ[ÉVÉáÉìèàóùÇí«â¡Ç∑ÇÈÇ◊Ç´
+		{
+		if( a >= 0x80) {				// íÜä‘åæåÍ
+			byte *p = cnvCommandName(a);
+			int len = strlen(p);
+			my_strncpy(out , p , len);
+			out+=len;
+			addr++;
+		} else {
+			*out= a;
+			out++;
+			addr++;
+			}
+		a = peek_memory(addr);
+		}
+
+	return buff;
+}
 
 
 /** Debug() **************************************************/
@@ -564,6 +622,21 @@ static void DisplayRegisters(reg *R)
 		R->PC.W , MachineCode ,S,M_RDMEM(R->SP.W)+M_RDMEM(R->SP.W+1)*256,T
 	);
 
+	if( !sr_mode)	// îÒSRÇÃé¿çsíÜÇÃBASICÇÃÉRÉ}ÉìÉhÇï\é¶Ç∑ÇÈ
+		{
+		 if( R->PC.W == 0x71c)
+			{
+			at += sprintf(DebugResult+at,"[%d] ",peek_memory(0xfa5e)*256+peek_memory(0xfa5d));	// çsî‘çÜ
+			at += sprintf(DebugResult+at,"%s ", cnvCommandName(R->AF.B.h+0x80));				// ñΩóﬂ
+			at += sprintf(DebugResult+at,"%s \r\n", getOperand(R->HL.W+1));						// ÉIÉyÉâÉìÉh
+		 }
+		 if(R->PC.W == 0x7f6)
+			{
+			 at += sprintf(DebugResult + at, "[%d] ", peek_memory(0xfa5e) * 256 + peek_memory(0xfa5d));	// çsî‘çÜ
+			 at += sprintf(DebugResult + at, "%s \r\n", getOperand(R->HL.W ));						// ÉIÉyÉâÉìÉh
+		 }
+	}
+
 #if 0
 	at += sprintf
 	(
@@ -578,6 +651,8 @@ static void DisplayRegisters(reg *R)
 #endif
 }
 
+
+
 //*************************************************************/
 //			display usage
 //*************************************************************/
@@ -591,10 +666,12 @@ static void DisplayUsage(void)
 	at += sprintf(DebugResult + at, "go(g)         : Continue with debugger window\r\n");
 	at += sprintf(DebugResult + at, "G             : Continue without debugger window\r\n");
 	at += sprintf(DebugResult + at, "loadmem       : Load memory \r\n");
+	at += sprintf(DebugResult + at, "savemem       : Save memory \r\n");
+	at += sprintf(DebugResult + at, "setbin        : Load memory \r\n");
 	at += sprintf(DebugResult + at, "reg           : Display registers\r\n");
 	at += sprintf(DebugResult + at, "step(s)       : Break at next instruction\r\n");
-	at += sprintf(DebugResult + at, "nowait <start addr> <end addr>: set nowait mode\r\n");
 	at += sprintf(DebugResult + at, "reset         : reset  (PC address =0) \r\n");
+	at += sprintf(DebugResult + at, "set           : setting \r\n");
 	at += sprintf(DebugResult + at, "?,h           : Show this help text\r\n\r\n");
 
 
@@ -640,11 +717,15 @@ void DisplayMemDump(void)
     strcpy( DebugResult_bak , DebugResult);
     memset( Attr , 0x0F, 2048); 
     
-    sprintf( tmp , " 0x%X", dump_start_adr);
+    sprintf( tmp , "0x%X", dump_start_adr);
     
     at=0;
     make_memdump( NULL , tmp , 1);
     
+	if(dump_is_ram ==EXTRAM_BANK){		// ägí£RAMÇæÇ∆ÅA[EXT] ÇÃêFÇïœÇ¶ÇÈ
+		memset( Attr , 11 , 5);
+	}
+
         // --------  ÉJÅ[É\Éãà íuÇÅAîΩì]ï\é¶ -------
 	if( current_pain == P_DUMP)
 		{
@@ -1228,51 +1309,103 @@ void make_disasm(word start_adr, const char *S)
 }
 
 
+static byte getData(word Addr)
+{
+	byte tmp;
+	if (dump_is_ram == RAM_BANK)
+		tmp = peek_memory(Addr);
+	else if (dump_is_ram == EXTRAM_BANK)
+		tmp = peek_ext_memory(Addr);
+	else
+		tmp = M_RDMEM(Addr);
+	return tmp;
+}
+
+
 //*************************************************************/
 //				make memdump list
+//  R: Register
+//  S: parameter string
 //  spc_flag 1: space on    0: space no
+//  return: next address
 //*************************************************************/
-void make_memdump( reg *R ,const char *S , int spc_flag)
+int make_memdump( reg *R ,const char *S , int spc_flag)
 {
-	word Addr;
+	word Addr;	// start address
 	byte I,J;
-	byte tmp;
+	byte tmp[20];
+	int max;
 
+	int  amari;
 	char mode[6];
 
-//	if (strlen(S) > 1) sscanf(S+1, "%hX", &Addr); else Addr=R->PC.W;
-	if (strlen(S) > 1) Addr = my_atoi( S+1); else Addr= R->PC.W;
+	char headerBuff[16*3+100];
+	char hexBuff[16 * 3+100];
+	char charBuff[16 * 2+100];
 
-	if( dump_is_ram) strcpy(mode ,"[RAM]"); else strcpy(mode , "     ");
+	memset(headerBuff,0,sizeof(headerBuff));
 
-//	at += sprintf(DebugResult+at, "     "); 
-	at += sprintf(DebugResult+at, mode ); 
+	if (strlen(S) >=1) Addr = my_atoi( S); else Addr= R->PC.W;
+
+	amari = Addr & 0xf;
+	if( dump_is_ram ==RAM_BANK) 
+		strcpy(mode ,"[RAM]"); 
+	else if( dump_is_ram==EXTRAM_BANK)
+		strcpy(mode, "[EXT]");
+	else
+		strcpy(mode ,"[MEM]");
+
+	// ------------------ +0 to +F --------------------
+	strcat(headerBuff, mode);
 	for (J = 0; J < 16; J++)
-		{
-		at += sprintf( DebugResult+at,"+%X",J);
-		if( spc_flag ) at += sprintf(DebugResult+at ," ");
-		}
-	at += sprintf( DebugResult+at,"\r\n");
-	
+	{
+		sprintf(tmp, "+%X", J);
+		strcat(headerBuff, tmp);
+		if (spc_flag) strcat(headerBuff, " ");
+	}
+	at += sprintf(DebugResult + at, "%s\r\n", headerBuff);
+
 	for (J = 0; J < 16; J++) {
-		at += sprintf(DebugResult+at, "%04X:",Addr );
-		for (I = 0; I<16; I++, Addr++)
+		memset(hexBuff, 0, sizeof(hexBuff));
+		memset(charBuff, 0, sizeof(charBuff));
+		sprintf(tmp, "%04X:",Addr );	// ÉAÉhÉåÉX
+		strcat( hexBuff, tmp);
+		
+		// ------ data -----------
+		if(J==0)							// ñ`ì™ÇÃÉXÉyÅ[ÉXÇ™ïKóvÇ»ÇÁë}ì¸Ç∑ÇÈ
 			{
-			if(dump_is_ram) tmp= peek_memory( Addr); else tmp = M_RDMEM(Addr);
-			at += sprintf(DebugResult+at, "%02X",tmp);
-			if( spc_flag && I <15 ) at += sprintf(DebugResult+at ," ");
+			for(I=0; I<amari ; I++)
+				{
+				strcat(hexBuff,"  ");
+				if( spc_flag && I < 15) strcat(hexBuff," ");
+				}
 			}
-        at += sprintf(DebugResult+at, "|"); Addr-=16;
-		if( !spc_flag ) at += sprintf(DebugResult+at ," ");
-        
-		for (I = 0; I < 16; I++, Addr++)
-			{
-			if(dump_is_ram) tmp= peek_memory( Addr); else tmp = M_RDMEM(Addr);
-			at += sprintf(DebugResult+at, "%c", ((tmp)>=0x20) ? tmp:' ');
+		I=0;
+		max =16;
+		do {
+			if( J==0 && amari) {
+				max = 16-amari;
 			}
-		at += sprintf(DebugResult+at, "\r\n");
+
+			sprintf(tmp, "%02X", getData(Addr));
+			strcat(hexBuff, tmp);
+			if( spc_flag && I <15 ) strcat(hexBuff ," ");
+
+
+			byte val = getData(Addr);
+			sprintf(tmp, "%c", ((val) >= 0x20) ? val : '.');
+			strcat(charBuff, tmp);
+
+			Addr++;
+			I++;
+			}
+		while(I< max);
+
+		at += sprintf(DebugResult+at, "%s|%s\r\n",hexBuff, charBuff);
+
 	}
 //	at += sprintf(DebugResult+at, "\r\n");
+	return Addr;
 }
 
 
@@ -1282,7 +1415,10 @@ D_HELP ,D_GO     ,D_GOFULL  , D_TRACE, D_STEP,
 D_BREAK ,D_READ ,D_WRITE  , D_FILL   , D_MOVE,
 D_SEARCH,D_OUT,  D_LOADMEM ,D_SAVEMEM , D_RESET ,
 D_REG , D_DISASM ,D_DUMP ,D_ANIMATE , D_UR,
-D_IN , D_SAVEVRAM,D_LOADVRAM, D_VRAMS,D_NOWAIT , D_PWD};
+D_IN , D_SAVEVRAM,D_LOADVRAM, D_VRAMS,D_NOWAIT , D_PWD , D_DIR ,
+D_CD , D_SET     ,D_SETBIN , D_BT    ,D_PRINT, 
+D_EDIT,D_HOGE,
+};
 
 static char   cmd[][10]= {
 "help"   , "?"          , "go"       ,"g"	    ,"G",
@@ -1290,7 +1426,9 @@ static char   cmd[][10]= {
 "b"      , "read"       , "write"    ,"out"     ,"loadmem"  ,
 "savemem",  "reset"     , "reg"      , "disasm" , "dump"    ,
 "out"    ,"animate"     , "ur"       ,"in"      , "savevram" ,
-"loadvram","vrams"      , "nowait"   ,"pwd" ,
+"loadvram","vrams"      , "nowait"   ,"pwd"     , "dir",    
+"cd",     "set"			,"setbin",    "bt"      ,"print",
+"edit",   "fill"		,"hoge",
 };
 
 static char   cmdNo[]   ={
@@ -1299,7 +1437,9 @@ D_TRACE  ,D_TRACE      , D_STEP     , D_STEP     ,D_BREAK ,
 D_BREAK,  D_READ       , D_WRITE    , D_OUT      ,D_LOADMEM,
 D_SAVEMEM,D_RESET      ,D_REG       , D_DISASM   ,D_DUMP,
 D_OUT ,   D_ANIMATE,   D_UR         , D_IN       ,D_SAVEVRAM,
-D_LOADVRAM , D_VRAMS,  D_NOWAIT     , D_PWD      ,
+D_LOADVRAM , D_VRAMS,  D_NOWAIT     , D_PWD      ,D_DIR,
+D_CD,	  D_SET,       D_SETBIN     , D_BT		 ,D_PRINT,
+D_EDIT,   D_FILL,	   D_HOGE,
 -1}; 
 
 
@@ -1405,12 +1545,27 @@ int my_atoi( char *str)
 }
 
 enum                {R_AF  ,R_BC ,R_DE ,R_HL ,R_IX ,R_IY, R_AF1 ,R_BC1 , R_DE1 ,R_HL1, R_PC ,R_SP,
-					 R_A   ,R_B  ,R_C  ,R_D ,R_E   ,R_H  ,R_L   ,R_A1  ,R_B1   ,R_C1 ,R_D1 ,R_E1 ,R_H1 , R_L1};
+					 R_A   ,R_B  ,R_C  ,R_D ,R_E   ,R_H  ,R_L   ,R_A1  ,R_B1   ,R_C1 ,R_D1 ,R_E1 ,R_H1 , R_L1,R_NON};
 char *regname[]   = {"AF"  ,"BC" ,"DE" ,"HL" ,"IX" ,"IY", "AF'" ,"BC'" ,"DE'"  ,"HL'","PC" ,"SP",
 					 "A"   ,"B"  ,"C"  ,"D" ,"E"   ,"H"  ,"L"   ,"A'"  ,"B'"   ,"C'" ,"D'" ,"E'" ,"H'","L'" , ""};
 
 #define MAX_REG   26
 #define REG16     11
+
+
+#define MAX_STACKS 15
+
+enum { S_PUSH , S_CALL ,S_LD , S_EX};
+
+struct _stacks {
+	word stack_addr; // ÉXÉ^ÉbÉNÇÃÉAÉhÉåÉX
+	word value;		 // êœÇÒÇæÉfÅ[É^
+	int  cmd;		 // ñΩóﬂÅF S_PUSH / S_CALL ...
+	int  reg;		 // ÉåÉWÉXÉ^: R_AF / R_BC ...
+	word addr;		 // CALL îÚÇ—êÊÉAÉhÉåÉX
+} stacks[ MAX_STACKS];
+
+static int stack_idx = 0;
 
 
 
@@ -1635,7 +1790,7 @@ void debug_break( int argc , char *argv[])
 		}
 
 
-	if( argc > ii)					// -------------------- index ÇÃÉ`ÉFÉbÉN -----------------
+	if( argc > ii) {					// -------------------- index ÇÃÉ`ÉFÉbÉN -----------------
 		if( *argv[ii] =='#' )		// index
 			{
 			idx = my_atoi( argv[ii]+1);
@@ -1663,6 +1818,15 @@ void debug_break( int argc , char *argv[])
 			{
 			 invalid= 1;
 			}
+		}
+	else {									// ê›íËÇ≥ÇÍÇƒÇ¢Ç»Ç¢ÉXÉçÉbÉgÇíTÇ∑
+		for(int i=1; i<MAX_BREAKPOINT; i++) {
+			if(breakpoint[i].action == B_NONE) {
+				idx = i;
+				break;
+			}
+		}
+	}
 
 	if( action == B_CLEAR && argc==2)	// ---------------- BREAK CLEAR ÅiÉIÅ[ÉãÉNÉäÉA) -------------
 		{
@@ -1798,28 +1962,117 @@ debug_savevram(int argc, char*argv[])
 {
 	byte *vram_addr;
 	byte *extram_addr;
+	int start_addr;
+	int end_addr;
+	int x, y, w, h;
+	int no;
+	int max_no;
+
+	if( argc >4) {
+		x = my_atoi(argv[1]);
+		y = my_atoi(argv[2]);
+		w = my_atoi(argv[3]);
+		h = my_atoi(argv[4]);
+
+		// ägí£ÉÅÉÇÉäÅ[ÅAÇ«Ç±Ç‹Ç≈ãLò^ÇµÇΩÇ©ÇéÊìæÇ∑ÇÈ  Åisavevram 0Ç©ÇÁíTÇµÇƒ enable ÇOÇÃÇ‚Ç¬ÇíTÇ∑Åj
+		max_no = 0;
+		for (int i = 0; i < MAX_SAVEVRAM; i++) {
+			if (savevram[i].enable == 0) {
+				max_no = i;
+				break;
+			}
+		}
+
+		no = max_no;
+		start_addr = 0;											// ÇPâÒñ⁄ÇÃäJénÉAÉhÉåÉXÅÅÇO
+
+		if( no >=1 ) start_addr = savevram[no-1].end_addr+1;	// ä˘Ç…ÇPå¬Ç≈Ç‡ãLò^Ç≥ÇÍÇƒÇ¢ÇÈÇ∆ÅAëOâÒÇÃèIóπ+1 ÇäJénÉAÉhÉåÉXÇ…Ç∑ÇÈ
+		end_addr = start_addr;
+
+		vram_addr = RAM + 0x1a00 + y * 256 / 2 + x;
+		extram_addr = EXTRAM64+start_addr;
+
+		if( (start_addr + w * h/2 ) > 0xffff) {
+			at += sprintf(DebugResult + at, "error: EXTRAM capacity over \n\r");
+			return;
+		}
+
+		// VRAMÇ©ÇÁägí£ÉÅÉÇÉäÅ[Ç…ÉRÉsÅ[Ç∑ÇÈ
+		for (int yy = 0; yy < h / 2; yy++)
+			{
+			memcpy(extram_addr, vram_addr, w);
+			vram_addr += 256;
+			extram_addr += w;
+			end_addr += w;
+			}
+	
+
+		savevram[no].start_addr = start_addr;
+		savevram[no].end_addr = end_addr;
+		savevram[no].x = x;
+		savevram[no].y = y;
+		savevram[no].w = w;
+		savevram[no].h = h;
+		savevram[no].enable = 1;
+
+		at += sprintf(DebugResult + at, "Saved vram %d %d %d %d -> #%2d \n\r", x,y,w,h,no);
+	}
+	else {
+		at += sprintf(DebugResult + at, "parameter error \n\r");
+	}
+}
+
+//*************************************************************/
+//				debug_loadram  ägí£ÉÅÉÇÉäÅ[Ç©ÇÁVRAMÇ…ÉçÅ[ÉhÇ∑ÇÈ
+//    Input:Å@
+//*************************************************************/
+debug_loadvram(int argc, char* argv[])
+{
+	byte* vram_addr;
+	byte* extram_addr;
 	int start_addr = 0;
 	int x, y, w, h;
+	int no;
+	int max_no;
 
-	x = argv[0];
-	y = argv[1];
-	w = argv[2];
-	h = argv[3];
+	if( argc != 4 ) {
+		at += sprintf(DebugResult + at, "parameter error \n\r");
+		return;
+	}
+	no = my_atoi(argv[1]);
+	x = my_atoi(argv[2]);
+	y = my_atoi(argv[3]);
+	w = savevram[no].w;
+	h = savevram[no].h;
 
 	// ägí£ÉÅÉÇÉäÅ[ÅAÇ«Ç±Ç‹Ç≈ãLò^ÇµÇΩÇ©ÇéÊìæÇ∑ÇÈ  Åisavevram è„Ç©ÇÁíTÇµÇƒ enable ÇOÇÃÇ‚Ç¬ÇíTÇ∑Åj
+	max_no =0;
+	for (int i = 0; i < MAX_SAVEVRAM; i++) {
+		if( savevram[i].enable == 0 ) {
+			max_no = i;
+			break;
+		}
+	}
+	if( no > max_no ) {
+		at += sprintf(DebugResult + at, "error: max no : %d \n\r", max_no);
 
-	vram_addr = VRAM + 0x1a00 + y * 256 / 2 + x;
-	extram_addr = EXTRAM64;
+	}
 
-	// VRAMÇ©ÇÁägí£ÉÅÉÇÉäÅ[Ç…ÉRÉsÅ[Ç∑ÇÈ
+	vram_addr = RAM + 0x1a00 + y * 256 / 2 + x;
+	extram_addr = EXTRAM64+savevram[no].start_addr;
+
+	// ägí£ÉÅÉÇÉäÅ[Ç©ÇÁVRAMÇ…ÉRÉsÅ[Ç∑ÇÈ
 	for (int yy = 0; yy < h / 2; yy++)
-		{
-		memcpy(extram_addr, vram_addr, w);
+	{
+		memcpy(vram_addr, extram_addr,  w);
 		vram_addr += 256;
 		extram_addr += w;
-		}
-	
+	}
+
 }
+
+
+
 
 //*************************************************************/
 //				vrams 
@@ -1827,8 +2080,8 @@ debug_savevram(int argc, char*argv[])
 //*************************************************************/
 int debug_vrams()
 {
-	int i;						// -------- Ç∑Ç◊ÇƒÇÃÉuÉåÅ[ÉNÉ|ÉCÉìÉgï\é¶Ç∑ÇÈ ----------
-	for (i = 1; i < MAX_SAVEVRAM; i++)
+	int i;						// -------- Ç∑Ç◊ÇƒÇÃï€ë∂ÇµÇΩVRAMÇÃì‡óeÇï\é¶Ç∑ÇÈ ----------
+	for (i = 0; i < MAX_SAVEVRAM; i++)
 	{
 
 		int start_addr = savevram[i].start_addr;
@@ -1844,10 +2097,11 @@ int debug_vrams()
 			at += sprintf(DebugResult + at, " #%2d  ", i);
 			at += sprintf(DebugResult + at, "0x%04X ", start_addr);
 			at += sprintf(DebugResult + at, "0x%04X ", end_addr);
-			at += sprintf(DebugResult + at, "0x%04X ", x);
-			at += sprintf(DebugResult + at, "0x%04X ", y);
-			at += sprintf(DebugResult + at, "0x%04X ", w);
-			at += sprintf(DebugResult + at, "0x%04X ", h);
+			at += sprintf(DebugResult + at, "%d ", x);
+			at += sprintf(DebugResult + at, "%d ", y);
+			at += sprintf(DebugResult + at, "%d ", w);
+			at += sprintf(DebugResult + at, "%d ", h);
+			at += sprintf(DebugResult + at, "\t\n");
 		}
 		else
 			at += sprintf(DebugResult + at, " #%2d  -- NONE -- \r\n", i);
@@ -1856,18 +2110,6 @@ int debug_vrams()
 	return 0;
 }
 
-//*************************************************************/
-//				no wait
-//*************************************************************/
-debug_nowait(int argc, char *argv[])
-{
-	if (argc != 3) {
-		at += sprintf(DebugResult + at, "usage: nowait (start address) (end address)\r\n");
-		return;
-	}
-	nowait_start_addr = my_atoi( argv[1] );
-	nowait_end_addr   = my_atoi( argv[2] );
-}
 
 //*************************************************************/
 //				loadmem
@@ -1894,13 +2136,13 @@ void debug_loadmem(int argc, char* argv[])
 	}
 
 	char *path=NULL;
-	int  len = strlen( debugWorkPath)+strlen( argv[1])+2;
+	int  len = strlen( argv[1])+2;
 	path = malloc( len);
 	if (path == NULL) {
 		at += sprintf(DebugResult + at, "memory allocate failed \r\n");
 		return;
 	}
-	sprintf(path ,"%s\\%s", debugWorkPath ,argv[1] );
+	sprintf(path ,"%s", argv[1] );
 	
 	
 
@@ -1921,6 +2163,63 @@ void debug_loadmem(int argc, char* argv[])
 	}
 	free( path);
 }
+
+//*************************************************************/
+//				loadmem
+//*************************************************************/
+void debug_setbin(int argc, char* argv[])
+{
+	if (argc != 3) {
+		at += sprintf(DebugResult + at, "Invalid!\r\n");
+		return;
+	}
+	int start_addr, end_addr;
+	start_addr = my_atoi(argv[2]);
+
+
+
+	char* path = NULL;
+	int  len = strlen(argv[1]) + 2;
+	path = malloc(len);
+	if (path == NULL) {
+		at += sprintf(DebugResult + at, "memory allocate failed \r\n");
+		return;
+	}
+	sprintf(path, "%s", argv[1]);
+
+
+
+	FILE* fp = fopen(path, "rb");
+	if (fp != NULL) {
+		fseek(fp , 0 ,SEEK_END);
+		end_addr = start_addr + ftell(fp);
+		fseek(fp, 0, SEEK_SET);
+		if( end_addr > 0xffff) {
+			at += sprintf(DebugResult + at, "end addres is overflow!\r\n");
+			fclose(fp);
+			return;
+		}
+		if (start_addr > end_addr) {
+			at += sprintf(DebugResult + at, "Invalid : start_addr is bigger than end_addr \r\n");
+			return;
+		}
+
+		int size = 0;
+		for (word i = start_addr; i <= end_addr; i++) {
+			int v = fgetc(fp);
+			if (v == EOF) break;
+			poke_memory(i, v);
+			size++;
+		}
+		fclose(fp);
+		at += sprintf(DebugResult + at, "loaded from '%s' %d (0x%4X) bytes  \r\n", argv[1], size, size);
+	}
+	else {
+		at += sprintf(DebugResult + at, "file '%s' open error  \r\n", argv[1]);
+	}
+	free(path);
+}
+
 
 //*************************************************************/
 //				savemem
@@ -1947,13 +2246,13 @@ void debug_savemem(int argc, char* argv[])
 	}
 
 	char* path = NULL;
-	int  len = strlen(debugWorkPath) + strlen(argv[1]) + 2;
+	int  len = strlen(argv[1]) + 2;
 	path = malloc(len);
 	if (path == NULL) {
 		at += sprintf(DebugResult + at, "memory allocate failed \r\n");
 		return;
 	}
-	sprintf(path, "%s\\%s", debugWorkPath, argv[1]);
+	sprintf(path, "%s",  argv[1]);
 
 
 
@@ -1980,8 +2279,8 @@ void debug_savemem(int argc, char* argv[])
 void debug_reset(int argc, char* argv[])
 {
 	R.PC.W = 0;
+	InitMemmap();
 	at += sprintf(DebugResult + at, "reset ok  \r\n");
-
 }
 
 
@@ -1990,8 +2289,367 @@ void debug_reset(int argc, char* argv[])
 //*************************************************************/
 void debug_pwd(int argc, char* argv[])
 {
-	at += sprintf(DebugResult + at, debugWorkPath );
+	char curdir[PATH_MAX];
+	getcwd(curdir, PATH_MAX);		// save current directory
+	at += sprintf(DebugResult + at, "'%s' ", curdir);
 	at += sprintf(DebugResult + at, "\r\n");
+}
+
+//*************************************************************/
+//				dir
+//*************************************************************/
+void debug_dir(int argc, char*argv[] )
+{
+	OSD_OpenFiler( debugWorkPath);		// debug work path ÇÃÉtÉHÉãÉ_ÇÅAÉGÉNÉXÉvÉçÅ[ÉâÅ[Ç≈äJÇ≠
+
+}
+
+//*************************************************************/
+//				cd
+//*************************************************************/
+void debug_cd(int argc,char *argv[])
+{
+	char curdir[PATH_MAX];
+	getcwd( curdir, PATH_MAX);		// save current directory
+	if( argc ==2) {
+		if( chdir( argv[1] )==0) {
+			getcwd(curdir, PATH_MAX);		// save current directory
+			at += sprintf(DebugResult + at, "cd to '%s'... SUCCESS", argv[1]);
+			at += sprintf(DebugResult + at, "\r\n");
+			my_strncpy(debugWorkPath, curdir, PATH_MAX);
+		}
+		else {
+			at += sprintf(DebugResult + at, "cd to '%s'... FAILED", argv[1]);
+			at += sprintf(DebugResult + at, "\r\n");
+		}
+	} else {
+		at += sprintf(DebugResult + at, "'%s' ", curdir);
+		at += sprintf(DebugResult + at, "\r\n");
+	}
+}
+
+//*************************************************************/
+//				set
+//*************************************************************/
+void debug_set(int argc, char* argv[])
+{
+	if(argc >1) {
+		if (strcmp(argv[1], "tape") == 0) {
+			debug_settape(argc, argv);
+		} else if(strcmp(argv[1], "nowait")==0) {
+			debug_setnowait(argc, argv);
+		} else {
+			at += sprintf(DebugResult + at, "Invalid");
+			at += sprintf(DebugResult + at, "\r\n");
+		}
+	}
+	else {
+		help_set();
+	}
+}
+
+
+//*************************************************************/
+//				set tape
+//*************************************************************/
+debug_settape(int argc, char *argv[])
+{
+	if( argc ==3) {
+		long current = ftell(CasStream[0]);
+
+		fseek(CasStream[0], 0, SEEK_END);
+		long size = ftell(CasStream[0]);
+		long pos = atoi(argv[2]);
+		if (size < pos) {
+			at += sprintf(DebugResult + at, "new position: %d is bigger than file size", pos);
+			at += sprintf(DebugResult + at, "\r\n");
+			fseek(CasStream[0], current, SEEK_SET);  // restore tape position
+			return;
+		}
+		fseek(CasStream[0], pos, SEEK_SET);
+	}
+}
+
+
+//*************************************************************/
+//				set no wait
+//*************************************************************/
+debug_setnowait(int argc, char* argv[])
+{
+	if (argc == 2) {
+		at += sprintf(DebugResult + at, "nowait: 0x%04X - 0x%04X \r\n", nowait_start_addr, nowait_end_addr);;
+		return;
+	}
+	if (argc != 4) {
+		at += sprintf(DebugResult + at, "parameter error\r\n");
+		return;
+	}
+	nowait_start_addr = my_atoi(argv[2]);
+	nowait_end_addr = my_atoi(argv[3]);
+
+	at += sprintf(DebugResult + at, "set nowait 0x%04X - 0x%04X \r\n", nowait_start_addr, nowait_end_addr);;
+}
+
+
+//*************************************************************/
+//			debug bt ÉoÉbÉNÉgÉåÅ[ÉXÅ@ï\é¶
+//*************************************************************/
+void debug_bt(int argc, char* argv[])
+{
+	at += sprintf(DebugResult + at, "    ADDR VALUE \r\n");
+	for (int i = stack_idx-1; i >=0 ; i--) {
+		at += sprintf(DebugResult + at, "%2d) %04X %04X ", i, stacks[i].stack_addr, stacks[i].value);
+		if (stacks[i].cmd == S_PUSH)
+			at += sprintf(DebugResult + at, " PUSH ");
+		else if( stacks[i].cmd == S_CALL)
+			at += sprintf(DebugResult + at, " CALL %04XH ",stacks[i].addr);
+		else if( stacks[i].cmd == S_LD)
+			at += sprintf(DebugResult + at, " LD SP,%04XH ", stacks[i].addr);
+		else
+			at += sprintf(DebugResult + at, " EX (SP),HL ");
+
+		at += sprintf(DebugResult + at, " %s ", regname[stacks[i].reg]);
+		at += sprintf(DebugResult + at, "\r\n");
+	}
+}
+
+void debug_save_reg( reg r)
+{
+	pre_reg = r;
+}
+
+void do_stacks( byte opcode1 , byte opcode2 , byte opcode3)
+{
+
+	switch (opcode1) {
+		case 0x31:  push_stacks(R.SP.W , S_LD ,  R_NON, 0, opcode3*256+opcode2); break;
+		case 0xE3:  push_stacks(R.SP.W , S_EX  , R_HL, R.HL.W ,0); break;
+
+		case 0xF5:  //push_stacks(R.SP.W , S_PUSH, R_AF, R.AF.W ,0); break;
+		case 0xE5:  //push_stacks(R.SP.W , S_PUSH, R_HL, R.HL.W, 0); break;
+		case 0xD5:  //push_stacks(R.SP.W , S_PUSH, R_DE, R.DE.W, 0); break;
+		case 0xC5:  //push_stacks(R.SP.W , S_PUSH, R_BC, R.BC.W, 0); break;
+					break;
+					// ----- CALL  -----------
+		case 0xCD:  push_stacks(R.SP.W, S_CALL, R_NON, pre_reg.PC.W+3, opcode3 * 256 + opcode2); 
+					break;
+		case 0xDC:	
+		case 0xD4:
+		case 0xCC:
+		case 0xC4:
+		case 0xEC:
+		case 0xE4:
+		case 0xFC:
+		case 0xF4:  if (pre_reg.SP.W != R.SP.W) {
+						push_stacks(R.SP.W, S_CALL, R_NON, 0, opcode3 * 256 + opcode2); break;
+					}
+					break;
+
+					// --------- RET ------------
+		case 0xC9:  pop_stacks(); break;
+
+		case 0xD8:
+		case 0xD0:
+		case 0xC8:
+		case 0xC0:
+		case 0xE8:
+		case 0xE0:
+		case 0xF8:
+		case 0xF0:  if (pre_reg.SP.W != R.SP.W) {
+						pop_stacks();
+					}
+					break;
+		case 0xF1:  
+		case 0xE1:  
+		case 0xD1:  
+		case 0xC1:  
+					//pop_stacks();
+					break;
+		case 0xDD:
+					if (opcode2 == 0xE5)
+						push_stacks(R.SP.W, S_PUSH, R_IX, R.IX.W, 0);
+					else if (opcode2 == 0xE1)
+						pop_stacks();
+					break;
+		case 0xFD:
+					if (opcode2 == 0xE5)
+						push_stacks(R.SP.W, S_PUSH, R_IY, R.IY.W, 0);
+					else if (opcode2 == 0xE1)
+						pop_stacks();
+					break;
+		case 0xED:
+					if (opcode2 == 0x4D || opcode2 == 0x45)
+						pop_stacks();
+					break;
+	}
+}
+
+
+
+//*************************************************************/
+//			push stacks ÉXÉ^ÉbÉNèÓïÒÇpush
+//*************************************************************/
+void push_stacks(word stack_addr , int cmd ,int reg , word value ,word addr)
+{
+	if (stack_idx == MAX_STACKS) {
+		for (int i = 1; i < MAX_STACKS - 1; i++) {
+			stacks[i - 1] = stacks[i];
+		}
+		stack_idx--;
+	}
+	stacks[stack_idx].stack_addr = stack_addr;
+	stacks[stack_idx].cmd = cmd;
+	stacks[stack_idx].reg = reg;
+	stacks[stack_idx].value = value;
+	stacks[stack_idx].addr = addr;
+	stack_idx++;
+}
+// stack_idx ==0 ÇæÇ∆ÉfÅ[É^Ç»ÇµÅAÇPÇæÇ∆ÅA[0]Ç…ÉfÅ[É^Ç™èëÇ´Ç±Ç‹ÇÍÇƒÇ¢ÇÈ
+
+
+//*************************************************************/
+//			pop stacks ÉXÉ^ÉbÉNèÓïÒÇ©ÇÁÉfÅ[É^çÌèú
+//*************************************************************/
+void pop_stacks(void)
+{
+	if (stack_idx <= 0) {
+		stack_idx =0;
+		return;
+	}
+	stack_idx--;
+	stacks[stack_idx].stack_addr = 0;
+	stacks[stack_idx].cmd = 0;
+	stacks[stack_idx].reg = 0;
+	stacks[stack_idx].value = 0;
+	stacks[stack_idx].addr = 0;
+}
+
+
+//*************************************************************/
+//			debug_print: BASICÇÃïœêîÇï\é¶  Ç‹ÇΩÇ©Ç¶ÇÈÇ©Ç‡ÅH
+//*************************************************************/
+void debug_print(int argc, char* argv[])
+{
+	if( sr_mode ) return;
+
+	byte str[256];		// ï∂éöóÒïœêîÇÃï∂éöóÒÇäiî[Ç∑ÇÈ
+
+	word var_start   = peek_memory(0xff57)*256+peek_memory(0xff56);
+	word array_start = peek_memory(0xff59)*256+peek_memory(0xff58);
+	if( var_start == array_start) return;		// ìØÇ∂ÇæÇ∆ÅAïœêîóÃàÊÇ»Çµ
+
+	word p = var_start;
+	byte var_name[4];
+	var_name[0] = peek_memory(p);  p++; 
+	var_name[1] = peek_memory(p);  p++;
+	var_name[2] = '$';
+	var_name[3] = 0;
+	if( (var_name[1] & 0x80)==0x0 )
+		{						// íPê∏ìxïÇìÆè¨êîì_
+								 
+		}
+	else
+		{						// ï∂éöóÒ
+		memset(str,0,sizeof(str));
+		byte len =    peek_memory(p); p+=2;		// í∑Ç≥Çì«Ç›çûÇÒÇ≈ÅAÉ_É~Å[ÇîÚÇŒÇ∑
+		word str_po = peek_memory(p)+peek_memory(p+1) * 256; p+=2;
+		for(int i=0; i<len; i++)
+			{
+			 byte a = peek_memory(str_po + i);
+			 if( a<' ') { a=' ';}
+			 str[i]= a;
+			}
+		}
+
+	at += sprintf(DebugResult + at, "%s="  , var_name);
+	at += sprintf(DebugResult + at, "'%s' ", str);
+	at += sprintf(DebugResult + at, "\r\n");
+}
+
+
+//*************************************************************/
+//			debug_dump: É_ÉìÉvñΩóﬂ
+/*************************************************************/
+void debug_dump(int argc, char* argv[])
+{
+	byte *S;
+	byte tmp[20];
+	static word addr=0;		// ëOâÒÇÃë±Ç´
+	if( argc >1)			
+		{
+		 S= argv[1];
+		}
+	else
+		{					// ÉpÉâÉÅÅ[É^Ç»ÇµÇæÇ∆ÅAëOâÒÇÃë±Ç´Ç©ÇÁçƒäJ
+		 sprintf(tmp,"0x%X",addr);
+		 S= tmp;
+		}
+	addr = make_memdump(NULL, S, 0);
+	
+}
+
+
+//*************************************************************/
+//			debug_edit
+/*************************************************************/
+void debug_edit(int argc, char* argv[])
+{
+	word addr=0;
+	if (argc > 1)
+		{
+		 addr = my_atoi( argv[1]);
+		 dump_xx = addr & 0xf;
+		 dump_yy = 0;
+		 dump_start_adr = addr & 0xfff0;
+		 
+		}
+	
+	current_pain = P_DUMP;		// É_ÉìÉvÉäÉXÉgÇ…à⁄ìÆÇ∑ÇÈ
+	DisplayDisasm();
+	DisplayMemDump();
+
+}
+
+
+//*************************************************************/
+//			debug_fill
+/*************************************************************/
+void debug_fill(int argc, char* argv[])
+{
+	if (argc < 4) {
+		at += sprintf(DebugResult + at, "Invalid!\r\n");
+		return;
+	}
+	int start_addr = my_atoi(argv[1]);
+	int end_addr   = my_atoi(argv[2]);
+	int value      = my_atoi(argv[3]);
+
+	if (start_addr >= 0xffff) {
+		at += sprintf(DebugResult + at, "Invalid start_address\r\n");
+	}
+	if (end_addr >= 0xffff) {
+		at += sprintf(DebugResult + at, "Invalid end_address\r\n");
+	}
+
+	if (start_addr > end_addr) {
+		at += sprintf(DebugResult + at, "Invalid : start_addr is bigger than end_addr \r\n");
+		return;
+	}
+
+	for (word i = start_addr; i <= end_addr; i++) {
+		poke_memory(i, value);
+	}
+	at += sprintf(DebugResult + at, "filled %04X - %04X %02X \r\n",start_addr, end_addr ,value);
+}
+
+
+
+
+help_set(void)
+{
+	at += sprintf(DebugResult + at, "setting  \r\n");	// êFÇÒÇ»ê›íËÇ™Ç≈Ç´ÇÈ
+	at += sprintf(DebugResult + at, " - set tape <new tape position> \r\n");
+	at += sprintf(DebugResult + at, " - set nowait <start addr> <end addr> \r\n");
 }
 
 
@@ -2026,11 +2684,15 @@ void debug_help(int argc, char* argv[])
 							at += sprintf(DebugResult + at, "\r\n");
 							break;
 			case D_UR:      at += sprintf(DebugResult + at, "ur <addr>\r\n");
-							at += sprintf(DebugResult + at, "disasmble on MAIN RAM\r\n");
+							at += sprintf(DebugResult + at, "disasmble MAIN RAM\r\n");
 							at += sprintf(DebugResult + at, "\r\n");
 							break;
-			case D_OUT:     break;
-			case D_IN:      break;
+			case D_OUT:     at += sprintf(DebugResult + at, "out <i/o port> <value>\r\n");
+							at += sprintf(DebugResult + at, "output to i/o port\r\n");
+							break;
+			case D_IN:      at += sprintf(DebugResult + at, "in <i/o port> <\r\n");
+							at += sprintf(DebugResult + at, "input from i/o port\r\n");
+							break;
 			case D_BREAK:	at += sprintf(DebugResult + at, "break <action> <addr/port> #<slot no>\r\n");
 							at += sprintf(DebugResult + at, "set break points\r\n");
 							at += sprintf(DebugResult + at, "\r\n");
@@ -2044,15 +2706,26 @@ void debug_help(int argc, char* argv[])
 							at += sprintf(DebugResult + at, "slot no:        #1-#10\r\n");
 							break;
 
-			case D_SAVEVRAM:break;
+			case D_SAVEVRAM:at += sprintf(DebugResult + at, "savevram <x> <y> <w> <h>\r\n");
+							at += sprintf(DebugResult + at, "save vram to EXT-RAM (mode 6 SCREEN 2)\r\n");
+							break;
+			case D_LOADVRAM:at += sprintf(DebugResult + at, "loadram <slot no> <x> <y> \r\n");
+							at += sprintf(DebugResult + at, "load vram from EXT-RAM (mode 6 SCREEN 2)\r\n");
+							break;
 			case D_VRAMS:   break;
 			case D_NOWAIT:  at += sprintf(DebugResult + at, "nowait <start addr> <end addr>\r\n");
 							at += sprintf(DebugResult + at, "Accelerate only specific routines\r\n");
 							break;
-			case D_LOADMEM: break;
-			case D_SAVEMEM: break;
+			case D_LOADMEM: at += sprintf(DebugResult + at, "loadmem <filename> <start addr> <end addr>\r\n");
+							break;
+			case D_SAVEMEM: at += sprintf(DebugResult + at, "savemem <filename> <start addr> <end addr>\r\n");
+							break;
+			case D_SETBIN:  at += sprintf(DebugResult + at, "setbin  <filename> <start addr>\r\n");
+							break;
 			case D_RESET:   break;
 			case D_PWD:     break;
+			case D_SET:     help_set(); break;
+			case D_PRINT:	break;	   
 		}
 		return;
 	}
@@ -2112,21 +2785,34 @@ int DebugCommand(reg *R, const char *Command)
 					  break;
 		case D_REG:   if( argc ==1 ) DisplayRegisters(R); else debug_reg(argc, argv); break;
 		case D_STEP:  disasm_is_backscroll=0; return 1;
-		case D_GO:    Trap=0xFFFF;Trace=0; disasm_is_backscroll=0; kbFlagGraph = 0; return 1;
-		case D_GOFULL:Trap=0xFFFF;Trace=0; disasm_is_backscroll=0; kbFlagGraph = 0; return 2;
-		case D_DUMP:  make_memdump( R ,S ,0);break;			// memory dump
+		case D_GO:    Trap=0xFFFF;Trace=0; disasm_is_backscroll=0; kbFlagGraph = 0; p6key = 0; return 1;
+		case D_GOFULL:Trap=0xFFFF;Trace=0; disasm_is_backscroll=0; kbFlagGraph = 0; p6key = 0; return 2;
+		case D_DUMP:   debug_dump(argc,argv); break;			// memory dump
+		case D_EDIT:   debug_edit(argc,argv); break;
 		case D_DISASM: is_debug_rdmem_ram=0; make_disasm( R->PC.W ,S );break;			// disasm
 		case D_UR:     is_debug_rdmem_ram=1; make_disasm( R->PC.W ,S );break;           // ur
 		case D_OUT:    debug_out( argc ,argv ); break; 
 		case D_IN:     debug_in( argc ,argv );  break; 
 		case D_BREAK:  debug_break( argc, argv ); break;
 		case D_SAVEVRAM: debug_savevram(argc, argv); break;
+		case D_LOADVRAM: debug_loadvram(argc, argv); break;
 		case D_VRAMS:    debug_vrams(); break;
-		case D_NOWAIT:   debug_nowait(argc, argv); break;
+		//case D_NOWAIT:   debug_nowait(argc, argv); break;
 		case D_LOADMEM:  debug_loadmem(argc, argv); break;
 		case D_SAVEMEM:  debug_savemem(argc, argv); break;
 		case D_RESET:    debug_reset(argc,argv); break;
 		case D_PWD:      debug_pwd(argc, argv);  break;
+		case D_DIR:		 debug_dir(argc, argv);  break;
+		case D_CD:		 debug_cd(argc, argv);  break;
+		case D_SET:		 debug_set(argc, argv); break;
+		case D_SETBIN:   debug_setbin(argc, argv); break;
+
+		case D_BT:       debug_bt(argc, argv); break;
+		case D_PRINT:	 debug_print(argc,argv); break;
+		case D_FILL:	 debug_fill(argc,argv); break;
+		case D_HOGE:	 break;
+		default:         at += sprintf(DebugResult + at, "? Unknown command \n\r");
+
 		}
 
   /* Continue emulation */
@@ -2292,7 +2978,6 @@ void  DebugDisasmPrompt( void)
 					if(( keyboard_get_stick() & STICK0_SHIFT)==0) 
 						{
 						//dump_is_ram_bak = dump_is_ram; 
-						//dump_is_ram = 1;	// dump Ç…Ç¢Ç≠Ç∆Ç´Ç…ÅARAMÇ…Ç∑ÇÈ
 
 						current_pain= P_DUMP;
 						DisplayDisasm();
@@ -2409,7 +3094,14 @@ void  DebugDumpPrompt( void)
 					{
 					 hex[ 2 ] = 0;
 					 sscanf( hex ,"%02X",&tmp);
-					 poke_memory( (dump_start_adr + dump_yy *16+ dump_xx) & 0xffff ,tmp & 0xff);
+
+					 word addr = (dump_start_adr + dump_yy * 16 + dump_xx) & 0xffff;
+					 if( dump_is_ram == DEFAULT_BANK)
+						 M_WRMEM( addr , tmp & 0xff);
+					 else if( dump_is_ram == RAM_BANK )
+						poke_memory( addr ,tmp & 0xff);
+					 else if( dump_is_ram == EXTRAM_BANK)
+						poke_ext_memory( addr ,tmp & 0xff);
 
 					 hex_idx=0;
 					 if( dump_xx <16-1 )
@@ -2433,8 +3125,11 @@ void  DebugDumpPrompt( void)
 				switch( osdkeycode)
 					{
 					case OSDK_END:
-						//if( dump_is_ram) dump_is_ram=0; else dump_is_ram=1;
-						dump_is_ram = !dump_is_ram;
+						dump_is_ram++;
+						if( !use_extram64 && dump_is_ram >1)
+							dump_is_ram= 0; 
+						else if( dump_is_ram >2)
+							dump_is_ram = 0;
 						DisplayMemDump();
 						break;
 					case OSDK_TAB:
@@ -2558,7 +3253,11 @@ void  DebugCommandPrompt( void)
 			switch( osdkeycode)
 				{
 				case OSDK_END:
-					if( dump_is_ram) dump_is_ram=0; else dump_is_ram=1;
+					dump_is_ram++;
+					if (!use_extram64 && dump_is_ram > 1)
+						dump_is_ram = 0;
+					else if (dump_is_ram > 2)
+						dump_is_ram = 0;
 					DisplayMemDump();
 					break;
 				case OSDK_UP:		// HISTORY
@@ -2818,6 +3517,7 @@ void close_debug_dialog(void)
 
 	inTrace=DEBUG_END;
 	is_open_debug_dialog = 0;
+	clear_keybuffer( keybuffer);
 }
 
 #endif /* DEBUG */

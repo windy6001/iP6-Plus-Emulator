@@ -595,20 +595,33 @@ int savescreenshot(char *path)
 		surface = surface1;	// normal mode
 #endif 
  
-	if( surface->format->BitsPerPixel ==8) 
-	 	{
-		 for(i=0 ; i< 16 ; i++)		/* 8bpp だと、パレットを渡す */
-			 //set_png_palette(i ,dibPal[i].rgbRed 
-	         //				   ,dibPal[i].rgbGreen 
-	           //                ,dibPal[i].rgbBlue );
+	int len = strlen(path);
+	char *p=  path+len-4;
+	int png = !stricmp(p, ".png");
+	int bmp = !stricmp(p, ".bmp");
 
-			 set_png_palette( i, rgb[i][2], rgb[i][1] ,rgb[i][0]);
-	         set_png_maxpalette( 16);
-	 	}
+	if( png || ( !png && !bmp) )	// png or 拡張子がついてないとき
+		{
+		if( surface->format->BitsPerPixel ==8) 
+	 		{
+			 for(i=0 ; i< 16 ; i++)		/* 8bpp だと、パレットを渡す */
+				 set_png_palette( i, rgb[i][2], rgb[i][1] ,rgb[i][0]);
+			 for (i = 16; i < 256; i++)
+				 set_png_palette(i, 0, 0, 0);
+			 set_png_maxpalette( 256);
+	 		}
  
-// 	ret = write_png(path, surface->pixels, surface->w 
-//		,lines*scale,  surface->format->BitsPerPixel );
-    write_png(path , surface );
+	// 	ret = write_png(path, surface->pixels, surface->w 
+	//		,lines*scale,  surface->format->BitsPerPixel );
+		write_png(path , surface );
+		}
+	if ( bmp)					// bmp のとき
+		{
+		if (surface->format->BitsPerPixel == 8)
+			{
+			}
+
+		}
 	return( ret);
 }
 

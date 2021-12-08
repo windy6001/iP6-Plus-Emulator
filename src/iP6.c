@@ -29,6 +29,7 @@
 int main(int argc,char *argv[])
 {
 	char buff[PATH_MAX];
+	OSD_SetModulePath();
 	OSD_GetModulePath(buff ,PATH_MAX);
 	printf(" Starting iP6 Plus.... \n Current Directory is '%s'\n", buff);
 	

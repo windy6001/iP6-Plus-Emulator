@@ -92,11 +92,20 @@ float dpiBairitu;	// screen bairitu  96dpi を１にした
 byte  Xtab[4];
 
 
+static char modulePath[ PATH_MAX];
+
+void OSD_SetModulePath(void)
+{
+	getcwd(modulePath, PATH_MAX);
+}
 
 
 int OSD_GetModulePath(char *path , int max)
 {
- getcwd( path , max);
+// getcwd( path , max);
+ if( max > PATH_MAX) max = PATH_MAX;
+
+ my_strncpy(path, modulePath , max);
  return 1;
 }
 
@@ -958,6 +967,7 @@ void OSD_BlitSurface(OSD_Surface *dst_surface,int ex,int ey, int w,int h ,OSD_Su
 //	eh = dst_surface->h;
 	ew = w;
 	eh = h;
+
 
 	if( dst_surface->flags == SURFACE_WINDOW)
 		dst_hdc= GetDC(hwndMain);
