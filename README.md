@@ -1,7 +1,7 @@
 # iP6 Plus    (PC-6000/6600 Emulator) 
 
-Last Update 2021/11/14 <br>
-Release 4.9 Beta 4  (→次回は5 ) <br>
+Last Update 2021/12/8 <br>
+Release 4.9 Beta ?  (→次回は5 ) <br>
 
 ## 1. はじめに
 
@@ -445,7 +445,7 @@ opna.cpp と、opm.cppの、pow関数の呼び出し、pow(10,db / 40.0) とな�
 
 ## 7. 更新履歴
 
-### Rel 4.9 β5 ?の変更点
+### Rel 4.9 β?の変更点
 
 
  - README.md ファイルに、モニターモードの使い方を若干書いた

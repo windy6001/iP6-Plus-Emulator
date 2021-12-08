@@ -31,6 +31,8 @@ based on https://github.com/windy6001/ROMAJI/
 //            Shift JIS <----> p6 code conversion table
 // *******************************************************************
 
+#ifndef UNIX
+
 struct {
 	unsigned char sjis[3];
 	unsigned char p6[3];
@@ -86,12 +88,15 @@ struct {
 
 	{{0xff,0xff},{0xff,0xff}},
 };
+#endif
+
 
 // *******************************************************************
 //	 convert SJIS string --> P6 key code
 // *******************************************************************
 int convertSjis2p6key(unsigned char *inData ,unsigned char *outData)
 {
+#ifndef UNIX
 //	int found = FALSE;
 	int i,j;
 
@@ -119,6 +124,7 @@ int convertSjis2p6key(unsigned char *inData ,unsigned char *outData)
 			strcat( outData, buff);
 		}
 	}
+#endif
 	return 1;
 }
 
@@ -153,6 +159,7 @@ int convertSjis2p6key(unsigned char* inData, unsigned char* outData)
 // *******************************************************************
 int convertp6key2Sjis(unsigned char* inData, unsigned char* outData)
 {
+#ifndef UNIX
 	int found = FALSE;
 	int i, j;
 
@@ -172,6 +179,9 @@ int convertp6key2Sjis(unsigned char* inData, unsigned char* outData)
 		} while (1);
 	}
 	return found;
+#else
+	return 0;
+#endif
 }
 
 
