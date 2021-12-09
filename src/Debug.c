@@ -27,6 +27,7 @@
 #include "Video.h"
 #include "Debug.h"
 #include "voice.h"
+#include "os.h"
 
 #if HAVE_UNISTD_H
 #include <unistd.h>

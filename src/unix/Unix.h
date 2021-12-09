@@ -30,3 +30,6 @@ byte * GetXtab(void);
 int unix_soundOpen(void );
 void unix_soundClose(void);
 int OSD_SelectMachine(void);
+
+void OSD_SetModulePath(void);
+void OSD_OpenFiler(char *path);

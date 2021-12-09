@@ -24,6 +24,8 @@ CodesXCB.h \
 CodesXX.h \
 chkcrc32.c \
 chkcrc32.h \
+conv.c \
+conv.h \
 Debug.c \
 Debug.h \
 dokodemo.c \

@@ -1303,8 +1303,13 @@ int OSD_getlocale(void)
 }
 
 
+void OSD_SetModulePath(void)
+{	
+}
 
-
+void OSD_OpenFiler(char *path)
+{	
+}
 
 
 /* ********************************************************************************************* */
