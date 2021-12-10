@@ -35,11 +35,9 @@
 #include <locale.h>
 
 
-#undef   GLOBAL
 #include "../P6.h"
 #include "../Video.h"
 
-#define  GLOBAL
 #include "../Sound.h"
 #include "../Refresh.h"
 #include "Unix.h"
@@ -1311,6 +1309,11 @@ void OSD_OpenFiler(char *path)
 {	
 }
 
+
+int stricmp(const char* a, const char* b)
+{
+	return strcasecmp(a, b);
+}
 
 /* ********************************************************************************************* */
 

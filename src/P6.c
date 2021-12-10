@@ -58,10 +58,6 @@
 #include "win/WinInput.h"
 #endif
 
-int stricmp(const char* a, const char* b)
-{
-   return strcasecmp(a,b);
-}
 
 
 

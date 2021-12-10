@@ -22,7 +22,6 @@
 #include <X11/Xlib.h>
 #endif
 
-#define  GLOBAL
 #include "Video.h"
 #include "Refresh.h"
 
@@ -32,6 +31,27 @@
 #include "P6.h"
 #include "mem.h"
 
+int IntLac;
+int IntLac_bak;
+
+int scale;			/* emulator scale */
+int new_scale;		/* new emulator scale */
+int win_scale;		/* window scale */
+int backup_scale;    /* backup scale */
+
+/* functions and variables in Unix.c used by Refresh.c */
+int Mapped;
+byte* XBuf;
+int bitpix;
+
+
+ColTyp BPal[16], BPal53[32], BPal11[4], BPal12[8], BPal13[8], BPal14[4], BPal15[8], BPal62[32], BPal61[16];
+
+
+
+/* functions and variables in Refresh.c used by Unix.c */
+Bool lsbfirst;
+int  Width, Height;
 
 int Putchar(int x,int y, char chr, char atr);
 

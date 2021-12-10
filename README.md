@@ -1,7 +1,7 @@
 # iP6 Plus    (PC-6000/6600 Emulator) 
 
-Last Update 2021/12/8 <br>
-Release 4.9 Beta ?  (→次回は5 ) <br>
+Last Update 2021/12/10<br>
+Release 4.9 Beta 5  (→次回は6 ) <br>
 
 ## 1. はじめに
 
@@ -394,7 +394,7 @@ SRのMODE 6 SCREEN 2 (の左のみ)ロード loadvram NO X Y
 ### 5.2.1  Windows 
 
     - Windows 10を入れてください
-    - Visual Studio を入れてください
+    - Visual Studio を入れてください。（2019 でビルドしています）
     - [libpng](http://www.libpng.org/pub/png/libpng.html) [zlib](http://www.gzip.org/zlib/) のソースリストを落としてくる
     - libpng とzlib のスタティックライブラリ版( libpngd.lib , zlibd.lib ) をビルドする。
     - libpngd.lib と、zlibd.lib を、c:\library\lib にコピーしてください。　（デフォルトの場合）
@@ -412,9 +412,32 @@ SRのMODE 6 SCREEN 2 (の左のみ)ロード loadvram NO X Y
      - make   を実行してください
      - src ディレクトリの下の iP6 が実行ファイルです。
 
+    注意1:configure がない場合は、下記の手順で生成できます。
 
-    注意：Mac 用のX11は、<a href="https://www.xquartz.org/"> XQuartz</a>を使ってください。
-    　
+     - $ aclocal
+     - $ automake --add-missing
+     - $ autoconf
+
+
+    注意2：Mac 用のX11は、<a href="https://www.xquartz.org/"> XQuartz</a>を使ってください。
+    　　　
+ 
+ #### 参考：Ubuntu 21.10 でのコンパイルの仕方
+
+      - $ sudo apt update
+      - $ sudo apt upgrade
+      - $ sudo apt install libx11-dev
+      - $ sudo apt install libxt-dev
+      - $ sudo apt install xpaint-dev
+      - $ sudo apt install libxaw7-dev
+      - $ sudo apt install libopenal-dev
+      - $ aclocal
+      - $ automake --add-missing
+      - $ autoconf
+      - $ ./configure
+      - $ make
+
+
 
 ### 5.3 fmgen の変更点
 
@@ -445,7 +468,7 @@ opna.cpp と、opm.cppの、pow関数の呼び出し、pow(10,db / 40.0) とな�
 
 ## 7. 更新履歴
 
-### Rel 4.9 β?の変更点
+### Rel 4.9 β5の変更点
 
 
  - README.md ファイルに、モニターモードの使い方を若干書いた
@@ -470,6 +493,7 @@ opna.cpp と、opm.cppの、pow関数の呼び出し、pow(10,db / 40.0) とな�
  - モニターモード：print コマンドで、BASIC の変数を表示されるようにしたい（テスト中）
  - Autokey.c/Autokey.h は、頭文字が大文字になっているのは間違いで、小文字が正しい
  - peek_memory() / poke_memory() を修正
+ - Linux(Ubuntu) でビルド出来ない問題を修正
 
  次回はここからかく
  

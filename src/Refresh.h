@@ -171,13 +171,13 @@ int isFullScreen(void);
 #include "types.h"
 //#include "Video.h"
 
-#ifdef  GLOBAL
-#undef  EXTRN
-#define EXTRN
-#else
-#undef  EXTRN
-#define EXTRN extern
-#endif
+//#ifdef  GLOBAL
+//#undef  EXTRN
+//#define EXTRN
+//#else
+//#undef  EXTRN
+//#define EXTRN extern
+//#endif
 
 #ifndef Bool
 #define Bool int
@@ -220,27 +220,27 @@ int isFullScreen(void);
 
 
 	extern void(*SCR[2 + 2][4])();	/* Screen Mode Handlers */
-	EXTRN  int IntLac;
-	EXTRN  int IntLac_bak;
+	extern  int IntLac;
+	extern  int IntLac_bak;
 
-	EXTRN  int scale;			/* emulator scale */
-	EXTRN  int new_scale;		/* new emulator scale */
-	EXTRN  int win_scale;		/* window scale */
-	EXTRN  int backup_scale;    /* backup scale */
+	extern  int scale;			/* emulator scale */
+	extern  int new_scale;		/* new emulator scale */
+	extern  int win_scale;		/* window scale */
+	extern  int backup_scale;    /* backup scale */
 
 	/* functions and variables in Unix.c used by Refresh.c */
-	EXTRN  int Mapped;
-	EXTRN  byte *XBuf;
-	EXTRN  int bitpix;
+	extern  int Mapped;
+	extern  byte *XBuf;
+	extern  int bitpix;
 
 
-	EXTRN ColTyp BPal[16], BPal53[32], BPal11[4], BPal12[8], BPal13[8], BPal14[4], BPal15[8], BPal62[32], BPal61[16];
+	extern ColTyp BPal[16], BPal53[32], BPal11[4], BPal12[8], BPal13[8], BPal14[4], BPal15[8], BPal62[32], BPal61[16];
 
 
 
 	/* functions and variables in Refresh.c used by Unix.c */
-	EXTRN  Bool lsbfirst;
-	EXTRN  int  Width, Height;
+	extern  Bool lsbfirst;
+	extern  int  Width, Height;
 
 	extern XID black;
 
