@@ -34,13 +34,13 @@
 int IntLac;
 int IntLac_bak;
 
-int scale;			/* emulator scale */
+//int scale;			/* emulator scale */
 int new_scale;		/* new emulator scale */
 int win_scale;		/* window scale */
 int backup_scale;    /* backup scale */
 
 /* functions and variables in Unix.c used by Refresh.c */
-int Mapped;
+//int Mapped;
 byte* XBuf;
 int bitpix;
 
