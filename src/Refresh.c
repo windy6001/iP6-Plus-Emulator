@@ -30,6 +30,7 @@
 #include "types.h"
 #include "P6.h"
 #include "mem.h"
+#include "font.h"
 
 int IntLac;
 int IntLac_bak;
@@ -1356,9 +1357,43 @@ void RefreshDebug(byte * VRAM, int sx ,int sy)
 #endif
 
 
-               /* get CGROM address and color */
-              // S = G+(*T2<<4)+(*T1&0x80?0x1000:0);
-              // S = G+(*T2<<4)+(*T1&0x80?0x3000:0x2000);   /* for CGROM6 SR BASIC 2002/2/23*/
-              //      K=*(S+Y%10);
-            /*    if (Y%10!=9) { T1-=40*2; T2-=40*2; } */
-							// MODE 6 のTEXT VRAMの先頭アドレスは、TEXTVRAMとする。 2003/10/25
+
+// ****************************************************************************
+//        　NEW デバッガ用の一文字出力  漢字
+// ****************************************************************************
+#define KANJI_WIDTH  (16)
+#define KANJI_HEIGHT (14)
+
+//extern OSD_Surface * screen;
+void putOneKanji(int sx, int sy, int jiscode, char attr)
+{
+    int X, Y, K;
+    ColTyp FC, BC;
+    short* S;  //,*T1,*T2;
+    short* G;
+
+   
+
+    G =  getFontData(jiscode);
+    X = 0;
+    sx *= KANJI_WIDTH;
+    sy *= KANJI_HEIGHT;
+    for (Y = 0; Y < KANJI_HEIGHT; Y++)
+    {
+        debug_SetScrVar(Y + sy, X + sx);/* Drawing area */
+        //S = G + (chr << 4) + (chr & 0x80 ? 0x1000 : 0);	/* semi-graphics */
+        S = G;
+        FC = BPal61[(attr) & 0x0F]; BC = BPal61[(((attr) & 0xF0) >> 4)];  // BPal だと、パレットの影響受ける BPal61 でないとだめ
+        K = *(S + Y);
+
+        SeqPix21(K & 0x8000 ? FC : BC); SeqPix21(K & 0x4000 ? FC : BC);
+        SeqPix21(K & 0x2000 ? FC : BC); SeqPix21(K & 0x1000 ? FC : BC);
+        SeqPix21(K & 0x0800 ? FC : BC); SeqPix21(K & 0x0400 ? FC : BC);
+        SeqPix21(K & 0x0200 ? FC : BC); SeqPix21(K & 0x0100 ? FC : BC);
+        SeqPix21(K & 0x0080 ? FC : BC); SeqPix21(K & 0x0040 ? FC : BC);
+        SeqPix21(K & 0x0020 ? FC : BC); SeqPix21(K & 0x0010 ? FC : BC);
+        SeqPix21(K & 0x0008 ? FC : BC); SeqPix21(K & 0x0004 ? FC : BC);
+        SeqPix21(K & 0x0002 ? FC : BC); SeqPix21(K & 0x0001 ? FC : BC);
+    }
+}
+

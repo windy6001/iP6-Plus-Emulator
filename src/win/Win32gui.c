@@ -2271,6 +2271,28 @@ LRESULT CALLBACK WindowFunc( HWND hwnd, UINT message, WPARAM wParam , LPARAM lPa
 }
 
 
+
+LRESULT CALLBACK WindowPadFunc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	RECT rect;
+
+	switch (message) {
+		case WM_MOUSEMOVE:
+	   {
+		   char buff[256];
+		   GetClientRect(hwnd, &rect);
+		   POINTS mouse_p = MAKEPOINTS(lParam);
+		   sprintf(buff, "x==%3d y==%3d \n", mouse_p.x, mouse_p.y);
+		   debug_printf(buff);
+		   break;
+	   }
+		case WM_CREATE:
+			break;
+		default: return DefWindowProc(hwnd, message, wParam, lParam);
+	}
+ return 0;
+}
+
 ////////////////////////////////////////////////////////////////
 // メッセージ表示
 //

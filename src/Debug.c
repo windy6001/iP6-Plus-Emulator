@@ -419,6 +419,7 @@ void DebugStart(reg *R)
 	disasm_current_adr = R->PC.W;
 
 	chdir( debugWorkPath);		// デバッグパスに cd する
+
 }
 
 
@@ -683,8 +684,6 @@ static void DisplayUsage(void)
 	at += sprintf(DebugResult + at, "reset         : reset  (PC address =0) \r\n");
 	at += sprintf(DebugResult + at, "set           : setting \r\n");
 	at += sprintf(DebugResult + at, "?,h           : Show this help text\r\n\r\n");
-
-
 
 #if 0
 	at += sprintf(DebugResult+at, "***** Built-in Z80 Debugger Commands *****\r\n");
@@ -2421,6 +2420,13 @@ void debug_bt(int argc, char* argv[])
 		at += sprintf(DebugResult + at, " %s ", regname[stacks[i].reg]);
 		at += sprintf(DebugResult + at, "\r\n");
 	}
+
+
+//	for (int i = 0x2122; i < 0x2150; i++) {		// test
+//		putOneKanji(0, 500, i, 0x6f);
+//	}
+
+
 }
 
 void debug_save_reg( reg r)
@@ -2435,10 +2441,10 @@ void do_stacks( byte opcode1 , byte opcode2 , byte opcode3)
 		case 0x31:  push_stacks(R.SP.W , S_LD ,  R_NON, 0, opcode3*256+opcode2); break;
 		case 0xE3:  push_stacks(R.SP.W , S_EX  , R_HL, R.HL.W ,0); break;
 
-		case 0xF5:  //push_stacks(R.SP.W , S_PUSH, R_AF, R.AF.W ,0); break;
-		case 0xE5:  //push_stacks(R.SP.W , S_PUSH, R_HL, R.HL.W, 0); break;
-		case 0xD5:  //push_stacks(R.SP.W , S_PUSH, R_DE, R.DE.W, 0); break;
-		case 0xC5:  //push_stacks(R.SP.W , S_PUSH, R_BC, R.BC.W, 0); break;
+		//case 0xF5:  push_stacks(R.SP.W , S_PUSH, R_AF, R.AF.W ,0); break;
+		//case 0xE5:  push_stacks(R.SP.W , S_PUSH, R_HL, R.HL.W, 0); break;
+		//case 0xD5:  push_stacks(R.SP.W , S_PUSH, R_DE, R.DE.W, 0); break;
+		//case 0xC5:  push_stacks(R.SP.W , S_PUSH, R_BC, R.BC.W, 0); break;
 					break;
 					// ----- CALL  -----------
 		case 0xCD:  push_stacks(R.SP.W, S_CALL, R_NON, pre_reg.PC.W+3, opcode3 * 256 + opcode2); 
@@ -2469,12 +2475,12 @@ void do_stacks( byte opcode1 , byte opcode2 , byte opcode3)
 						pop_stacks();
 					}
 					break;
-		case 0xF1:  
-		case 0xE1:  
-		case 0xD1:  
-		case 0xC1:  
-					//pop_stacks();
-					break;
+		//case 0xF1:  
+		//case 0xE1:  
+		//case 0xD1:  
+		//case 0xC1:  
+		//			pop_stacks();
+		//			break;
 		case 0xDD:
 					if (opcode2 == 0xE5)
 						push_stacks(R.SP.W, S_PUSH, R_IX, R.IX.W, 0);

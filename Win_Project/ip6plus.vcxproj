@@ -106,6 +106,7 @@
     <ClCompile Include="..\src\fmgen\opm.cpp" />
     <ClCompile Include="..\src\fmgen\opna.cpp" />
     <ClCompile Include="..\src\fmgen\psg.cpp" />
+    <ClCompile Include="..\src\font.c" />
     <ClCompile Include="..\src\font6x10.c" />
     <ClCompile Include="..\src\iP6.c" />
     <ClCompile Include="..\src\mem.c" />

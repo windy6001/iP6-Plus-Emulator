@@ -71,9 +71,11 @@ int   SaveCPU;
 
 
 char szWinName[]= "MyWin";
+char szWinPadName[] = "Pad";
 
 
 HWND hwndMain =NULL;
+HWND hwndPad  =NULL;	// PAD 用ウインドウ
 HICON     hIcon;
 
 HINSTANCE _hThisInst;
@@ -91,6 +93,7 @@ float dpiBairitu;	// screen bairitu  96dpi を１にした
 
 byte  Xtab[4];
 
+int scale=1;
 
 static char modulePath[ PATH_MAX];
 
@@ -255,7 +258,7 @@ static int makeWindow(char *Title ,HINSTANCE hThisInst, HINSTANCE hPrevInst, LPS
 	if( !RegisterClassEx( &wcl)) 	/* register window class */
 		return 0;
 
-	hwndMain = CreateWindow(
+	hwndMain = CreateWindow(		// メインウインドウ
 	    szWinName,
 	    Title,
 	    WS_OVERLAPPED |WS_MAXIMIZEBOX | WS_MINIMIZEBOX |WS_SYSMENU |WS_CAPTION |WS_THICKFRAME,
@@ -268,11 +271,48 @@ static int makeWindow(char *Title ,HINSTANCE hThisInst, HINSTANCE hPrevInst, LPS
 	    hThisInst, 		/* program window instance */
 	    NULL
    	);
-
-
 	ShowWindow(hwndMain, nWinMode);
-	UpdateWindow( hwndMain);
-   
+	UpdateWindow(hwndMain);
+
+	// ===================================================================================
+	WNDCLASSEX wcl2;
+	memset( &wcl2, 0 , sizeof(WNDCLASSEX));
+	wcl2.cbSize = sizeof(WNDCLASSEX);
+
+	wcl2.hInstance = hThisInst;      /* このインスタンスのハンドル*/
+	wcl2.lpszClassName = szWinPadName;   /* このウインドウクラスの名前 */
+	wcl2.lpfnWndProc = WindowPadFunc;
+	wcl2.style = 0;
+	//wcl2.hIcon = hIcon = LoadIcon(hThisInst, "IC_PC66SR" /*IDI_APPLICATION*/);
+	wcl2.hIconSm = NULL;  /*LoadIcon(NULL, IDI_WINLOGO); */
+	wcl2.hCursor = LoadCursor(NULL, IDC_ARROW);
+
+	wcl2.lpszMenuName = NULL;		/* menu */
+	wcl2.cbClsExtra = 0;
+	wcl2.cbWndExtra = 0;
+
+	wcl2.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH); /* back ground */
+
+	if (!RegisterClassEx(&wcl2)) 	/* register window class */
+		return 0;
+
+	hwndPad = CreateWindow(		// PAD ウインドウ
+		szWinPadName,
+		"PAD",
+		WS_OVERLAPPED,
+		CW_USEDEFAULT,				/* X */
+		CW_USEDEFAULT,				/* Y */
+		256,	/* WIDTH */
+		256,	/* HEIGHT */
+		HWND_DESKTOP,				/* parent window*/
+		NULL,
+		hThisInst, 		/* program window instance */
+		NULL
+	);
+
+	ShowWindow(hwndPad,SW_SHOW);
+	UpdateWindow( hwndPad);
+
 //   hmenu= GetMenu(hwndMain);		// menu handle (global variable)
 
 	SetTimer(hwndMain, TIMER_1SEC, 1000, timer_1sec_func);		// install 1sec timer

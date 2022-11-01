@@ -275,7 +275,8 @@ int isFullScreen(void);
 	//ColTyp getpixel(unsigned char *image, int x, int y,int bitpix);
 	ColTyp OSD_Getcolor(int R, int G, int B, int H);
 	void putOneChar(int sx, int sy, char chr, char attr);
-	//OSD_Surface * getRefreshSurface( void);
+	void putOneKanji(int sx, int sy, int jiscode, char attr);
+		//OSD_Surface * getRefreshSurface( void);
 	void RefreshDebugWindow(void);
 	OSD_Surface * getRefreshSurface(void);
 

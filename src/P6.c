@@ -863,6 +863,8 @@ void InitVariable(void)
 
 	initAutokey();		// init auto key
 
+	//readFont();			// read font
+
 	if (debugWorkPath[0] == 0) {
 		OSD_GetModulePath(debugWorkPath, PATH_MAX);
 	}
