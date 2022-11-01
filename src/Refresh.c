@@ -32,6 +32,8 @@
 #include "mem.h"
 #include "font.h"
 
+extern int is_open_debug_dialog;  /* 1: open  0:close */
+
 int IntLac;
 int IntLac_bak;
 
@@ -48,6 +50,7 @@ int bitpix;
 
 ColTyp BPal[16], BPal53[32], BPal11[4], BPal12[8], BPal13[8], BPal14[4], BPal15[8], BPal62[32], BPal61[16];
 
+int ignore_padding_flag = 0; // 1:ignore padding variable of window
 
 
 /* functions and variables in Refresh.c used by Unix.c */
@@ -63,6 +66,12 @@ static OSD_Surface *surface =NULL;
 	return system_surface;
 }
 */
+
+OSD_Surface* surface1 = NULL;
+OSD_Surface* surface2 = NULL;
+OSD_Surface* screen = NULL;
+OSD_Surface* status_surface = NULL;
+
 
 // ****************************************************************************
 //         書き込みするサーフェスの設定
@@ -1397,3 +1406,104 @@ void putOneKanji(int sx, int sy, int jiscode, char attr)
     }
 }
 
+
+// ****************************************************************************
+//          PutImage: エミュレータ画面を、スクリーンに bitblt
+// ****************************************************************************
+/*
+    normal:
+       screen <-- hb1
+
+    scroll:
+       screen <-- hb2 <-- hb1
+
+*/
+void PutImage(void)
+{
+#if 1
+    int x, y;
+    int w, h;		// blt size:           width height
+    OSD_Surface* src_surface = NULL;
+
+    int _paddingw, _paddingh;
+
+    if (ignore_padding_flag)
+    {
+        _paddingw = paddingw;
+        _paddingh = paddingh;
+        paddingw = paddingh = 0;
+    }
+
+
+    w = surface1->w;
+    //h= (bitmap ? lines :200) * scale; // text mode =200  graphics mode=204
+    h = lines * scale;
+    //top = (204-lines)*scale; 			// 200 line= 4     204 line= 0
+
+
+    if (isScroll())	// scroll mode 
+    {
+        int dx, dy;
+        x = portCB * 256 + portCA;
+        y = portCC;
+
+        x *= scale;
+        y *= scale;
+
+        dx = surface1->w - x;
+        //dy = surface1->h -y;
+        dy = lines * scale - y;		// 縦スクロールで横線入るので
+
+        BlitSurface(surface2, dx, dy, x, y, surface1, 0, 0);
+        BlitSurface(surface2, 0, dy, dx, y, surface1, x, 0);
+        BlitSurface(surface2, dx, 0, x, dy, surface1, 0, y);
+        BlitSurface(surface2, 0, 0, dx, dy, surface1, x, y);
+
+
+
+        //OSD_BlitSurface( screen   ,0+paddingw ,paddingh, w       , h , surface2 ,0 ,0);  // to screen
+        src_surface = surface2;
+    }
+    else
+        src_surface = surface1;
+
+
+
+
+
+    if (!is_open_debug_dialog)	// normal
+    {
+        //                dest        dest_x      dest_y   w        h       src        src_x src_y
+        //OSD_BlitSurface( screen     ,0+paddingw ,paddingh, Width , Height ,surface1 ,0 ,0);  // to screen
+        int w, h, amari_w = 0;
+        float tmp;
+        w = screen->w;
+        h = screen->h;
+        tmp = (float)h * 1.5686;
+        w = (int)(float)(tmp + 0.5);	// 四捨五入
+
+
+        amari_w = (screen->w - w) / 2;
+        OSD_BlitSurface(screen, 0 + paddingw + amari_w, paddingh, w, h, src_surface, 0, 0);  // to screen
+
+    }
+    else if (inTrace)
+    {			// debugger を開いたままステップ実行
+        OSD_BlitSurface(debug_surface, 0, 0, M6WIDTH, M6HEIGHT, src_surface, 0, 0);  // to screen
+    }
+    else {			// debugger を開いたままフル実行
+        OSD_BlitSurface(debug_surface, 0, 0, M6WIDTH, M6HEIGHT, src_surface, 0, 0);  // to screen
+        RefreshDebugWindow();
+    }
+
+    if (ignore_padding_flag)
+    {
+        paddingw = _paddingw;
+        paddingh = _paddingh;
+    }
+
+    if (!is_open_debug_dialog)
+        OSD_BlitSurface(screen, 0, 0 /*screen->h +paddingh*/, w, STATUSBAR_HEIGHT, status_surface, 0, 0);  // status bar to screen
+
+#endif
+}

@@ -38,7 +38,6 @@
 #include <ctype.h>
 #include <string.h>
 
-extern OSD_Surface *debug_surface;
 int my_atoi( char *str);
 void set_breakpoint( int action , int addr ,int idx ,int enable);
 void chk_backlog(void);
@@ -119,6 +118,7 @@ int   debug_keydown=0;
 enum {P_COMMAND, P_DISASM , P_DUMP};	/* 各ペイン */
 int current_pain = P_COMMAND;		/* 現在のペイン */
 
+OSD_Surface* debug_surface = NULL;
 
 
 
