@@ -183,14 +183,7 @@ int isFullScreen(void);
 #define Bool int
 #endif
 
-#if 0            
-/** Some typedef's **/
-//	typedef union {
-//		unsigned int ct_xid;
-//		unsigned char ct_byte[4];
-//	} ColTyp; /* sizeof ColTyp should be 4 */
 
-#endif
 
 #define DEPTH	  8 // 24 // 8 //  24   		// color depth   8 / 24
 
@@ -199,9 +192,7 @@ int isFullScreen(void);
 #define DEPTH     32
 #endif
 
-//#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 30000
-//#define DEPTH     8
-//#endif
+
 
 
 

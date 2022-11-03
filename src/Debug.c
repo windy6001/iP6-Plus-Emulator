@@ -48,7 +48,7 @@ void chk_backlog(void);
 // 
 
 #define MAX_BACK_LOG 300
-#define MAX_COMMANDLINES (30+12)
+#define MAX_COMMANDLINES (30+9)
 #define MAX_COMMANDCOWS  (61) // 63
 
 #define  COMMANDLINE_TOP_YY  21
@@ -69,8 +69,8 @@ void chk_backlog(void);
 #define  IO_TOP_XX        62
 #define  IO_TOP_YY	      40
 
-#define  FUNCTION_TOP_XX  0
-#define  FUNCTION_TOP_YY  (52+11)
+#define  FUNCTION_TOP_XX  40
+#define  FUNCTION_TOP_YY  (52+7)
 
 #define MAX_CMD_HISTORY      20	/* 命令のヒストリー　最大数 */
 
@@ -3506,7 +3506,7 @@ void open_debug_dialog(void)
 		//	int isfullscrn = isFullScreen();
 		if( inTrace== DEBUG_END) backup_scale = scale;
 
-	    debug_surface = OSD_CreateSurface(M6WIDTH* DEBUG_WINDOW_RATE ,M6HEIGHT* DEBUG_WINDOW_RATE ,bitpix ,SURFACE_BITMAP);
+	    debug_surface = OSD_CreateSurface(M5WIDTH* DEBUG_WINDOW_RATE ,M5HEIGHT* DEBUG_WINDOW_RATE ,bitpix ,SURFACE_BITMAP);
 
 		resizewindow((float)scale ,DEBUG_WINDOW_RATE  , WINDOW_NOBOARDER);
 
