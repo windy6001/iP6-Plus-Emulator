@@ -12,11 +12,11 @@
 
 // bitmap データへのポインターを返す
 // NULL:失敗
-short *getFontData(int jiscode)
+short *getFontData(int code)
 {
 	int i=0;
 	for (i = 0; i < length; i++) {
-		if (fontdata[i].jiscode == jiscode) {
+		if (fontdata[i].code == code) {
 			return fontdata[i].bitmap;
 		}
 	}
