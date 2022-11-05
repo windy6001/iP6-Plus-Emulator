@@ -42,10 +42,15 @@ int my_atoi( char *str);
 void set_breakpoint( int action , int addr ,int idx ,int enable);
 void chk_backlog(void);
 
+#if HAVE_DIRENT_H
+#include <dirent.h>
+#else
+#ifdef WIN32
+#include "win/dirent_msvc.h"
+#define  S_ISDIR(m) ((m) & S_IFDIR)
+#endif
+#endif
 
-//void ramdump(void);
-
-// 
 
 #define MAX_BACK_LOG 300
 #define MAX_COMMANDLINES (30+9)
@@ -2304,12 +2309,53 @@ void debug_pwd(int argc, char* argv[])
 	at += sprintf(DebugResult + at, "\r\n");
 }
 
+/*
+void truncate(char *buff, int max)
+{
+	int len = strlen(buff);
+	if( len >14) {
+		my_strcpy(outbuff, inbuff,14);
+	}
+}
+*/
+
 //*************************************************************/
 //				dir
 //*************************************************************/
 void debug_dir(int argc, char*argv[] )
 {
-	OSD_OpenFiler( debugWorkPath);		// debug work path のフォルダを、エクスプローラーで開く
+	struct dirent *dp;
+	OSD_OpenFiler("");		// カレントディレクトリを、エクスプローラーで開く
+
+	int  cnt=0;
+	char curdir[PATH_MAX];
+	getcwd(curdir , PATH_MAX);
+
+	DIR *dir = opendir(curdir);
+	if( dir == NULL) {
+		at += sprintf(DebugResult + at, "open directory FAILED \r\n");
+		return;
+	}
+	do  {
+		dp = readdir(dir);
+		if( dp ==NULL) {break;}
+		if( *dp->d_name == '.') {continue;}
+		int attr=  dp->data.dwFileAttributes;
+		if( attr == 0x10) {
+			at += sprintf(DebugResult + at, "[%-13s] ",dp->d_name);
+		}
+		else {
+			at += sprintf(DebugResult + at, "%-15s", dp->d_name);
+		}
+		cnt++;
+		if(( cnt % 3) ==0) {
+			at += sprintf(DebugResult + at, "\r\n");
+		}
+	}while(1);
+	if ((cnt % 3) != 0) {
+		at += sprintf(DebugResult + at, "\r\n");
+	}
+	closedir(dir);
 
 }
 
@@ -2323,12 +2369,12 @@ void debug_cd(int argc,char *argv[])
 	if( argc ==2) {
 		if( chdir( argv[1] )==0) {
 			getcwd(curdir, PATH_MAX);		// save current directory
-			at += sprintf(DebugResult + at, "cd to '%s'... SUCCESS", argv[1]);
+			at += sprintf(DebugResult + at, "cd to '%s'= SUCCESS", argv[1]);
 			at += sprintf(DebugResult + at, "\r\n");
-			my_strncpy(debugWorkPath, curdir, PATH_MAX);
+			//my_strncpy(debugWorkPath, curdir, PATH_MAX);
 		}
 		else {
-			at += sprintf(DebugResult + at, "cd to '%s'... FAILED", argv[1]);
+			at += sprintf(DebugResult + at, "cd to '%s' = FAILED", argv[1]);
 			at += sprintf(DebugResult + at, "\r\n");
 		}
 	} else {
@@ -2813,7 +2859,6 @@ int DebugCommand(reg *R, const char *Command)
 		case D_SAVEVRAM: debug_savevram(argc, argv); break;
 		case D_LOADVRAM: debug_loadvram(argc, argv); break;
 		case D_VRAMS:    debug_vrams(); break;
-		//case D_NOWAIT:   debug_nowait(argc, argv); break;
 		case D_LOADMEM:  debug_loadmem(argc, argv); break;
 		case D_SAVEMEM:  debug_savemem(argc, argv); break;
 		case D_RESET:    debug_reset(argc,argv); break;
