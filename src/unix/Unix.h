@@ -33,3 +33,5 @@ int OSD_SelectMachine(void);
 
 void OSD_SetModulePath(void);
 void OSD_OpenFiler(char *path);
+
+int stricmp(const char* a, const char* b);
