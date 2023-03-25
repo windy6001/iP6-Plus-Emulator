@@ -2045,21 +2045,6 @@ int StartP6(void)
 
 	printf("OK\n");
 
-	/* ******* デバッガ用　小さいフォント読み込み ************************ */
-#if 0
-	{
-		FILE *fp;
-		if (Verbose) printf("OK\nAllocating 64kB for DEBUG CGROM...");
-		DEBUG_CGROM = (byte*)malloc(0x10000);  if (!DEBUG_CGROM) { printf("FAILED\n"); return(0); }
-		fp = fopen("..\\cgrom.s", "rb");
-		if (fp)
-		{
-			if (fread(DEBUG_CGROM, 0x1000, 1, fp) == 1)
-				printf("OK\n");
-			fclose(fp);
-		}
-	}
-#endif
 
 
 	DEBUG_CGROM = (byte*)malloc(0x1000);  if (!DEBUG_CGROM) { printf("FAILED\n"); return(0); }

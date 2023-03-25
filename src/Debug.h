@@ -40,7 +40,7 @@ void DebugPutResult(void);
 void DisplayDisasm(void);
 void  DebugDo(void);
 
-#define DEBUG_WINDOW_RATE 3.2
+#define DEBUG_WINDOW_RATE 3.0
 
 extern char debugWorkPath[PATH_MAX];
 void do_stacks( byte opcode1 , byte opcode2 , byte opcode3);

@@ -176,7 +176,7 @@ int CGSW93 = FALSE;
 byte Verbose = 1;
 
 
-
+int isPadMode =0;			// Pad Read mode 
 
 
 
@@ -932,7 +932,15 @@ void DoOut(register byte Port,register byte Value)
 
 		// --------- SOUND WRITE DATA               --------------
    case 0x71:							/* FM SOUND CARTRIDGE */
-   case 0xA1: 
+   case 0xA1:
+			// タッチパネル
+		   if (PSGReg == 7 && (Value & 0x80) == 0x80) {	// 最初の初期化
+			   isPadMode = 1;
+		   }
+		   if (PSGReg == 15 && ((Value & 0x11) == 0x11) && isPadMode) {
+			   isPadMode = 2;
+		   }
+
 			portA1 = Value;
 			PSGTMP[PSGReg]=Value;        /* 8910 /YM-2203 data            */
 			PSGOut(PSGReg,Value);

@@ -38,18 +38,22 @@
 #include <ctype.h>
 #include <string.h>
 
-extern OSD_Surface *debug_surface;
 int my_atoi( char *str);
 void set_breakpoint( int action , int addr ,int idx ,int enable);
 void chk_backlog(void);
 
+#if HAVE_DIRENT_H
+#include <dirent.h>
+#else
+#ifdef WIN32
+#include "win/dirent_msvc.h"
+#define  S_ISDIR(m) ((m) & S_IFDIR)
+#endif
+#endif
 
-//void ramdump(void);
-
-// 
 
 #define MAX_BACK_LOG 300
-#define MAX_COMMANDLINES (30+12)
+#define MAX_COMMANDLINES (30+9)
 #define MAX_COMMANDCOWS  (61) // 63
 
 #define  COMMANDLINE_TOP_YY  21
@@ -70,8 +74,8 @@ void chk_backlog(void);
 #define  IO_TOP_XX        62
 #define  IO_TOP_YY	      40
 
-#define  FUNCTION_TOP_XX  0
-#define  FUNCTION_TOP_YY  (52+11)
+#define  FUNCTION_TOP_XX  40
+#define  FUNCTION_TOP_YY  (52+7)
 
 #define MAX_CMD_HISTORY      20	/* 命令のヒストリー　最大数 */
 
@@ -119,6 +123,7 @@ int   debug_keydown=0;
 enum {P_COMMAND, P_DISASM , P_DUMP};	/* 各ペイン */
 int current_pain = P_COMMAND;		/* 現在のペイン */
 
+OSD_Surface* debug_surface = NULL;
 
 
 
@@ -419,6 +424,7 @@ void DebugStart(reg *R)
 	disasm_current_adr = R->PC.W;
 
 	chdir( debugWorkPath);		// デバッグパスに cd する
+
 }
 
 
@@ -683,8 +689,6 @@ static void DisplayUsage(void)
 	at += sprintf(DebugResult + at, "reset         : reset  (PC address =0) \r\n");
 	at += sprintf(DebugResult + at, "set           : setting \r\n");
 	at += sprintf(DebugResult + at, "?,h           : Show this help text\r\n\r\n");
-
-
 
 #if 0
 	at += sprintf(DebugResult+at, "***** Built-in Z80 Debugger Commands *****\r\n");
@@ -2305,12 +2309,53 @@ void debug_pwd(int argc, char* argv[])
 	at += sprintf(DebugResult + at, "\r\n");
 }
 
+/*
+void truncate(char *buff, int max)
+{
+	int len = strlen(buff);
+	if( len >14) {
+		my_strcpy(outbuff, inbuff,14);
+	}
+}
+*/
+
 //*************************************************************/
 //				dir
 //*************************************************************/
 void debug_dir(int argc, char*argv[] )
 {
-	OSD_OpenFiler( debugWorkPath);		// debug work path のフォルダを、エクスプローラーで開く
+	struct dirent *dp;
+	OSD_OpenFiler("");		// カレントディレクトリを、エクスプローラーで開く
+
+	int  cnt=0;
+	char curdir[PATH_MAX];
+	getcwd(curdir , PATH_MAX);
+
+	DIR *dir = opendir(curdir);
+	if( dir == NULL) {
+		at += sprintf(DebugResult + at, "open directory FAILED \r\n");
+		return;
+	}
+	do  {
+		dp = readdir(dir);
+		if( dp ==NULL) {break;}
+		if( *dp->d_name == '.') {continue;}
+		int attr=  dp->data.dwFileAttributes;
+		if( attr == 0x10) {
+			at += sprintf(DebugResult + at, "[%-13s] ",dp->d_name);
+		}
+		else {
+			at += sprintf(DebugResult + at, "%-15s", dp->d_name);
+		}
+		cnt++;
+		if(( cnt % 3) ==0) {
+			at += sprintf(DebugResult + at, "\r\n");
+		}
+	}while(1);
+	if ((cnt % 3) != 0) {
+		at += sprintf(DebugResult + at, "\r\n");
+	}
+	closedir(dir);
 
 }
 
@@ -2324,12 +2369,12 @@ void debug_cd(int argc,char *argv[])
 	if( argc ==2) {
 		if( chdir( argv[1] )==0) {
 			getcwd(curdir, PATH_MAX);		// save current directory
-			at += sprintf(DebugResult + at, "cd to '%s'... SUCCESS", argv[1]);
+			at += sprintf(DebugResult + at, "cd to '%s'= SUCCESS", argv[1]);
 			at += sprintf(DebugResult + at, "\r\n");
-			my_strncpy(debugWorkPath, curdir, PATH_MAX);
+			//my_strncpy(debugWorkPath, curdir, PATH_MAX);
 		}
 		else {
-			at += sprintf(DebugResult + at, "cd to '%s'... FAILED", argv[1]);
+			at += sprintf(DebugResult + at, "cd to '%s' = FAILED", argv[1]);
 			at += sprintf(DebugResult + at, "\r\n");
 		}
 	} else {
@@ -2421,6 +2466,13 @@ void debug_bt(int argc, char* argv[])
 		at += sprintf(DebugResult + at, " %s ", regname[stacks[i].reg]);
 		at += sprintf(DebugResult + at, "\r\n");
 	}
+
+
+//	for (int i = 0x2122; i < 0x2150; i++) {		// test
+//		putOneKanji(0, 500, i, 0x6f);
+//	}
+
+
 }
 
 void debug_save_reg( reg r)
@@ -2435,10 +2487,10 @@ void do_stacks( byte opcode1 , byte opcode2 , byte opcode3)
 		case 0x31:  push_stacks(R.SP.W , S_LD ,  R_NON, 0, opcode3*256+opcode2); break;
 		case 0xE3:  push_stacks(R.SP.W , S_EX  , R_HL, R.HL.W ,0); break;
 
-		case 0xF5:  //push_stacks(R.SP.W , S_PUSH, R_AF, R.AF.W ,0); break;
-		case 0xE5:  //push_stacks(R.SP.W , S_PUSH, R_HL, R.HL.W, 0); break;
-		case 0xD5:  //push_stacks(R.SP.W , S_PUSH, R_DE, R.DE.W, 0); break;
-		case 0xC5:  //push_stacks(R.SP.W , S_PUSH, R_BC, R.BC.W, 0); break;
+		//case 0xF5:  push_stacks(R.SP.W , S_PUSH, R_AF, R.AF.W ,0); break;
+		//case 0xE5:  push_stacks(R.SP.W , S_PUSH, R_HL, R.HL.W, 0); break;
+		//case 0xD5:  push_stacks(R.SP.W , S_PUSH, R_DE, R.DE.W, 0); break;
+		//case 0xC5:  push_stacks(R.SP.W , S_PUSH, R_BC, R.BC.W, 0); break;
 					break;
 					// ----- CALL  -----------
 		case 0xCD:  push_stacks(R.SP.W, S_CALL, R_NON, pre_reg.PC.W+3, opcode3 * 256 + opcode2); 
@@ -2469,12 +2521,12 @@ void do_stacks( byte opcode1 , byte opcode2 , byte opcode3)
 						pop_stacks();
 					}
 					break;
-		case 0xF1:  
-		case 0xE1:  
-		case 0xD1:  
-		case 0xC1:  
-					//pop_stacks();
-					break;
+		//case 0xF1:  
+		//case 0xE1:  
+		//case 0xD1:  
+		//case 0xC1:  
+		//			pop_stacks();
+		//			break;
 		case 0xDD:
 					if (opcode2 == 0xE5)
 						push_stacks(R.SP.W, S_PUSH, R_IX, R.IX.W, 0);
@@ -2807,7 +2859,6 @@ int DebugCommand(reg *R, const char *Command)
 		case D_SAVEVRAM: debug_savevram(argc, argv); break;
 		case D_LOADVRAM: debug_loadvram(argc, argv); break;
 		case D_VRAMS:    debug_vrams(); break;
-		//case D_NOWAIT:   debug_nowait(argc, argv); break;
 		case D_LOADMEM:  debug_loadmem(argc, argv); break;
 		case D_SAVEMEM:  debug_savemem(argc, argv); break;
 		case D_RESET:    debug_reset(argc,argv); break;
@@ -3500,7 +3551,7 @@ void open_debug_dialog(void)
 		//	int isfullscrn = isFullScreen();
 		if( inTrace== DEBUG_END) backup_scale = scale;
 
-	    debug_surface = OSD_CreateSurface(M6WIDTH* DEBUG_WINDOW_RATE ,M6HEIGHT* DEBUG_WINDOW_RATE ,bitpix ,SURFACE_BITMAP);
+	    debug_surface = OSD_CreateSurface(M5WIDTH* DEBUG_WINDOW_RATE ,M5HEIGHT* DEBUG_WINDOW_RATE ,bitpix ,SURFACE_BITMAP);
 
 		resizewindow((float)scale ,DEBUG_WINDOW_RATE  , WINDOW_NOBOARDER);
 

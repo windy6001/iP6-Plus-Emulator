@@ -80,6 +80,7 @@ int InitMachine( void );
 void OSD_SetWindowTitle(char *name);
 
 LRESULT CALLBACK WindowFunc( HWND ,UINT ,WPARAM, LPARAM);
+LRESULT CALLBACK WindowPadFunc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 
 
