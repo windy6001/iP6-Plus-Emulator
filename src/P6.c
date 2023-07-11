@@ -157,6 +157,7 @@ int CpuRun(void)
 //      src_surface : 転送元サーフェス
 //      sx,sy       : 転送元サーフェスの左上の座標
 // ****************************************************************************
+#if 0
 void BlitSurface(OSD_Surface * dst_surface, int ex, int ey, int w, int h, OSD_Surface * src_surface, int sx, int sy)
 {
 	int y;
@@ -168,7 +169,7 @@ void BlitSurface(OSD_Surface * dst_surface, int ex, int ey, int w, int h, OSD_Su
 
 	}
 }
-
+#endif
 
 
 // ****************************************************************************

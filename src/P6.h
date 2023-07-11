@@ -51,7 +51,7 @@ enum {PC60, PC60M2, PC60M2SR , PC66, PC66SR };	/* P6Version define */
 #define STATUSBAR_HEIGHT 50    // status bar height
 
 
-#define PADDINGW   30  // 15		// PADDING   (ƒrƒbƒgƒ}ƒbƒv‚ÆAƒEƒCƒ“ƒhƒE‚ÌŒ„ŠÔj
+#define PADDINGW   30  // 15		// PADDING   (ï¿½rï¿½bï¿½gï¿½}ï¿½bï¿½vï¿½ÆAï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½ÌŒï¿½ï¿½Ôj
 #define PADDINGH   50  // 40
 
 
@@ -62,7 +62,7 @@ enum {PC60, PC60M2, PC60M2SR , PC66, PC66SR };	/* P6Version define */
 //#define SCRWIDTH  WIDTH +PADDINGW	// SCREEN WIDTH
 //#define SCRHEIGHT HEIGHT+PADDINGH
 
-#define BORDERW    8        // BORDER    (ƒEƒCƒ“ƒhƒE˜g‚Ü‚Å‚ÌŒ„ŠÔ)
+#define BORDERW    8        // BORDER    (ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½gï¿½Ü‚Å‚ÌŒï¿½ï¿½ï¿½)
 #define BORDERH   70 // 56 // 46
 
 
@@ -192,12 +192,12 @@ void conv_argv( char *lpszArgs , int *argc ,char *argv[]);
 
 
 // *************************************************************
-//          ƒ[ƒ}š•ÏŠ·
+//          ï¿½ï¿½ï¿½[ï¿½}ï¿½ï¿½ï¿½ÏŠï¿½
 // *************************************************************
-#define HENKAN_SUCCESS  1		// ƒ[ƒ}š•ÏŠ·¬Œ÷
-#define HENKAN_FAILED   0		// ƒ[ƒ}š•ÏŠ·¸”s
-#define HENKAN_DOING   -1		// ƒ[ƒ}š•ÏŠ·’†
-#define HENKAN_CANCEL   2		// ƒ[ƒ}š•ÏŠ·‚µ‚È‚¢@& ƒLƒƒƒ“ƒZƒ‹
+#define HENKAN_SUCCESS  1		// ï¿½ï¿½ï¿½[ï¿½}ï¿½ï¿½ï¿½ÏŠï¿½ï¿½ï¿½ï¿½ï¿½
+#define HENKAN_FAILED   0		// ï¿½ï¿½ï¿½[ï¿½}ï¿½ï¿½ï¿½ÏŠï¿½ï¿½ï¿½ï¿½s
+#define HENKAN_DOING   -1		// ï¿½ï¿½ï¿½[ï¿½}ï¿½ï¿½ï¿½ÏŠï¿½ï¿½ï¿½
+#define HENKAN_CANCEL   2		// ï¿½ï¿½ï¿½[ï¿½}ï¿½ï¿½ï¿½ÏŠï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½@& ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½ï¿½
 
 extern int romaji_mode;		// 1:true  0:false
 extern int new_romaji_mode;

@@ -32,6 +32,7 @@ dokodemo.c \
 dokodemo.h \
 font6x10.c \
 font6x10.h \
+font.c \
 Help.h \
 OpenAL.c \
 OpenAL.h \

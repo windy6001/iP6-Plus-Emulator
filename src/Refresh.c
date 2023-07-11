@@ -1454,10 +1454,10 @@ void PutImage(void)
         //dy = surface1->h -y;
         dy = lines * scale - y;		// ècÉXÉNÉçÅ[ÉãÇ≈â°ê¸ì¸ÇÈÇÃÇ≈
 
-        BlitSurface(surface2, dx, dy, x, y, surface1, 0, 0);
-        BlitSurface(surface2, 0, dy, dx, y, surface1, x, 0);
-        BlitSurface(surface2, dx, 0, x, dy, surface1, 0, y);
-        BlitSurface(surface2, 0, 0, dx, dy, surface1, x, y);
+        OSD_BlitSurface(surface2, dx, dy, x, y, surface1, 0, 0);
+        OSD_BlitSurface(surface2, 0, dy, dx, y, surface1, x, 0);
+        OSD_BlitSurface(surface2, dx, 0, x, dy, surface1, 0, y);
+        OSD_BlitSurface(surface2, 0, 0, dx, dy, surface1, x, y);
 
 
 
