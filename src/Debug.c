@@ -2905,21 +2905,17 @@ void DebugPutString( int x, int y , unsigned char *str ,int max_x ,char *attr)
 	sx =x;
 	do {
 		c = *str;
-		if( c >= ' ' || c==0 )
-		    {
+		if( c >= ' ' || c==0 ){
 		    putOneChar(x,y ,c , *attr); 
 		    x++;
-			}
-		else if( c =='\n')            // caridge return
-			{
+		}else if( c =='\n') {           // caridge return
 			for( ;x< sx+max_x ; x++)
 		      putOneChar(x,y ,' ', 0x00); 
 		   
 			y++; 
 			x= sx;     // auto indent
-			}
-		else if( c=='\\')		// esc sequence
-			{					// ESC[ fore color ; back color m　　
+		}else if( c=='\\') {		// esc sequence
+									// ESC[ fore color ; back color m　　
 			 str++;
 			 if( *str=='[')	
 			 	{
@@ -2931,27 +2927,24 @@ void DebugPutString( int x, int y , unsigned char *str ,int max_x ,char *attr)
 
 				fcol[0]= bcol[0]=0;
 				
-			 	for(i=0; i< 3; i++)
-			 		{
+			 	for(i=0; i< 3; i++){
 			 	 	if( *str=='m') 				// end of esc sequence
 			 	 		break;
 			 	 	else if( *str==';') 		// change to background color
 			 	 		{p=bcol; i=0;}
-			 	 	else if( isdigit( *str))	// store number 
-			 	 		{
+			 	 	else if( isdigit( *str)) {	// store number 
 			 	 		*p++ = *str++;
 						*p =0;
-						}
-			 		}
+					}
+			 	}
 			 	 fore_color = atoi( fcol );
 			 	 back_color = atoi( bcol );
 			 	 if( fore_color == 0) fore_color =16;
-			 	}
+			 }
 		  }
 		str++;
 		attr++;
-		}
-	while( c != 0);
+	}while( c != 0);
 	
 	while( x < MAX_COMMANDCOWS)                 // put space character
 	    {
@@ -2997,12 +2990,10 @@ void  DebugDisasmPrompt( void)
 	DisplayDisasm();
 
 	ret = read_keybuffer( keybuffer, NULL ,&keydown , &scancode ,&osdkeycode ) ;
-	if( ret)
-		{
+	if( ret){
 		keyboard_set_stick( osdkeycode , keydown);
 
-	 	if( keydown)
-			{
+	 	if( keydown){
 			printf("keydown=%02X (%c)\n",  osdkeycode, osdkeycode);
 
 			switch( osdkeycode)
@@ -3129,19 +3120,16 @@ void  DebugDumpPrompt( void)
 	//DisplayMemDump();
 
 	ret = read_keybuffer( keybuffer, NULL ,&keydown , &scancode ,&osdkeycode ) ;
-	if( ret)
-		{
+	if( ret){
 		keyboard_set_stick( osdkeycode , keydown);
 
-	 	if( keydown)
-			{
+	 	if( keydown){
 			int key_flag=0;		// 1: 違うキーの処理もする
 			printf("keydown=%02X (%c)\n",  osdkeycode, osdkeycode);
 			
 			// -------------- 16進数　入力 --------------
 			if(( osdkeycode >='0' && osdkeycode <='9') || ( osdkeycode >='A' && osdkeycode <='F') || ( osdkeycode >='a' && osdkeycode <='f') 
-			 ||( osdkeycode >=OSDK_KP0 && osdkeycode <= OSDK_KP9))
-				{
+			 ||( osdkeycode >=OSDK_KP0 && osdkeycode <= OSDK_KP9)){
 				 int tmp;
 
 				 if( osdkeycode >= OSDK_KP0 && osdkeycode <= OSDK_KP9)  osdkeycode = osdkeycode - OSDK_KP0+'0';
@@ -3151,8 +3139,7 @@ void  DebugDumpPrompt( void)
 				 
 				 DebugPutString( DUMP_TOP_XX+5+ dump_xx*3 , DUMP_TOP_YY+ 1+dump_yy , hex , 3 ,attr );
 
-				 if( hex_idx >=2)		// 16進数入力確定
-					{
+				 if( hex_idx >=2) {		// 16進数入力確定
 					 hex[ 2 ] = 0;
 					 sscanf( hex ,"%02X",&tmp);
 
@@ -3293,22 +3280,19 @@ void  DebugCommandPrompt( void)
 	static int current_cmd_history_idx=0; /* コマンドヒストリー の現在インデックス */
 	static int start_history_cmd=0;		  /* 1:ヒストリーが開始した　0:通常 */
 
-	if( com_xx==0)
-		{
+	if( com_xx==0){
 		 commandLine[ com_back_log_yy][com_xx++]='I';
 		 commandLine[ com_back_log_yy][com_xx++]='P';
 		 commandLine[ com_back_log_yy][com_xx++]='6';
 		 commandLine[ com_back_log_yy][com_xx++]='>';
-		}
+	}
 	commandLineAttr[ com_back_log_yy ][com_xx] = 0xf0;		// カーソル反転
 
 	ret = read_keybuffer( keybuffer, NULL ,&keydown , &scancode ,&osdkeycode ) ;
-	if( ret)
-		{
+	if( ret){
 		keyboard_set_stick( osdkeycode , keydown);
 
-	 	if( keydown)
-			{
+	 	if( keydown){
 			printf("keydown=%02X (%c)\n",  osdkeycode, osdkeycode);
 
 			switch( osdkeycode)
@@ -3396,63 +3380,55 @@ void  DebugCommandPrompt( void)
 
 
 		
-			if( (p6keycode >=' ' && p6keycode < 0x7f )  && com_xx < MAX_COMMANDCOWS)
-				{
+			if( (p6keycode >=' ' && p6keycode < 0x7f )  && com_xx < MAX_COMMANDCOWS){
 				commandLine    [ com_back_log_yy][com_xx] = p6keycode; 	// store to command Line
 				commandLineAttr[ com_back_log_yy][com_xx] = 0x0f;
 				com_xx++;
 				commandLine    [ com_back_log_yy][com_xx] = 0x0;
 				commandLineAttr[ com_back_log_yy][com_xx] = 0xf0;
-				}
-			else if( p6keycode==0x8 && com_xx > 4)		// back space
-				{
+			}else if( p6keycode==0x8 && com_xx > 4)	{	// back space
 				com_xx--;
 				commandLine[ com_back_log_yy][com_xx] = 0;
-				}
-			else if( p6keycode==0xd)				// return
-				{
+			}
+			else if( p6keycode==0xd) {				// return
 				int ret;
 
-				if( cmd_history_idx > MAX_CMD_HISTORY-2)		// あふれる前に、前につめる
-					{
+				if( cmd_history_idx > MAX_CMD_HISTORY-2) {		// あふれる前に、前につめる
 					 int i;
 					 for(i=0; i< MAX_CMD_HISTORY-2; i++) 
 						 strcpy( commandHistory[ i] , commandHistory[i+1]);
 					 cmd_history_idx = MAX_CMD_HISTORY-2;
 					 //*commandHistory[ cmd_history_idx ] = 0;		// 一番下は、必ず、空文字列にする
-					}
+				}
 				strcpy( commandHistory[ cmd_history_idx++ ] ,commandLine[ com_back_log_yy]+4);
 				current_cmd_history_idx = cmd_history_idx;
 
 
 				com_xx=0;
 				ret = DebugCommand( &R ,commandLine[ com_back_log_yy]+4 );	// execute debug command 
-				if( ret==0 )
-					{
+				if( ret==0 ){
 						// enter のみ入力したとき は、改行するようにする
 					 com_yy++; com_back_log_yy++;		// 命令の次にｙ座標移す。
 					 DebugPutResult();
 					 
 			 		 printf("**** return yy=%d \n",com_yy);
-					}
-				else if( ret ==1)
-					{
+				}
+				else if( ret ==1) {
 				 	inTrace = DEBUG_END;
 				 	com_yy++; com_back_log_yy++;		// 命令の次にｙ座標移す。
-					}
-				else if( ret ==2)
-					{
+				}
+				else if( ret ==2){
 				 	inTrace = DEBUG_END;
 				 	com_yy++; com_back_log_yy++;		// 命令の次にｙ座標移す。
 					close_debug_dialog();
 					return ;
-					}
 				}
 			}
+		}
 
 		chk_backlog();			// backlog チェック			
 		printf( "scancode =%X  keycode=%X \n",scancode ,J);
-		}
+	}
 
 
 	// fullscreen / window 切り替え時に消える対策
@@ -3469,8 +3445,7 @@ void  DebugCommandPrompt( void)
 
 void chk_backlog(void)
 {
-		if( com_back_log_yy >MAX_BACK_LOG-50 && !com_is_backscroll)        // overflow backlog buffer
-		  {
+		if( com_back_log_yy >MAX_BACK_LOG-50 && !com_is_backscroll){        // overflow backlog buffer
 	   	   int y;
            for(y=0; y< MAX_BACK_LOG -50; y++)
                 {
@@ -3500,19 +3475,15 @@ void DebugPutResult(void)
 	in = DebugResult;
 	do {
 		c = *in;
-		if( c >=' ')
-			{
+		if( c >=' '){
 			 commandLine [ com_back_log_yy][x] = c;
 			 x++;
-			}
-		else if( c=='\n')
-			{
+		}else if( c=='\n'){
 			com_back_log_yy++; 
 			x=0;  com_yy++;        // cursor
-			}
-		in++;
 		}
-	while( c !=0);
+		in++;
+	}while( c !=0);
 
 
  	if( com_yy > MAX_COMMANDLINES-2 && !com_is_backscroll) 		// scroll up ? 

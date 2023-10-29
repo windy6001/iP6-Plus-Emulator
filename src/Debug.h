@@ -12,6 +12,7 @@
 /**     changes to this file.                               **/
 /*************************************************************/
 #include <stdio.h>
+#include "Z80.h"
 
 void locate(int x,int y);
 char *d_fgets( char *buff,int len ,FILE *stream);

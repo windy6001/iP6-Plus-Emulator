@@ -1299,18 +1299,7 @@ int usleep (unsigned int us) {
 }
 
 
-#if 0		// moves to iP6.c
-    InitVariable();			// <--- init variable
-    init_keybuffer();			// <--- init key buffer
-	OSD_initKeymap();		// init keymap
 
-    ConfigInit();				// <--- config init
-    ConfigRead();				// <--- config read 
-
-	ret = OsdCpuRun();			// VM run
-//         hCPUThread = CreateThread( NULL,0,(LPTHREAD_START_ROUTINE) CPUThreadProc ,NULL,0,&dwThreadId);
-//         CloseHandle( hCPUThread);
-#endif
 
 
 #endif // WIN32
