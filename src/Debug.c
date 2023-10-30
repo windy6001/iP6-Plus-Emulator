@@ -2327,6 +2327,7 @@ void debug_dir(int argc, char*argv[] )
 	struct dirent *dp;
 	OSD_OpenFiler("");		// カレントディレクトリを、エクスプローラーで開く
 
+#if 0
 	int  cnt=0;
 	char curdir[PATH_MAX];
 	getcwd(curdir , PATH_MAX);
@@ -2356,7 +2357,7 @@ void debug_dir(int argc, char*argv[] )
 		at += sprintf(DebugResult + at, "\r\n");
 	}
 	closedir(dir);
-
+#endif
 }
 
 //*************************************************************/
