@@ -274,7 +274,8 @@ static int makeWindow(char *Title ,HINSTANCE hThisInst, HINSTANCE hPrevInst, LPS
 	ShowWindow(hwndMain, nWinMode);
 	UpdateWindow(hwndMain);
 
-	// ===================================================================================
+#if 0
+	// ======== PAD Window ===========================================================================
 	WNDCLASSEX wcl2;
 	memset( &wcl2, 0 , sizeof(WNDCLASSEX));
 	wcl2.cbSize = sizeof(WNDCLASSEX);
@@ -312,6 +313,7 @@ static int makeWindow(char *Title ,HINSTANCE hThisInst, HINSTANCE hPrevInst, LPS
 
 	ShowWindow(hwndPad,SW_SHOW);
 	UpdateWindow( hwndPad);
+#endif
 
 //   hmenu= GetMenu(hwndMain);		// menu handle (global variable)
 

@@ -192,12 +192,12 @@ void conv_argv( char *lpszArgs , int *argc ,char *argv[]);
 
 
 // *************************************************************
-//          ���[�}���ϊ�
+//          
 // *************************************************************
-#define HENKAN_SUCCESS  1		// ���[�}���ϊ�����
-#define HENKAN_FAILED   0		// ���[�}���ϊ����s
-#define HENKAN_DOING   -1		// ���[�}���ϊ���
-#define HENKAN_CANCEL   2		// ���[�}���ϊ����Ȃ��@& �L�����Z��
+#define HENKAN_SUCCESS  1		// 
+#define HENKAN_FAILED   0		// 
+#define HENKAN_DOING   -1		// 
+#define HENKAN_CANCEL   2		// 
 
 extern int romaji_mode;		// 1:true  0:false
 extern int new_romaji_mode;

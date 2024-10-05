@@ -58,7 +58,7 @@
 #include "win/WinInput.h"
 #endif
 
-
+#include "cmu800.h"
 
 
 void BlitSurface(OSD_Surface * dst_surface, int ex, int ey, int w, int h, OSD_Surface * src_surface, int sx, int sy);
@@ -605,6 +605,7 @@ void InitVariable(void)
 	int i;
 
 	init_tapeCounter();	// テープカウンターの保存先を初期化
+	CMU800_init();
 
 #ifdef TARGET_OS_IPHONE
 	UseCPUThread=2;

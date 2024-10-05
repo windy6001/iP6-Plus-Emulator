@@ -25,7 +25,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
     <CLRSupport>false</CLRSupport>
   </PropertyGroup>
@@ -91,6 +91,7 @@
     <ClCompile Include="..\src\bmp.c" />
     <ClCompile Include="..\src\buffer.c" />
     <ClCompile Include="..\src\chkcrc32.c" />
+    <ClCompile Include="..\src\cmu800.c" />
     <ClCompile Include="..\src\conv.c" />
     <ClCompile Include="..\src\d88.c" />
     <ClCompile Include="..\src\Debug.c" />
@@ -139,6 +140,7 @@
     <ClInclude Include="..\src\Build.h" />
     <ClInclude Include="..\src\cgrom.h" />
     <ClInclude Include="..\src\chkcrc32.h" />
+    <ClInclude Include="..\src\cmu800.h" />
     <ClInclude Include="..\src\Codes.h" />
     <ClInclude Include="..\src\CodesCB.h" />
     <ClInclude Include="..\src\CodesED.h" />

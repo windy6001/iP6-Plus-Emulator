@@ -1,7 +1,7 @@
 # iP6 Plus    (PC-6000/6600 Emulator) 
 
-Last Update 2021/12/10<br>
-Release 4.9 Beta 5  (→次回は6 ) <br>
+Last Update 2024/10/05<br>
+Release 4.9 Beta 6 <br>
 
 ## 1. はじめに
 
@@ -472,6 +472,12 @@ opna.cpp と、opm.cppの、pow関数の呼び出し、pow(10,db / 40.0) とな�
 
 ## 7. 更新履歴
 
+
+### Rel 4.9 β6の変更点
+
+ - アナログシンセサイザー(AMDEKのCMU-800)に、仮対応　　(内蔵PSG音源で鳴らしてみるテスト）３和音まで。リズム音源未対応)
+ - PADウインドウとりやめ
+
 ### Rel 4.9 β5の変更点
 
 
@@ -498,8 +504,6 @@ opna.cpp と、opm.cppの、pow関数の呼び出し、pow(10,db / 40.0) とな�
  - Autokey.c/Autokey.h は、頭文字が大文字になっているのは間違いで、小文字が正しい
  - peek_memory() / poke_memory() を修正
  - Linux(Ubuntu) でビルド出来ない問題を修正
-
- 次回はここからかく
  
 
 ### Rel 4.9 β4の変更点

@@ -34,6 +34,8 @@
 #include "voice.h"
 #include "conv.h"
 
+#include "cmu800.h"
+
 #include "dokodemo.h"
 
 //#include "device.h"
@@ -1290,9 +1292,12 @@ void DoOut(register byte Port,register byte Value)
 			//if( !(getB() & 0xf)) {printf("%04X \n", Value*256 + getB() );}
 			break;					// address latch
   case 0xFF:break;					// ext kanjirom  00h: enable / ffh:disable
+
+
   default: //PRINTDEBUG3("[P6.c][DoOut] Unused  port=%02X  value=%02x \n",Port,Value);
 			break;
   }
+  CMU800_DoOut(Port, Value);
 }
 
 /****************************************************************/
@@ -1456,9 +1461,12 @@ byte DoIn(register byte Port)
 			    if( EXTKANJIROM)
 			       Value= EXTKANJIROM[ extkanjirom_adr*2+1];// right font
 			  break;
+
 //    default: printf("Unused  port=%02X  value=%02x \n",Port,Value);
     default:   Value=NORAM;break;        /* If no port, ret FFh  */
   }
+
+  CMU800_DoIn(Port ,&Value);
 
   if( enable_breakpoint)
 	for(i=1; i< MAX_BREAKPOINT ; i++)
