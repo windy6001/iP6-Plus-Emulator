@@ -1,7 +1,7 @@
 # iP6 Plus    (PC-6000/6600 Emulator) 
 
-Last Update 2024/10/05<br>
-Release 4.9 Beta 6 <br>
+Last Update 2024/10/09<br>
+Release 4.9 Beta 6.1 <br>
 
 ## 1. はじめに
 
