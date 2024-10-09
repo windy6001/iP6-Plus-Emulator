@@ -64,13 +64,15 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <AdditionalIncludeDirectories>..\..\zlib;..\..\lpng</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalOptions>/SUBSYSTEM:WINDOWS  winmm.lib    comctl32.lib    dsound.lib dxguid.lib  dinput8.lib dxguid.lib 
- c:\library\lib\libpngd.lib c:\library\lib\zlibd.lib %(AdditionalOptions)</AdditionalOptions>
+ libpngd.lib zlib.lib %(AdditionalOptions)</AdditionalOptions>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
+      <AdditionalLibraryDirectories>..\..\zlib;..\..\lpng\projects\visualc71\Win32_LIB_Debug</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

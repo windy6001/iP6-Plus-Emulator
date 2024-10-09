@@ -393,12 +393,22 @@ SRのMODE 6 SCREEN 2 (の左のみ)ロード loadvram NO X Y
 
 ### 5.2.1  Windows 
 
-    - Windows 10を入れてください
-    - Visual Studio を入れてください。（2019 でビルドしています）
-    - [libpng](http://www.libpng.org/pub/png/libpng.html) [zlib](http://www.gzip.org/zlib/) のソースリストを落としてくる
-    - libpng とzlib のスタティックライブラリ版( libpngd.lib , zlibd.lib ) をビルドする。
-    - libpngd.lib と、zlibd.lib を、c:\library\lib にコピーしてください。　（デフォルトの場合）
+    - Windows (x86)マシンを用意してください
+    - Visual Studio を入れてください。（2022 でビルドしています）
+    - iP6 Plus のソースコードを好きなところに展開してください。
+    - [libpng](http://www.libpng.org/pub/png/libpng.html)と、
+    　[zlib](http://www.gzip.org/zlib/) のソースリストを落としてください。
+    - libpng とzlib のスタティックライブラリ版( libpngd.lib , zlibd.lib ) をビルドしてください（＊）
     - Win_Project/iP6plus.vcxproj を開いて、ビルドしてください。
+
+
+（＊）libpng /zlib のビルドの仕方
+　　　libpng を展開後、ディレクトリの名前を　lpng(ver no) となっているのを、lpng にしてください。
+      zlib も、展開後、ディレクトリの名前を  zlib (ver no) となっているのを、zlib にしてください。
+      iP6-Plus-Emulator のディレクトリと同じ位置に、lpng と、zlib を入れてください。
+
+      lpng/projects/visualc71/libpng.vcproj を開いて、ビルドしてください。
+      zlib/win32 を開いて、nmake -f Makefile.msc でビルドしてください。
 
     
 #### 5.2.2 Unix系OSでのコンパイルの仕方
