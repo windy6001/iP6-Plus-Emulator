@@ -80,6 +80,18 @@ KEY ON/OFFの設定
 	おそらく、CMU-800 のテンポつまみを回すことで、設定できると思われます。
 　　演奏プログラム側でこれをみていて、ウエイトを入れるようだ
 
+
+バグ
+
+	PSG音源なので、３和音までしか演奏できない
+
+　　CMU-800の音階は、10オクターブの途中まで出るらしいが、PSG音源は８オクターブぐらいしか出ないので音が出ない音階がある
+
+
+　　CMU-800の16進数の周波数の値から一対一で、音階に変換しているので、１でも違うと、音が鳴らなくなる。
+	付属のBIOS ROMによる、打ち込みソフトなら問題がないが。自作の音源ドライバーなどで、違う値を設定されると鳴らない
+
+	他のエミュレーターではどうやっているのだろう？
 */
 
 byte port18 = 0x00;				//I/O [18]  CMU-800
@@ -93,7 +105,7 @@ word cmu800_freqTable[][12] ={
 	{0x9741,0x8EBE, 0x86BB, 0x7F2E, 0x780B, 0x714E, 0x6AED, 0x64EC, 0x5F41, 0x59E8, 0x54D9, 0x5015},
 	{0x4B95,0x4754, 0x4353, 0x3F8D, 0x3BFC, 0x389E, 0x356E, 0x326E, 0x2F99, 0x2CED, 0x2A66, 0x2805},
 	{0x25C5,0x23A5, 0x21A5, 0x1FC3, 0x1DFB, 0x1C4C, 0x1AB4, 0x1934, 0x17CA, 0x1674, 0x1531, 0x1401},
-	{0x12E1,0x11D1, 0x10D1, 0x0FE1, 0x0EFD, 0x0E26, 0x0D59, 0x0C99, 0x0BE4, 0x0B39, 0x0A98, 0x0A00},
+	{0x12E1,0x11D1, 0x10D1, 0x0FE1, 0x0EFD, 0x0E25, 0x0D59, 0x0C99, 0x0BE4, 0x0B39, 0x0A98, 0x0A00},
 	{0x0970,0x08E8, 0x0868, 0x07F0, 0x077E, 0x0712, 0x06AC, 0x064C, 0x05F2, 0x059C, 0x054C, 0x0500},
 	{0x04B8,0x0474, 0x0434, 0x03F8, 0x03BF, 0x0389, 0x0356, 0x0326, 0x02F9, 0x02CE, 0x02A6, 0x0280},
 	{0x025C,0x023A, 0x021A, 0x01FC, 0x01DF, 0x01C4, 0x01AB, 0x0193, 0x017C, 0x0167, 0x0153, 0x0140},
@@ -103,7 +115,7 @@ word cmu800_freqTable[][12] ={
 };
 
 // PSG音源の周波数
-word psg_freq[8][12] = {
+word psg_freq[10][12] = {
 	{0xee8, 0x0e12, 0x0d48 ,0x0c88 ,0x0bd4 ,0x0b2a ,0x0a8a ,0x09f2 ,0x964 , 0x8dc , 0x085e , 0x07e6}, 
 };
 
@@ -145,7 +157,7 @@ void CMU800_DoOut(byte Port, byte Value)
 	  case 0x16:
 
 		{
-		int channel;
+		int channel=0;
 		switch (Port) {
 			case 0x10: channel = 0; break;
 			case 0x11: channel = 1; break;
@@ -160,12 +172,14 @@ void CMU800_DoOut(byte Port, byte Value)
 		if (flag == 0) {
 			preValue = Value;
 			flag++;
-			PRINTDEBUG(DEV_LOG, "(下位データ)\n");
+			PRINTDEBUG(DEV_LOG, "(下位データ) \n");
 
 		}else {
 			flag = 0;
-			PRINTDEBUG(DEV_LOG, "(上位データ)");
+			PRINTDEBUG(DEV_LOG, "(上位データ)\n");
 			int octave=0,toneNo=0;
+			if( channel >=3) break;		// TO FIX: チャンネル３以上だと何もしない
+
 			if (cmu800_isKeyOn ) {
 				int v = Value * 256 + preValue;
 				if (cnv(v, &octave, &toneNo)) {
@@ -243,7 +257,7 @@ void CMU800_DoIn(byte Port,byte *Value)
 			static int cnt=0;
 			static byte tmp = 0xF0;
 			cnt++;
-			if(( cnt % 200)==0) {				// TO FIX:CMU-800のつまみのテンポ指定によって、変わるタイミングを変える
+			if(( cnt % 50)==0) {			// TO FIX:CMU-800のテンポつまみによって、変わるタイミングを変えるようにする
 				tmp = (tmp == 0xF0) ? 0 : 0xF0;
 				*Value = tmp;
 				cnt=0;
