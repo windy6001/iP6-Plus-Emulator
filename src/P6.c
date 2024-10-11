@@ -60,6 +60,11 @@
 
 #include "cmu800.h"
 
+cmu800_tempo = 50;				// tempo の今の値
+cmu800_tempo_mini = 10;			// tempo の最小値 (0にしないこと)
+cmu800_tempo_max = 100;			// tempo の最大値
+cmu800_tempo_step = 2;			// １回で大きく/小さくなる値
+
 
 void BlitSurface(OSD_Surface * dst_surface, int ex, int ey, int w, int h, OSD_Surface * src_surface, int sx, int sy);
 
@@ -283,6 +288,21 @@ void keyboard_func_key( int osdkeycode)
 					 Trace=1;
 					}
 				break;
+			case OSDK_F7:				// F7/SHIFT+F7: CMU-800 のテンポ設定
+				if( kbFlagShift) {
+					cmu800_tempo -= cmu800_tempo_step;
+					if (cmu800_tempo_mini > cmu800_tempo) {
+						cmu800_tempo = cmu800_tempo_mini;
+					}
+				}else {
+					cmu800_tempo += cmu800_tempo_step;
+					if( cmu800_tempo_max < cmu800_tempo) {
+						cmu800_tempo = cmu800_tempo_max;
+					}
+				}
+				CMU800_setTempo(cmu800_tempo);
+				break;
+
 			case OSDK_F9:
 				printf("** f1 ＼n");
 				//code_log_flag= !code_log_flag;	// op code logging
@@ -606,6 +626,7 @@ void InitVariable(void)
 
 	init_tapeCounter();	// テープカウンターの保存先を初期化
 	CMU800_init();
+	CMU800_setTempo( cmu800_tempo);
 
 #ifdef TARGET_OS_IPHONE
 	UseCPUThread=2;
@@ -771,6 +792,7 @@ void SetTitle(fpos_t pos)
 
 	p+= sprintf(TitleBuf, "%s ", Title);
 	p+= sprintf(p, "(%s) ", machinetype[ P6Version]);
+	p += sprintf(p, "(CMU800:%d) ", cmu800_tempo);
 	if (CasStream[0])
 		{
 		p += sprintf(p, "  [%ldcnt.] ", pos);
