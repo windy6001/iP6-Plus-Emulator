@@ -1,7 +1,7 @@
 # iP6 Plus    (PC-6000/6600 Emulator) 
 
-Last Update 2024/10/12<br>
-Release 4.9 Beta 7 <br>
+Last Update 2025/3/17<br>
+Release 4.9 Beta 8 <br>
 
 ## 1. はじめに
 
@@ -481,6 +481,11 @@ opna.cpp と、opm.cppの、pow関数の呼び出し、pow(10,db / 40.0) とな�
 <hr>
 
 ## 7. 更新履歴
+
+### Rel 4.9 β8の変更点
+
+　- Windows版のビルドを Debug ビルドで行っていたことに起因する起動しない問題を修正
+
 
 ### Rel 4.9 β7の変更点
 
