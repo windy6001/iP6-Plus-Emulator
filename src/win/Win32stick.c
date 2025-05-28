@@ -49,46 +49,40 @@ int JoysticOpen(void)
 // ****************************************************************************
 byte JoystickGetState(int joy_no)
 {
-	int stat;
-	byte ret;
- 	int x,y;
+    int stat;
+    byte ret;
+    int x, y;
     //int x_center,y_center;
     int x_len, y_len;
-    
-    ret=0;
-	joy.dwSize = sizeof( joy);
-	joy.dwFlags= JOY_RETURNALL;
-    
-    joy_no= (joy_no==0)? JOYSTICKID1: JOYSTICKID2;
-	if( (stat = joyGetPosEx(   joy_no, &joy))==JOYERR_NOERROR) {
-        joyGetDevCaps( joy_no, &joycaps,sizeof(JOYCAPS));	// get joy stick info
-		x= joy.dwXpos;
-		y= joy.dwYpos;
-        x_len= (joycaps.wXmax- joycaps.wXmin);
-        y_len= (joycaps.wYmax- joycaps.wYmin);
-        //x_center = (joycaps.wXmin+ joycaps.wXmax)/2;
-        //y_center = (joycaps.wYmin+ joycaps.wYmax)/2;
 
-#ifdef DEBUG
-        printf("X=%5d  Y=%5d  BUTTON=%4d   ",x,y, joy.dwButtons);
-        printf("X_LEN=%5d  Y_LEN=%5d  \n",x_len,y_len);
-#endif
+    ret = 0;
+    joy.dwSize = sizeof(joy);
+    joy.dwFlags = JOY_RETURNALL;
 
-		// *********** 座標変換  ************
-		if( x < (x_len*1/10))      ret |=4; 
-        else if( x > (x_len*9/10)) ret |=8;
-
-		if( y < (y_len*1/10))      ret |=1;
-        else if( y > (y_len*9/10)) ret |=2;
-
-        if( joy.dwButtons & 7) ret|= 0x10;
-	}
- else
-    {
-     //PRINTDEBUG1( "joyGetPosEx: Failed  %d\n",stat);
+    joy_no = (joy_no == 0) ? JOYSTICKID1 : JOYSTICKID2;
+    if ((stat = joyGetPosEx(joy_no, &joy)) == JOYERR_NOERROR) {
+        joyGetDevCaps(joy_no, &joycaps, sizeof(JOYCAPS));	// get joy stick info
+        
+        switch( joy.dwPOV ) {       // 十字キーに対応
+            case 0:    ret = 1; break;
+            case 4500: ret = 9; break;
+            case 9000: ret = 8; break;
+            case 13500:ret = 10; break;
+            case 18000:ret = 2; break;
+            case 22500:ret = 6; break;
+            case 27000:ret = 4; break;
+            case 31500:ret = 2; break;
+        }
+        if (joy.dwButtons & 7) {    // トリガー
+            ret |= 0x10;
+            }
+    }else{
+        //PRINTDEBUG1( "joyGetPosEx: Failed  %d\n",stat);
     }
- return(ret);
+    return(ret);
 }
+
+
 
 // ****************************************************************************
 //          NumJoysticks: JOYSTICK の数を取得

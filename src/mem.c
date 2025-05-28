@@ -186,7 +186,7 @@ char sr_extram_b[]="EXRAM [%X]";
 
 
 	// ************** TAPE / DISK / ROM  PATH  ******************
-char PrnName[PATH_MAX] = "";    /* Printer redirect. file */
+char PrnName[PATH_MAX] = "printer.txt";    /* Printer redirect. file */
 FILE *PrnStream  = NULL;
 
 char CasName[2][PATH_MAX] = {"",""};  /* Tape image file      0:load  1:save  */

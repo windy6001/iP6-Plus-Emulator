@@ -877,24 +877,23 @@ void DoOut(register byte Port,register byte Value)
 			return;
 
 		// --------- 8255 PORT B   (SUB CPU) --------------
-   case 0x91:{
-			char inData[4] ,outData[4];
-			char c;
-			inData[0]= ~Value; inData[1]=0;
-			c= ~Value & 0xff;
-			if ('!' <= c && c <= 'z') {
-				Printer( c);
-				return;
-			}
-			
-			if( convertp6key2Sjis(inData, outData) ) {
-				Printer(outData[0]);
-				Printer(outData[1]);
-			}
-			else {
-				Printer( ~Value);
-			}
-			 return;  /* printer data         */
+   case 0x91:
+			{			// 毎回開ける
+				PrnStream = fopen(PrnName,"a"); if(PrnStream ==NULL) { return; }
+														// TO DO 開けないエラーをどうするか
+				unsigned char inData[4] ,outData[4];
+				inData[0]= ~Value; inData[1]=0;
+
+				// かななどだと、全角にする
+				 if( inData[0] >= 0x80)
+					if( convertp6key2Sjis(inData, outData)) {
+						Printer(outData[0]);
+						Printer(outData[1]);
+				}else {
+					Printer( inData[0]);
+				}
+			 fclose( PrnStream);	// 毎回閉じる
+			 return;
 			}
 
 		// --------- 8255 PORT C   (SUB CPU) --------------
