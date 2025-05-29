@@ -82,6 +82,8 @@ extern char DskName[2][PATH_MAX];    /* Disk image file     */
 extern char CasName[2][PATH_MAX];    /* Tape image file     */
 extern fpos_t CasSize[2];		/* tape size */
 
+extern char PrnPath[PATH_MAX];			/* printer path */
+
 extern char CasPath[2][PATH_MAX];    /* Tape image search path */
 extern char DskPath[2][PATH_MAX];    /* Disk image search path */
 

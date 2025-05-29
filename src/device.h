@@ -191,7 +191,7 @@ extern int   srline_bak;				// sr line   enable when busreq=1
 extern int fm_vol;			// fm volume
 extern int psg_vol;			// psg volume
 
-
+extern int PrnMode;
 
 
 // *********** TV Reserve Data Read Interrupt ***********

@@ -33,6 +33,7 @@
 #include "Option.h"
 #include "mem.h"
 #include "Debug.h"
+#include "device.h"
 
 extern int SaveCPU;
 
@@ -73,6 +74,7 @@ D_DSKNAME2,
 D_ROMAJI_MODE,
 D_USE_COMPATIBLEROM,
 D_DEBUGWORKPATH,
+D_PRNMODE,
 };
 
 char *ConfigOptions[]=
@@ -92,6 +94,7 @@ char *ConfigOptions[]=
 "RomajiMode=",
 "Use_CompatibleROM=",
 "DebugWorkPath=",
+"PrnMode=",
 NULL
 };
 
@@ -195,6 +198,7 @@ int ConfigWrite(void)
  fprintf(configStream,"%s%s\n" ,ConfigOptions[D_ROMPATH]         ,RomPath);
  fprintf(configStream,"%s%d\n", ConfigOptions[D_USE_COMPATIBLEROM], new_Use_CompatibleROM);
  fprintf(configStream,"%s%s\n", ConfigOptions[D_DEBUGWORKPATH]    , debugWorkPath);
+ fprintf(configStream,"%s%d\n", ConfigOptions[D_PRNMODE], PrnMode);
 
  fclose( configStream);
 
@@ -372,7 +376,12 @@ int ConfigRead(void)
          case D_DEBUGWORKPATH:
                 my_strncpy( debugWorkPath , (&tmp[N][K]) , PATH_MAX);
                 break;
-       }
+		 case D_PRNMODE:
+				PrnMode= atoi(&tmp[N][K]);
+				if(PrnMode <0) {PrnMode = 0;}
+				if(PrnMode >1) {PrnMode = 1;}
+				break;
+	   }
     }
  printf("Done.\n");
  printf("%s \n",msg);

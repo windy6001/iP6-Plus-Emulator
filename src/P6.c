@@ -766,6 +766,8 @@ void InitVariable(void)
 	else 
 		strcat( RomPath , "\\rom\\");
 
+	OSD_GetModulePath(PrnPath, PATH_MAX - 10);
+
 	CSS1=1;
 	CSS2=0;
 	CSS3=0;

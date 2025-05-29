@@ -238,7 +238,7 @@ int fm_vol;			// fm volume
 int psg_vol;			// psg volume
 
 
-
+int PrnMode = 0;		// Printer mode 0:通常モード   1:かなカタカナ全角モード 
 
 // *********** TV Reserve Data Read Interrupt ***********
 byte TvrMode= TVR_NONE;
@@ -878,20 +878,30 @@ void DoOut(register byte Port,register byte Value)
 
 		// --------- 8255 PORT B   (SUB CPU) --------------
    case 0x91:
-			{			// 毎回開ける
-				PrnStream = fopen(PrnName,"a"); if(PrnStream ==NULL) { return; }
-														// TO DO 開けないエラーをどうするか
+			{			// 毎回開いて、閉じる
+				char fullpath[PATH_MAX];
+				sprintf( fullpath,"%s%s",PrnPath, PrnName);
+				PrnStream = fopen(PrnName,"a"); 
+				if(PrnStream ==NULL) {
+					char str[256];
+					sprintf(str,"cannot open '%s'",PrnName);
+					OSD_textout(status_surface, 200*scale, 0 , str, 14);
+					return; 
+				}
+				
 				unsigned char inData[4] ,outData[4];
 				inData[0]= ~Value; inData[1]=0;
+				 if( inData[0] == 0xff) {		// FFH無視する
+					return;
+				 }
 
 				// かななどだと、全角にする
-				 if( inData[0] >= 0x80)
-					if( convertp6key2Sjis(inData, outData)) {
-						Printer(outData[0]);
-						Printer(outData[1]);
-				}else {
-					Printer( inData[0]);
-				}
+				 if(PrnMode==1 && (inData[0] >= 0x80)&& convertp6key2Sjis(inData, outData)) {
+					Printer(outData[0]);
+					Printer(outData[1]);
+				  } else {
+					Printer(inData[0]);
+				  }
 			 fclose( PrnStream);	// 毎回閉じる
 			 return;
 			}

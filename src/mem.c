@@ -198,6 +198,8 @@ fpos_t CasSize[2];		/* tape size */
 char DskName[2][PATH_MAX] = {"",""};    /* Disk image file      */
 FILE *DskStream[2]  = {NULL,NULL};
 
+char PrnPath[PATH_MAX] = {""};			/* printer path */
+
 char CasPath[2][PATH_MAX] = {"",""};    /* Tape image path */
 char DskPath[2][PATH_MAX] = {"",""};    /* Disk image path */
 
@@ -2181,7 +2183,9 @@ int StartP6(void)
 			}
 		}
 
-	BASICROM[ 0x1a4f ] = 0xc9;			// printer katakana にしない　　暫定パッチ★
+	if(PrnMode ==1)	{
+		BASICROM[ 0x1a4f ] = 0xc9;			// printer katakana にしない　　暫定パッチ★
+	}
 
   /* ***************  INIT MEMORY MAPPER *****************/
 	InitMemmap();

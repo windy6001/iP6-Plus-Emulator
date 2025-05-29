@@ -71,9 +71,9 @@ byte JoystickGetState(int joy_no)
             case 18000:ret = 2; break;
             case 22500:ret = 6; break;
             case 27000:ret = 4; break;
-            case 31500:ret = 2; break;
+            case 31500:ret = 5; break;
         }
-        if (joy.dwButtons & 7) {    // トリガー
+        if (joy.dwButtons ) {    // トリガー
             ret |= 0x10;
             }
     }else{
