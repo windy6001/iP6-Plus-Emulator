@@ -999,6 +999,7 @@ void init_extrom_memorymap(void)
 
 			 extrom2_b = extram_b[0];
 	    	 printf("Setting memory map for MEGAROM...OK\n");
+			 return;
 		 	}
 		}
 
@@ -1722,8 +1723,8 @@ void memorymap_mode1_extmegarom( byte Port , byte Value)
 		{
 		sprintf(read_b[2] , "MEGAROM%02d",Value);	// MEGAROM bank
 		
-		RdMem[2]=EXTROM1+ 0x2000* Value;			// select bank for MEGAROM
-		
+		RdMem[2]=EXTROM1 = EXTROM+ 0x2000* Value;			// select bank for MEGAROM		
+
 		megarom_bank_no = Value;
 		//printf(" MEGAROM BANK select  NO. =%d \n", Value);
 		}
