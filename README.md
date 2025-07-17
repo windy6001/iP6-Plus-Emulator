@@ -1,7 +1,7 @@
 # iP6 Plus    (PC-6000/6600 Emulator) 
 
-Last Update 2025/5/29<br>
-Release 4.9 Beta 9 <br>
+Last Update 2025/7/17<br>
+Release 4.9 Beta 10 <br>
 
 ## 1. はじめに
 
@@ -490,6 +490,12 @@ opna.cpp と、opm.cppの、pow関数の呼び出し、pow(10,db / 40.0) とな�
 <hr>
 
 ## 7. 更新履歴
+
+### Rel 4.9 β10の変更点
+
+　- 拡張ROM周りの修正
+  - PSG音源のジョイスティックの返り値のMSB　時々０にするようにした
+  - ゼグレイダーが一応動き出した（まだ速度的に変）
 
 ### Rel 4.9 β9の変更点
 

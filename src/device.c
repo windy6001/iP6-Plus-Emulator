@@ -1378,7 +1378,9 @@ byte DoIn(register byte Port)
 		    8910 / YM-2203 
 	   ------------------------------ */
 	case 0x72:							/* FM SOUND CARTRIDGE */
-    case 0xA2:                           /* 8910 data */
+    case 0xA2:
+			{                           /* 8910 data */
+			 static int cnt=0;
 			  if(PSGReg!=14) 
 			  		Value=(PSGReg>13? 0xff:PSGTMP[PSGReg]);
 		      else
@@ -1389,8 +1391,14 @@ byte DoIn(register byte Port)
 			  		Value=JoyState[0];
 				else
 				    Value=JoyState[1];
-                }
+				cnt++;
+				if ((cnt % 33) == 0)		// 約33回に一回 MSBを０にしないといけない（ゼグレイダー）
+				{
+					Value &= 0x7f;
+				}
+			  }
 		      break;
+			}
 	// JoyStat[]に、STICKの結果の反転したデータを書き込んでおく。
 
 	/* ---------------------------------
